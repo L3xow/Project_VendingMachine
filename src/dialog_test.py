@@ -78,7 +78,6 @@ class Ui_Dialog(QWidget):
         self.labelTXT(fileText1)
         self.labelTimer()
         self.labelGIF()
-        print(id_sweets)
 
     def labelGIF(self):
         self.label_GIF = QLabel("label_GIF", self)
@@ -180,6 +179,9 @@ class Ui_Dialog(QWidget):
                         # motor.start(1) # id_sweets
                         self.stopTimer()
                         print("SUCCESS")
+                        self.label_Time.setStyleSheet("color: green, font-size: 120px")
+                        self.label_Time.setWordWrap(True)
+                        self.label_Time.setText("Perfect you did it!")
                         break
                 # Hier beginnt dann TrainingsID 2
                 elif self.trainingID == 2:
