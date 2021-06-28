@@ -58,8 +58,7 @@ def main():
         if len(lmList) != 0:
 #            print(lmList[27])
 #            print(lmList[28])
-            print(lmList[27][1])
-            print(lmList[28][2])
+            print(lmList[27][1] - lmList[28][1])
             if lmList[27][3] > 95 and lmList[28][3] > 95 and lmList[23][1] < 380 and lmList[24][1] > 270:
                 print(lmList[23][1])
                 print(lmList[24][1])
@@ -83,7 +82,7 @@ def main():
         cv2.putText(img, str(int(fps)), (70, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
 
         cv2.imshow("Image", img)
-        cv2.waitKey(200)
+        cv2.waitKey(10)
 
 
 if __name__ == "__main__":

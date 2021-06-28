@@ -31,19 +31,18 @@ import time
 import cv2
 import socket
 
-
+# ToDo: Motor.py muss noch komplett gecodet werden, brauche aber erst einen funktionierenden RasPi
 # import motor
 
+# ToDo: Designfragen klären, Farben, usw.
 
 class QTCore:
     pass
 
 
 class Ui_Dialog(QWidget):
-    fileWin1 = ''
-    fileWin2 = ''
     fileGIF = ''
-    count = 5000  # Countdown-Timer in ms
+    count = 2000  # Countdown-Timer in ms           # ToDo: Zeit auf 10000 ändern, nur aufgrund Debugging
     x = 1600  # Width Window
     y = 900  # Height Window
 
@@ -51,10 +50,8 @@ class Ui_Dialog(QWidget):
         super().__init__(parent)
 
         # Init Variables
-        self.fileWin1 = file1
-        self.fileWin2 = file2
         self.fileGIF = fileGIF
-        fileText1 = open(self.fileWin1, encoding='utf-8', mode="r").read()
+        fileText2 = open(file2, encoding='utf-8', mode="r").read()
         self.trainingID = ID
         self.id_sweets = id_sweets
         self.cap = cv2.VideoCapture(0)              # (0) = ID erste Webcam
@@ -75,7 +72,7 @@ class Ui_Dialog(QWidget):
         self.setWindowFlag(Qt.WindowStaysOnTopHint)
         self.buttonOK()
         self.buttonBack()
-        self.labelTXT(fileText1)
+        self.labelTXT(fileText2)
         self.labelTimer()
         self.labelGIF()
 
@@ -111,7 +108,7 @@ class Ui_Dialog(QWidget):
         self.label_txt.setGeometry(QtCore.QRect(100, 10, 400, 440))  # x, y, width, height
         self.label_txt.setWordWrap(True)
         self.label_txt.setObjectName("label_txt")
-        self.label_txt.setStyleSheet("color: rgba(255, 255, 255, 1); font: bold; font-size: 18px")
+        self.label_txt.setStyleSheet("color: rgba(255, 255, 255, 1); font: bold; font-size: 32px")
         self.label_txt.setText(str(fileText1))
 
     def labelTimer(self):
@@ -119,15 +116,14 @@ class Ui_Dialog(QWidget):
         self.label_Time.setGeometry(QtCore.QRect(650, 400, 300, 120))
         self.label_Time.setObjectName("label_Time")
         self.label_Time.setStyleSheet("color: rgba(255, 0, 0, 1); font: bold; font-size: 72px")
-        self.label_Time.setText(str("05.00") + " s")
+        self.label_Time.setText(str("02.00") + " s")    # ToDo: Zeit auf 10s ändern, nur aufgrund Debugging
         self.label_Time.hide()
 
     def ok(self):
         print("Button Pressed OK")
-        fileText2 = open(self.fileWin2, encoding='utf-8', mode="r").read()
 
         # Sämtliche Anzeigen des Fensters verstecken
-        self.label_txt.setText(fileText2)
+        self.label_txt.hide()
         self.label_GIF.setVisible(False)
         self.button_ok.hide()
         self.button_back.hide()
@@ -144,8 +140,7 @@ class Ui_Dialog(QWidget):
             img = detector.findPose(img, draw=True)
             lmList = detector.findPosition(img, draw=True)
             if len(lmList) != 0:
-                if lmList[27][3] > 90 and lmList[28][3] > 90 and lmList[23][1] < 380 \
-                        and lmList[24][1] > 270:
+                if lmList[27][3] > 80 and lmList[28][3] > 80:
                     if not self.myCount.isActive():
                         self.myCount.start(100)
 
@@ -159,16 +154,16 @@ class Ui_Dialog(QWidget):
                 # ID 2 = Kniebeugen
                 if self.trainingID == 1:
                     # Anzahl an ausführungen die gewertet werden
-                    if count < 20:
+                    if count < 5:
                         # Bereiche der Ruheposition
-                        if lmList[15][1] < 420 and lmList[15][2] > 240 and lmList[16][1] > 250 and lmList[16][2] > 240 \
+                        if(lmList[27][1] - lmList[28][1]) >= 110 \
                                 and not flipflopflag and self.myTime.isActive():
                             flipflopflag = True
                             count += 1
                             print(count)
 
                         # Bereiche der Arbeitsposition
-                        if lmList[15][1] > 500 and lmList[15][2] < 150 and lmList[16][1] < 150 and lmList[16][2] < 150 \
+                        if (lmList[27][1] - lmList[28][1]) <= 50 \
                                 and flipflopflag and self.myTime.isActive():
                             flipflopflag = False
                             count += 1
@@ -176,23 +171,25 @@ class Ui_Dialog(QWidget):
                     else:
                         # Ausgabe der Süßigkeit. Motor ansteuern, Timer beenden um Programm für neudurchlauf vorzubereiten
                         # motor.start(1) # id_sweets
-                        self.stopTimer()
+                        self.myTime.stop()              # ToDo: Überprüfen ob alles nötig/Zeilen sparen
                         print("SUCCESS")
-                        self.label_Time.setStyleSheet("color: green, font-size: 120px")
-                        self.label_Time.setWordWrap(True)
+                        self.label_Time.setStyleSheet("color: green; font-size: 88px; font: bold")
                         self.label_Time.setText("Perfect you did it!")
+                        self.label_Time.adjustSize()
+                        self.label_Time.move(407, 400)
+                        self.label_Time.show()
+                        # ToDo: Motor ansteuern, Handeingriff abwarten, Fenster schließen -> new Cycle
                         break
                 # Hier beginnt dann TrainingsID 2
                 elif self.trainingID == 2:
                     '''Hier dann weitere Auswertungen für ID 2'''
 
-            cv2.imshow("Image", img)
-            cv2.waitKey(1)
+            cv2.imshow("Image", img)  # ToDo: Zeit ändern + Image auskommentieren
+            cv2.waitKey(10)
 
     '''
     Countdown = Function for displaying the inital Countdown before the unit.
     Timer = Function for displaying the time the user has to complete the unit.  
-    StopTimer = Function to stop the QTimer-Timers
     '''
 
     def countdown(self):
@@ -205,22 +202,23 @@ class Ui_Dialog(QWidget):
     def timer(self):
         self.myCount.stop()
         if self.count == 0 and self.unit_time != 0:
-            self.label_Time.setGeometry(QtCore.QRect(650, 100, 250, 80))    # Label resize da Minuten Timer relativ groß
+            self.label_Time.setGeometry(QtCore.QRect(650, 400, 250, 80))    # Label resize da Minuten Timer relativ groß
             self.unit_time -= 1                                                  # Sekundenweise decrement
             num = self.unit_time / 60                                            # 120s in Minuten wandeln
             separate = math.modf(num)                                       # Dezimalzahl trennen in Int + Decimal
             new_string = str(int(separate[1])).zfill(2) + ":" + str(round(separate[0] * 60)).zfill(
                 2) + "min"                                                  # Timer String zusammenbauen, zfill um "0" vor der Zahl zu setzen
             self.label_Time.setText(new_string)
+            self.label_Time.adjustSize()
         else:
             self.myTime.stop()
 
-    def stopTimer(self):
+    def stopTimer(self):    # ToDo: Entweder entfernen oder umtippen, kA.
         self.label_Time.setText("ASDFASD")
         self.close()
         self.deleteLater()
 
-    def back(self):
+    def back(self):         # ToDo: Funktion überprüfen, ob überhaupt nötig
         print("Button Pressed back")
 
 if __name__ == "__main__":

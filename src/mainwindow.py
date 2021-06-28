@@ -6,23 +6,22 @@ Der Code ist hauptsächlich zur Steuerung unseres nachhaltigen Süßigkeitenauto
 Die Hierarchie des Programms ist wiefolgt:
 mainwindow.py
     unitselectwindow.py
-        dialog_test.py
+        userdialog.py
             motor.py
             PoseModule.py
 
 mainwindow.py
     Pick Sweets, one out of three. If one is picked, we open unitselectwindow.py and save the picked ID.
 unitselectwindow.py
-    Pick 1 out of four Units to do. From there we open the dialog_test.py where we explain the Unit and do the exercise recognition.
+    Pick 1 out of four Units to do. From there we open the userdialog.py where we explain the Unit and do the exercise recognition.
 
 '''
 
-
+# ToDo: Kommentare anpassen/übersetzen, Code Refactoren um Warnungen zu entfernen.
 
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 from PyQt5.QtCore import Qt
-from dialog_test import Ui_Dialog
 from unitselectwindow import UnitSelectWindow
 # import sys
 
@@ -30,13 +29,15 @@ from unitselectwindow import UnitSelectWindow
 class Ui_MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.fileWin1 = "src/misc/Mainwindowdescr.txt"
+        fileexpl = open(self.fileWin1, encoding='utf-8', mode="r").read()
 
 # Konfiguration des Fensters (Name, Größe, Hintergrundfarbe)
         self.setObjectName("MainWindow")
         self.resize(1920, 1080)
         self.setStyleSheet("background-color: rgb(255,255,255)")
         self.setWindowFlag(Qt.FramelessWindowHint)
-
+# ToDo: Vielleicht die GIFS als Funktion, müsste man testen
 # Bild Links
         self.label_0 = QLabel("label_0", self)
         self.label_0.setGeometry(QtCore.QRect(180, 210, 300, 300))  # x y width height
@@ -85,10 +86,18 @@ class Ui_MainWindow(QMainWindow):
         self.label_trechtsm.setStyleSheet("color: black; font: bold; font-size: 22px")
         self.label_trechtsm.adjustSize()
 
+# Text Label für Erklärung
+        self.label_explanation = QLabel("label_explanation", self)
+        self.label_explanation.setGeometry(QtCore.QRect(180, 580, 600, 600))
+        self.label_explanation.setStyleSheet("color: black; font: bold; font-size: 18px")
+        self.label_explanation.setText(str(fileexpl))
+#        self.label_explanation.setWordWrap(True)
+        self.label_explanation.adjustSize()
+
 # Um die erzeugten Objekte anzeigen zu lassen
         self.show()
 
-    def keyPressEvent(self, e):
+    def keyPressEvent(self, e):     # ToDo: KeypressEvent für ESC entfernen wenn ende naht
         if e.key() == Qt.Key_Escape:
             app.quit()
 

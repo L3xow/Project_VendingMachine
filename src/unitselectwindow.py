@@ -3,12 +3,15 @@ from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5 import QtCore, Qt, QtWidgets, QtGui
 from PyQt5.QtCore import Qt
 
-from dialog_test import Ui_Dialog
+from userdialog import Ui_Dialog
 
 
 class UnitSelectWindow(QWidget):
     def __init__(self, id_sweets, parent=None):
         super().__init__(parent)
+
+        self.fileWin1 = "src/misc/Mainwindowdescr.txt"
+        fileexpl = open(self.fileWin1, encoding='utf-8', mode="r").read()
 
         # to save chosen sweet from first window
         self.id_sweets = id_sweets
@@ -22,12 +25,20 @@ class UnitSelectWindow(QWidget):
         # Width and Height for GIF´s for easier use
         self.width = 300
         self.height = 300
-
+# ToDo: Planks GIF einfügen
         # Call Labels
         self.labelGIF("src/misc/Hampelmann.gif", 180, 210, 0)
         self.labelGIF("src/misc/squats.gif", 620, 210, 1)
         self.labelGIF("src/misc/pushup.gif", 1060, 210, 2)
         self.labelGIF("src/misc/burpees.gif", 1500, 210, 3)
+
+        # Text Label für Erklärung
+        self.label_explanation = QLabel("label_explanation", self)
+        self.label_explanation.setGeometry(QtCore.QRect(180, 580, 600, 600))
+        self.label_explanation.setStyleSheet("color: black; font: bold; font-size: 18px")
+        self.label_explanation.setText(str(fileexpl))
+        #        self.label_explanation.setWordWrap(True)
+        self.label_explanation.adjustSize()
 
         # Label configuration
         # GIF Label
@@ -39,8 +50,6 @@ class UnitSelectWindow(QWidget):
         self.movie = QMovie(fileGIF)
         self.label_GIF.setMovie(self.movie)
         self.movie.start()
-
-    # Selfwritten MouseReleaseEvent with correct areas to recognize a click on the GIFs in the window
 
     def mouseReleaseEvent(self, a0: QtGui.QMouseEvent) -> None:
         x = a0.x()
@@ -58,8 +67,9 @@ class UnitSelectWindow(QWidget):
         if 1500 <= x <= 1500+300 and 210 <= y <= 510:
             self.Unit_Four()
 
-    # Functions to call the dialog and explanation Window
+    # Funktionen um den Dialog zum bestätigen durch den Benutzer zu öffnen, führt auch zu Kameraauswertung
     def Unit_One(self):
+        # ToDo: Funktion anpassen, Text wird hier nicht als übergabe benötigt, glaube ich.
         # First and most important explanation, filler txt-file, GIF File, Exercise ID, saved sweet id which was
         # chosen in first Window from User
         self.w = Ui_Dialog("src/misc/Mainwindowdescr.txt", "src/misc/Dialogwindowdescr.txt", "src/misc/Hampelmann.gif", 1, self.id_sweets, 120)
