@@ -62,28 +62,28 @@ class UnitSelectWindow(QWidget):
     def Unit_One(self):
         # First and most important explanation, filler txt-file, GIF File, Exercise ID, saved sweet id which was
         # chosen in first Window from User
-        self.w = Ui_Dialog("src/misc/Mainwindowdescr.txt", "src/misc/Dialogwindowdescr.txt", "src/misc/Hampelmann.gif", 1, self.id_sweets)
+        self.w = Ui_Dialog("src/misc/Mainwindowdescr.txt", "src/misc/Dialogwindowdescr.txt", "src/misc/Hampelmann.gif", 1, self.id_sweets, 120)
         self.w.show()
         self.close()
 
     def Unit_Two(self):
         # First and most important explanation, filler txt-file, GIF File, Exercise ID, saved sweet id which was
         # chosen in first Window from User
-        self.w = Ui_Dialog("src/misc/Mainwindowdescr.txt", "src/misc/Dialogwindowdescr.txt", "src/misc/squats.gif", 2, self.id_sweets)
+        self.w = Ui_Dialog("src/misc/Mainwindowdescr.txt", "src/misc/Dialogwindowdescr.txt", "src/misc/squats.gif", 2, self.id_sweets, 120)
         self.w.show()
         self.close()
 
     def Unit_Three(self):
         # First and most important explanation, filler txt-file, GIF File, Exercise ID, saved sweet id which was
         # chosen in first Window from User
-        self.w = Ui_Dialog("src/misc/Mainwindowdescr.txt", "src/misc/Dialogwindowdescr.txt", "src/misc/pushup.gif", 3, self.id_sweets)
+        self.w = Ui_Dialog("src/misc/Mainwindowdescr.txt", "src/misc/Dialogwindowdescr.txt", "src/misc/pushup.gif", 3, self.id_sweets, 60)
         self.w.show()
         self.close()
 
     def Unit_Four(self):
         # First and most important explanation, filler txt-file, GIF File, Exercise ID, saved sweet id which was
         # chosen in first Window from User
-        self.w = Ui_Dialog("src/misc/Mainwindowdescr.txt", "src/misc/Dialogwindowdescr.txt", "src/misc/pushup.gif", 4, self.id_sweets)
+        self.w = Ui_Dialog("src/misc/Mainwindowdescr.txt", "src/misc/Dialogwindowdescr.txt", "src/misc/pushup.gif", 4, self.id_sweets, 60)
         self.w.show()
         self.close()
 

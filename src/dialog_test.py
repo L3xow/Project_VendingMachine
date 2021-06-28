@@ -44,11 +44,10 @@ class Ui_Dialog(QWidget):
     fileWin2 = ''
     fileGIF = ''
     count = 5000  # Countdown-Timer in ms
-    time = 120  # Dauer der Übung in s
     x = 1600  # Width Window
     y = 900  # Height Window
 
-    def __init__(self, file1, file2, fileGIF, ID, id_sweets, parent=None):
+    def __init__(self, file1, file2, fileGIF, ID, id_sweets, unit_time, parent=None):
         super().__init__(parent)
 
         # Init Variables
@@ -59,6 +58,7 @@ class Ui_Dialog(QWidget):
         self.trainingID = ID
         self.id_sweets = id_sweets
         self.cap = cv2.VideoCapture(0)              # (0) = ID erste Webcam
+        self.unit_time = unit_time                  # Zeit in s für Übung
 
         # Init Timer
         self.myCount = QTimer()
@@ -141,9 +141,8 @@ class Ui_Dialog(QWidget):
         count = 0
         while True:
             success, img = self.cap.read()
-            img = detector.findPose(img, draw=False)
-            lmList = detector.findPosition(img, draw=False)
-
+            img = detector.findPose(img, draw=True)
+            lmList = detector.findPosition(img, draw=True)
             if len(lmList) != 0:
                 if lmList[27][3] > 90 and lmList[28][3] > 90 and lmList[23][1] < 380 \
                         and lmList[24][1] > 270:
@@ -188,7 +187,7 @@ class Ui_Dialog(QWidget):
                     '''Hier dann weitere Auswertungen für ID 2'''
 
             cv2.imshow("Image", img)
-            cv2.waitKey(10)
+            cv2.waitKey(1)
 
     '''
     Countdown = Function for displaying the inital Countdown before the unit.
@@ -205,10 +204,10 @@ class Ui_Dialog(QWidget):
 
     def timer(self):
         self.myCount.stop()
-        if self.count == 0 and self.time != 0:
+        if self.count == 0 and self.unit_time != 0:
             self.label_Time.setGeometry(QtCore.QRect(650, 100, 250, 80))    # Label resize da Minuten Timer relativ groß
-            self.time -= 1                                                  # Sekundenweise decrement
-            num = self.time / 60                                            # 120s in Minuten wandeln
+            self.unit_time -= 1                                                  # Sekundenweise decrement
+            num = self.unit_time / 60                                            # 120s in Minuten wandeln
             separate = math.modf(num)                                       # Dezimalzahl trennen in Int + Decimal
             new_string = str(int(separate[1])).zfill(2) + ":" + str(round(separate[0] * 60)).zfill(
                 2) + "min"                                                  # Timer String zusammenbauen, zfill um "0" vor der Zahl zu setzen

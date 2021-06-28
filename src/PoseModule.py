@@ -58,8 +58,8 @@ def main():
         if len(lmList) != 0:
 #            print(lmList[27])
 #            print(lmList[28])
-            print(lmList[27][3])
-            print(lmList[28][3])
+            print(lmList[27][1])
+            print(lmList[28][2])
             if lmList[27][3] > 95 and lmList[28][3] > 95 and lmList[23][1] < 380 and lmList[24][1] > 270:
                 print(lmList[23][1])
                 print(lmList[24][1])

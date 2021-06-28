@@ -38,12 +38,12 @@ class Ui_MainWindow(QMainWindow):
         self.setWindowFlag(Qt.FramelessWindowHint)
 
 # Bild Links
-        self.label = QLabel("label", self)
-        self.label.setGeometry(QtCore.QRect(180, 210, 300, 300))  # x y width height
-        self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap("src/misc/PlaceHolder.jpg"))
-        self.label.setObjectName("label")
-        self.label.mouseReleaseEvent = self.DialogWindowOne
+        self.label_0 = QLabel("label_0", self)
+        self.label_0.setGeometry(QtCore.QRect(180, 210, 300, 300))  # x y width height
+        self.label_0.setText("")
+        self.label_0.setPixmap(QtGui.QPixmap("src/misc/PlaceHolder.jpg"))
+        self.label_0.setObjectName("label_0")
+        self.label_0.mouseReleaseEvent = self.DialogWindowOne
 
 # Überschrift Bild Links tlinks = text links
         self.label_tlinks = QLabel("label_tlinks", self)
@@ -55,7 +55,7 @@ class Ui_MainWindow(QMainWindow):
 
 # Bild Links Mitte
         self.label_1 = QLabel("label_1", self)
-        self.label_1.setGeometry(QtCore.QRect(620, 210, 300, 300))  # x y width height
+        self.label_1.setGeometry(QtCore.QRect(810, 210, 300, 300))  # x y width height
         self.label_1.setText("")
         self.label_1.setPixmap(QtGui.QPixmap("src/misc/PlaceHolder.jpg"))
         self.label_1.setObjectName("label_1")
@@ -63,7 +63,7 @@ class Ui_MainWindow(QMainWindow):
 
 # Überschrift Bild Links Mitte tlinksm = text links mitte
         self.label_tlinksm = QLabel("label_tlinksm", self)
-        self.label_tlinksm.move(620, 180)
+        self.label_tlinksm.move(810, 180)
         self.label_tlinksm.setText("Übung2_Placeholder")
         self.label_tlinksm.setObjectName("label_tlinksm")
         self.label_tlinksm.setStyleSheet("color: black; font: bold; font-size: 22px")
@@ -71,7 +71,7 @@ class Ui_MainWindow(QMainWindow):
 
 # Bild Rechts Mitte
         self.label_2 = QLabel("label_2", self)
-        self.label_2.setGeometry(QtCore.QRect(1060, 210, 300, 300))  # x y width height
+        self.label_2.setGeometry(QtCore.QRect(1440, 210, 300, 300))  # x y width height
         self.label_2.setText("")
         self.label_2.setPixmap(QtGui.QPixmap("src/misc/PlaceHolder.jpg"))
         self.label_2.setObjectName("label_2")
@@ -79,27 +79,11 @@ class Ui_MainWindow(QMainWindow):
 
 # Überschrift Bild Rechts Mitte trechtsm = text rechts mitte
         self.label_trechtsm = QLabel("label_trechtsm", self)
-        self.label_trechtsm.move(1060, 180)
+        self.label_trechtsm.move(1440, 180)
         self.label_trechtsm.setText("Übung3_placeholder")
         self.label_trechtsm.setObjectName("label_trechtsm")
         self.label_trechtsm.setStyleSheet("color: black; font: bold; font-size: 22px")
         self.label_trechtsm.adjustSize()
-
-# Bild Rechts
-        self.label_3 = QLabel("label_3", self)
-        self.label_3.setGeometry(QtCore.QRect(1500, 210, 300, 300))  # x y width height
-        self.label_3.setText("")
-        self.label_3.setPixmap(QtGui.QPixmap("src/misc/PlaceHolder.jpg"))
-        self.label_3.setObjectName("label_3")
-#        self.label_3.mouseReleaseEvent = self.DialogWindowFour
-
-# Überschrift Bild Rechts Mitte trechts = text rechts
-        self.label_trechts = QLabel("label_trechts", self)
-        self.label_trechts.move(1500, 180)
-        self.label_trechts.setText("Übung3_placeholder")
-        self.label_trechts.setObjectName("label_trechts")
-        self.label_trechts.setStyleSheet("color: black; font: bold; font-size: 22px")
-        self.label_trechts.adjustSize()
 
 # Um die erzeugten Objekte anzeigen zu lassen
         self.show()
