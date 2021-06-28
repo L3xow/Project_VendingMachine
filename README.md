@@ -25,7 +25,7 @@ Ob der Benutzer die Übung ordnungsgemäß ausführt, wird mittels einer Kamerae
 
 ## ToDo
 
--Erklärung in Maske 1 statt Maske 3 einfügen
--Animationen für Übungen anpassen/einfügen
--LED Steuerung überlegen und implementieren
--Wartungsschalter und Hauptschalter implementieren
+- Erklärung in Maske 1 statt Maske 3 einfügen
+- Animationen für Übungen anpassen/einfügen
+- LED Steuerung überlegen und implementieren
+- Wartungsschalter und Hauptschalter implementieren
