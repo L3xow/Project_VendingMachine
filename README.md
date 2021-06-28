@@ -22,3 +22,10 @@ Ob der Benutzer die Übung ordnungsgemäß ausführt, wird mittels einer Kamerae
 
 ### Verantwortlich für Software 
   - L3xow
+
+## ToDo
+
+Erklärung in Maske 1 statt Maske 3 einfügen
+Animationen für Übungen anpassen/einfügen
+LED Steuerung überlegen und implementieren
+Wartungsschalter und Hauptschalter implementieren
