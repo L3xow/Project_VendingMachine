@@ -1,22 +1,33 @@
-import socket
-import time
 
-HOST = "192.168.2.48"
-PORT = 8050
-# Create socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# attempt to connect to host
-sock.connect((HOST, PORT))
 
-while 1:
-    message = input("Your Message: ")
-    sock.send(bytes(message, 'UTF-8'))
-    if (message == 'o'):
-        with open('test1.png', 'wb+') as output:
-            rec = sock.recv(1024)
-            output.write(rec)
+class TestClass:
+    testnr = 5
 
-    elif (message == 'q'):
-        break
+    def __init__(self, c, d, e):
+        self.a = 5
+        self.b = 3
+        self.c = c
+        self.d = d
+        self.e = e
 
-sock.close()
+    def calc(self):
+        print(self.a + self.b + self.c + self.d)
+
+
+class NewClass(TestClass):
+
+    def __init__(self, a, b):
+        super().__init__(a, b, 5)
+
+    def calc(self):
+        print(self.a + self.b + self.c + self.d)
+
+
+def main():
+    t = TestClass(5, 4, 3)
+    t.calc()
+    n = NewClass(3, 4)
+    n.calc()
+
+if __name__ == "__main__":
+    main()
