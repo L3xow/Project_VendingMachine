@@ -22,13 +22,14 @@ unitselectwindow.py
 
 from PyQt5 import Qt, QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QObject, Qt
-from PyQt5.QtGui import QPixmap
+
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 import os
 from unitselectwindow import UnitSelectWindow
 
 
 class UI_MainWindow(QMainWindow):
+
 
     width = 1920
     height = 1080
@@ -42,7 +43,6 @@ class UI_MainWindow(QMainWindow):
         path = os.path.dirname(os.path.abspath(__file__))
         fileWin1 = os.path.join(path, "misc/MainwindowDescr.txt")
         self.fileexpl = open(fileWin1, encoding='utf-8', mode="r").read()
-
 
     def setupUi(self, w, h):
         self.setObjectName("MainWindow")
@@ -86,22 +86,47 @@ class UI_MainWindow(QMainWindow):
             self.DialogWindowThree()
 
     def DialogWindowOne(self):  # Function des ganz linken GIFs
-        id_sweets = 1
+        self.id_sweets = 1
+#        self.switch_window.emit()
         # Call UnitSelectWindow with parameter id_sweets to recognize which sweet was chosen.
-        self.win = UnitSelectWindow(id_sweets)
+        self.win = UnitSelectWindow(self.id_sweets)
         self.win.show()
 
     def DialogWindowTwo(self):  # Function des 2. GIFS von Links
-        id_sweets = 2
+        self.id_sweets = 2
         # Call UnitSelectWindow with parameter id_sweets to recognize which sweet was chosen.
-        self.win = UnitSelectWindow(id_sweets)
+        self.win = UnitSelectWindow(self.id_sweets)
         self.win.show()
 
     def DialogWindowThree(self):  # Function des 3. GIFS von Links
-        id_sweets = 3
+        self.id_sweets = 3
         # Call UnitSelectWindow with parameter id_sweets to recognize which sweet was chosen.
-        self.win = UnitSelectWindow(id_sweets)
+        self.win = UnitSelectWindow(self.id_sweets)
         self.win.show()
+
+'''
+class Controller:
+
+    def __init__(selfs):
+        pass
+
+    def show_mainwindow(self):
+        self.MainWindow = UI_MainWindow()
+        self.MainWindow.switch_window.connect(self.show_unit)
+        self.MainWindow.show()
+
+    def show_unit(self):
+        self.UnitWindow = UnitSelectWindow(1)
+        self.UnitWindow.switch_window.connect(self.show_dialog)
+        self.MainWindow.close()
+        self.UnitWindow.show()
+
+    def show_dialog(self):
+        self.DialogWindow = Ui_Dialog()
+        self.DialogWindow.switch_window.connect(self.show_mainwindow)
+        self.show_unit.close()
+        self.DialogWindow.show()
+'''
 
 def main():
     import sys

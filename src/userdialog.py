@@ -41,6 +41,8 @@ class QTCore:
 
 
 class Ui_Dialog(QWidget):
+
+    switch_window = QtCore.pyqtSignal()
     fileGIF = ''
     count = 2000  # Countdown-Timer in ms           # ToDo: Zeit auf 10000 ändern, nur aufgrund Debugging
     x = 1600  # Width Window
@@ -86,7 +88,7 @@ class Ui_Dialog(QWidget):
 
     def buttonOK(self):
         self.button_ok = QPushButton(self)
-        self.button_ok.setText("Ok")
+        self.button_ok.setText("Okay")
         self.button_ok.clicked.connect(self.ok)
         self.button_ok.setGeometry(600, 600, 150, 75)  # x y
         self.button_ok.setStyleSheet(
@@ -95,7 +97,7 @@ class Ui_Dialog(QWidget):
 
     def buttonBack(self):
         self.button_back = QPushButton(self)
-        self.button_back.setText("Back")
+        self.button_back.setText("Zurück")
         self.button_back.clicked.connect(lambda: self.close())
         self.button_back.clicked.connect(self.back)
         self.button_back.setGeometry(800, 600, 150, 75)  # x y

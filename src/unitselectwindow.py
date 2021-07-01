@@ -7,6 +7,9 @@ from userdialog import Ui_Dialog
 
 
 class UnitSelectWindow(QWidget):
+
+    switch_window = QtCore.pyqtSignal()
+
     def __init__(self, id_sweets, parent=None):
         super().__init__(parent)
 
@@ -27,10 +30,10 @@ class UnitSelectWindow(QWidget):
         self.height = 300
 # ToDo: Planks GIF einfügen
         # Call Labels
-        self.labelGIF("src/misc/Hampelmann.gif", 180, 210, 0)
-        self.labelGIF("src/misc/squats.gif", 620, 210, 1)
-        self.labelGIF("src/misc/pushup.gif", 1060, 210, 2)
-        self.labelGIF("src/misc/burpees.gif", 1500, 210, 3)
+        self.labelGIF("src/misc/Hampelmann.gif", 180, 210)
+        self.labelGIF("src/misc/squats.gif", 620, 210)
+        self.labelGIF("src/misc/pushup.gif", 1060, 210)
+        self.labelGIF("src/misc/burpees.gif", 1500, 210)
 
         # Text Label für Erklärung
         self.label_explanation = QLabel("label_explanation", self)
@@ -43,7 +46,7 @@ class UnitSelectWindow(QWidget):
         # Label configuration
         # GIF Label
 
-    def labelGIF(self, fileGIF, x, y, i):
+    def labelGIF(self, fileGIF, x, y):
         self.label_GIF = QLabel("", self)
         self.label_GIF.setGeometry(QtCore.QRect(x, y, self.width, self.height))  # x y width height
         self.label_GIF.setText("")
