@@ -1,51 +1,50 @@
+from time import sleep
+
 from PyQt5.QtGui import QMovie, QMouseEvent
 from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5 import QtCore, Qt, QtWidgets, QtGui
 from PyQt5.QtCore import Qt
+import os
 
 from userdialog import Ui_Dialog
 
 
 class UnitSelectWindow(QWidget):
 
-    switch_window = QtCore.pyqtSignal()
-
     def __init__(self, id_sweets, parent=None):
         super().__init__(parent)
-
-        self.fileWin1 = "src/misc/Mainwindowdescr.txt"
-        fileexpl = open(self.fileWin1, encoding='utf-8', mode="r").read()
-
-        # to save chosen sweet from first window
         self.id_sweets = id_sweets
-
-        # Configuration of created Window
-        self.setObjectName("UnitSelectWindow")
-        self.resize(1920, 1080)
-        self.setStyleSheet("background-color: rgb(255,255,255)")
-        self.setWindowFlag(Qt.FramelessWindowHint)
-
-        # Width and Height for GIF´s for easier use
+        self.label_txt = QLabel
         self.width = 300
         self.height = 300
+
+        path = os.path.dirname(os.path.abspath(__file__))
+        fileWin1 = os.path.join(path, "misc/MainwindowDescr.txt")
+        self.fileexpl = open(fileWin1, encoding='utf-8', mode="r").read()
+
+    def setupUI(self, w, h):
+        self.setObjectName("UnitSelectWindow")
+        self.resize(w, h)
+        self.setStyleSheet("background-color: rgb(255,255,255)")
+        self.setWindowFlag(Qt.FramelessWindowHint)
 # ToDo: Planks GIF einfügen
-        # Call Labels
         self.labelGIF("src/misc/Hampelmann.gif", 180, 210)
         self.labelGIF("src/misc/squats.gif", 620, 210)
         self.labelGIF("src/misc/pushup.gif", 1060, 210)
         self.labelGIF("src/misc/burpees.gif", 1500, 210)
+        self.labelTXT(self.fileexpl, 180, 580)
 
         # Text Label für Erklärung
-        self.label_explanation = QLabel("label_explanation", self)
-        self.label_explanation.setGeometry(QtCore.QRect(180, 580, 600, 600))
-        self.label_explanation.setStyleSheet("color: black; font: bold; font-size: 18px")
-        self.label_explanation.setText(str(fileexpl))
-        #        self.label_explanation.setWordWrap(True)
-        self.label_explanation.adjustSize()
+    def labelTXT(self, txt, x, y):
+        self.label_txt = QLabel(self)
+        self.label_txt.move(x, y)
+        self.label_txt.setText(str(txt))
+        self.label_txt.setObjectName("label_txt")
+        self.label_txt.setStyleSheet("color: black; font: bold; font-size: 22px")
+        self.label_txt.adjustSize()
 
         # Label configuration
         # GIF Label
-
     def labelGIF(self, fileGIF, x, y):
         self.label_GIF = QLabel("", self)
         self.label_GIF.setGeometry(QtCore.QRect(x, y, self.width, self.height))  # x y width height
@@ -76,13 +75,15 @@ class UnitSelectWindow(QWidget):
         # First and most important explanation, filler txt-file, GIF File, Exercise ID, saved sweet id which was
         # chosen in first Window from User
         self.w = Ui_Dialog("src/misc/Mainwindowdescr.txt", "src/misc/Dialogwindowdescr.txt", "src/misc/Hampelmann.gif", 1, self.id_sweets, 120)
-        self.w.show()
+        self.w.setupUI(1600, 900)
         self.close()
+        self.w.show()
 
     def Unit_Two(self):
         # First and most important explanation, filler txt-file, GIF File, Exercise ID, saved sweet id which was
         # chosen in first Window from User
         self.w = Ui_Dialog("src/misc/Mainwindowdescr.txt", "src/misc/Dialogwindowdescr.txt", "src/misc/squats.gif", 2, self.id_sweets, 120)
+        self.w.setupUI(1600, 900)
         self.w.show()
         self.close()
 
@@ -90,6 +91,7 @@ class UnitSelectWindow(QWidget):
         # First and most important explanation, filler txt-file, GIF File, Exercise ID, saved sweet id which was
         # chosen in first Window from User
         self.w = Ui_Dialog("src/misc/Mainwindowdescr.txt", "src/misc/Dialogwindowdescr.txt", "src/misc/pushup.gif", 3, self.id_sweets, 60)
+        self.w.setupUI(1600, 900)
         self.w.show()
         self.close()
 
@@ -97,13 +99,6 @@ class UnitSelectWindow(QWidget):
         # First and most important explanation, filler txt-file, GIF File, Exercise ID, saved sweet id which was
         # chosen in first Window from User
         self.w = Ui_Dialog("src/misc/Mainwindowdescr.txt", "src/misc/Dialogwindowdescr.txt", "src/misc/pushup.gif", 4, self.id_sweets, 60)
+        self.w.setupUI(1600, 900)
         self.w.show()
         self.close()
-
-
-if __name__ == "__main__":
-    import sys
-
-    app = QtWidgets.QApplication(sys.argv)
-    win = UnitSelectWindow()
-    sys.exit(app.exec_())

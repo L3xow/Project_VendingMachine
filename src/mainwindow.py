@@ -20,23 +20,19 @@ unitselectwindow.py
 # ToDo: Kommentare anpassen/übersetzen, Code Refactoren um Warnungen zu entfernen.
 
 
-from PyQt5 import Qt, QtWidgets, QtCore, QtGui
-from PyQt5.QtCore import QObject, Qt
-
+from PyQt5 import Qt, QtCore, QtGui
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 import os
 from unitselectwindow import UnitSelectWindow
 
 
 class UI_MainWindow(QMainWindow):
-
-
     width = 1920
     height = 1080
 
-    def __init__(self, w=width, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
-        self.width = w
         self.label_txt = QLabel
         self.label_jpg = QLabel
 
@@ -90,18 +86,21 @@ class UI_MainWindow(QMainWindow):
 #        self.switch_window.emit()
         # Call UnitSelectWindow with parameter id_sweets to recognize which sweet was chosen.
         self.win = UnitSelectWindow(self.id_sweets)
+        self.win.setupUI(1920, 1080)
         self.win.show()
 
     def DialogWindowTwo(self):  # Function des 2. GIFS von Links
         self.id_sweets = 2
         # Call UnitSelectWindow with parameter id_sweets to recognize which sweet was chosen.
         self.win = UnitSelectWindow(self.id_sweets)
+        self.win.setupUI(1920, 1080)
         self.win.show()
 
     def DialogWindowThree(self):  # Function des 3. GIFS von Links
         self.id_sweets = 3
         # Call UnitSelectWindow with parameter id_sweets to recognize which sweet was chosen.
         self.win = UnitSelectWindow(self.id_sweets)
+        self.win.setupUI(1920, 1080)
         self.win.show()
 
 '''
@@ -130,7 +129,6 @@ class Controller:
 
 def main():
     import sys
-    a = 0
     app = QApplication(sys.argv)
     win = UI_MainWindow()
     win.setupUi(win.width, win.height)

@@ -18,15 +18,24 @@ Pose IDs:
 
 
 '''
+from concurrent.futures import thread
+
+'''
+Motor1 = PIN 21
+ES = Motor1 - 10 = PIN 11
+Motor2 = PIN 22
+ES = Motor2 - 10 = PIN 12
+
+'''
 
 import math
-from time import sleep
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QDialogButtonBox, QLabel, QPushButton, QWidget
 from PyQt5.QtCore import Qt, QTimer, QTextCodec
 from PyQt5.QtGui import QMovie
 import PoseModule as pm
+from SocketTest import start
 import time
 import cv2
 import socket
@@ -39,21 +48,19 @@ import socket
 class QTCore:
     pass
 
-
 class Ui_Dialog(QWidget):
-
-    switch_window = QtCore.pyqtSignal()
     fileGIF = ''
-    count = 2000  # Countdown-Timer in ms           # ToDo: Zeit auf 10000 ändern, nur aufgrund Debugging
-    x = 1600  # Width Window
-    y = 900  # Height Window
+    count = 10000  # Countdown-Timer in ms           # ToDo: Zeit auf 10000 ändern, nur aufgrund Debugging
 
     def __init__(self, file1, file2, fileGIF, ID, id_sweets, unit_time, parent=None):
         super().__init__(parent)
+        self.label_GIF = QLabel
+        self.label_txt = QLabel
+        self.label_Time = QLabel
 
         # Init Variables
         self.fileGIF = fileGIF
-        fileText2 = open(file2, encoding='utf-8', mode="r").read()
+        self.fileText2 = open(file2, encoding='utf-8', mode="r").read()
         self.trainingID = ID
         self.id_sweets = id_sweets
         self.cap = cv2.VideoCapture(0)              # (0) = ID erste Webcam
@@ -65,18 +72,19 @@ class Ui_Dialog(QWidget):
         self.myTime = QTimer()
         self.myTime.timeout.connect(self.timer)
 
-        # Init WindowConfig
+    def setupUI(self, w, h):
         self.setObjectName("Dialog")
         self.setWindowTitle("Help Automat")
-        self.resize(self.x, self.y)
+        self.resize(w, h)
         self.setStyleSheet("background-color: rgb(49, 49, 51)")
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setWindowFlag(Qt.WindowStaysOnTopHint)
         self.buttonOK()
         self.buttonBack()
-        self.labelTXT(fileText2)
+        self.labelTXT(self.fileText2)
         self.labelTimer()
         self.labelGIF()
+        print(self.id_sweets, self.trainingID)
 
     def labelGIF(self):
         self.label_GIF = QLabel("label_GIF", self)
@@ -122,8 +130,6 @@ class Ui_Dialog(QWidget):
         self.label_Time.hide()
 
     def ok(self):
-        print("Button Pressed OK")
-
         # Sämtliche Anzeigen des Fensters verstecken
         self.label_txt.hide()
         self.label_GIF.setVisible(False)
@@ -131,7 +137,6 @@ class Ui_Dialog(QWidget):
         self.button_back.hide()
 
         self.label_Time.show()
-
 
         # Init for Detection
         detector = pm.poseDetector()
@@ -147,6 +152,7 @@ class Ui_Dialog(QWidget):
                         self.myCount.start(100)
 
             # Array lmList enthält die 32 Landmarks der PoseDetection.
+
             # Element 0 enthält die ID
             # Element 1 enthält die X Koordinate des Landmarks
             # Element 2 enthält die Y Koordinate des Landmarks
@@ -172,7 +178,6 @@ class Ui_Dialog(QWidget):
                             print(count)
                     else:
                         # Ausgabe der Süßigkeit. Motor ansteuern, Timer beenden um Programm für neudurchlauf vorzubereiten
-                        # motor.start(1) # id_sweets
                         self.myTime.stop()              # ToDo: Überprüfen ob alles nötig/Zeilen sparen
                         print("SUCCESS")
                         self.label_Time.setStyleSheet("color: green; font-size: 88px; font: bold")
@@ -180,6 +185,7 @@ class Ui_Dialog(QWidget):
                         self.label_Time.adjustSize()
                         self.label_Time.move(407, 400)
                         self.label_Time.show()
+                        start(1) # id_sweets
                         # ToDo: Motor ansteuern, Handeingriff abwarten, Fenster schließen -> new Cycle
                         break
                 # Hier beginnt dann TrainingsID 2
@@ -223,9 +229,9 @@ class Ui_Dialog(QWidget):
     def back(self):         # ToDo: Funktion überprüfen, ob überhaupt nötig
         print("Button Pressed back")
 
-if __name__ == "__main__":
-    import sys
 
-    app = QtWidgets.QApplication(sys.argv)
-    win = Ui_Dialog()
-    sys.exit(app.exec_())
+#if __name__ == "__main__":
+#    import sys
+#    app = QtWidgets.QApplication(sys.argv)
+#    win = Ui_Dialog()
+#    sys.exit(app.exec_())

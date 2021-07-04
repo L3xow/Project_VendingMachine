@@ -1,12 +1,27 @@
-from gpiozero import LED, Button
-from gpiozero.pins.pigpio import PiGPIOFactory
+from threading import Thread
+import os, sys
 from time import sleep
 
 
-factory = PiGPIOFactory(host='192.168.4.1') #IP of RASPI
+def funct1():
+    count = 0
+    while True:
+        sleep(0.5)
+        count += 1
+        print(count, 0.5)
 
 
-motor = 21
+def funct2():
+    count = 0
+    while True:
+        sleep(1)
+        count += 1
+        print(count, 1)
 
-motorgo = LED(motor, pin_factory=factory)
-motorgo.on()
+
+def main():
+    Thread(target = funct1).start()
+    Thread(target = funct2).start()
+
+if __name__ == "__main__":
+    main()
