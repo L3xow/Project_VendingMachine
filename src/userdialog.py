@@ -18,27 +18,16 @@ Pose IDs:
 
 
 '''
-from concurrent.futures import thread
-
-'''
-Motor1 = PIN 21
-ES = Motor1 - 10 = PIN 11
-Motor2 = PIN 22
-ES = Motor2 - 10 = PIN 12
-
-'''
-
 import math
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QDialogButtonBox, QLabel, QPushButton, QWidget
-from PyQt5.QtCore import Qt, QTimer, QTextCodec
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtWidgets import QLabel, QPushButton, QWidget
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QMovie
 import PoseModule as pm
-from SocketTest import start
-import time
+from motor import start  # ToDo: muss geändert werden
 import cv2
-import socket
+
 
 # ToDo: Motor.py muss noch komplett gecodet werden, brauche aber erst einen funktionierenden RasPi
 # import motor
@@ -47,6 +36,7 @@ import socket
 
 class QTCore:
     pass
+
 
 class Ui_Dialog(QWidget):
     fileGIF = ''
@@ -63,8 +53,8 @@ class Ui_Dialog(QWidget):
         self.fileText2 = open(file2, encoding='utf-8', mode="r").read()
         self.trainingID = ID
         self.id_sweets = id_sweets
-        self.cap = cv2.VideoCapture(0)              # (0) = ID erste Webcam
-        self.unit_time = unit_time                  # Zeit in s für Übung
+        self.cap = cv2.VideoCapture(0)  # (0) = ID erste Webcam
+        self.unit_time = unit_time  # Zeit in s für Übung
 
         # Init Timer
         self.myCount = QTimer()
@@ -76,7 +66,7 @@ class Ui_Dialog(QWidget):
         self.setObjectName("Dialog")
         self.setWindowTitle("Help Automat")
         self.resize(w, h)
-        self.setStyleSheet("background-color: rgb(49, 49, 51)")
+        self.setStyleSheet("background-color: rgb(0, 0, 0)")  # 49 49 51
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setWindowFlag(Qt.WindowStaysOnTopHint)
         self.buttonOK()
@@ -126,7 +116,7 @@ class Ui_Dialog(QWidget):
         self.label_Time.setGeometry(QtCore.QRect(650, 400, 300, 120))
         self.label_Time.setObjectName("label_Time")
         self.label_Time.setStyleSheet("color: rgba(255, 0, 0, 1); font: bold; font-size: 72px")
-        self.label_Time.setText(str("02.00") + " s")    # ToDo: Zeit auf 10s ändern, nur aufgrund Debugging
+        self.label_Time.setText(str("02.00") + " s")  # ToDo: Zeit auf 10s ändern, nur aufgrund Debugging
         self.label_Time.hide()
 
     def ok(self):
@@ -164,7 +154,7 @@ class Ui_Dialog(QWidget):
                     # Anzahl an ausführungen die gewertet werden
                     if count < 5:
                         # Bereiche der Ruheposition
-                        if(lmList[27][1] - lmList[28][1]) >= 110 \
+                        if (lmList[27][1] - lmList[28][1]) >= 110 \
                                 and not flipflopflag and self.myTime.isActive():
                             flipflopflag = True
                             count += 1
@@ -178,20 +168,21 @@ class Ui_Dialog(QWidget):
                             print(count)
                     else:
                         # Ausgabe der Süßigkeit. Motor ansteuern, Timer beenden um Programm für neudurchlauf vorzubereiten
-                        self.myTime.stop()              # ToDo: Überprüfen ob alles nötig/Zeilen sparen
+                        self.myTime.stop()  # ToDo: Überprüfen ob alles nötig/Zeilen sparen
                         print("SUCCESS")
                         self.label_Time.setStyleSheet("color: green; font-size: 88px; font: bold")
                         self.label_Time.setText("Perfect you did it!")
                         self.label_Time.adjustSize()
                         self.label_Time.move(407, 400)
                         self.label_Time.show()
-                        start(1) # id_sweets
+                        start(1)  # id_sweets
                         # ToDo: Motor ansteuern, Handeingriff abwarten, Fenster schließen -> new Cycle
                         break
                 # Hier beginnt dann TrainingsID 2
                 elif self.trainingID == 2:
                     '''Hier dann weitere Auswertungen für ID 2'''
 
+            cv2.putText(img, str(int(count)), (70, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
             cv2.imshow("Image", img)  # ToDo: Zeit ändern + Image auskommentieren
             cv2.waitKey(10)
 
@@ -210,28 +201,21 @@ class Ui_Dialog(QWidget):
     def timer(self):
         self.myCount.stop()
         if self.count == 0 and self.unit_time != 0:
-            self.label_Time.setGeometry(QtCore.QRect(650, 400, 250, 80))    # Label resize da Minuten Timer relativ groß
-            self.unit_time -= 1                                                  # Sekundenweise decrement
-            num = self.unit_time / 60                                            # 120s in Minuten wandeln
-            separate = math.modf(num)                                       # Dezimalzahl trennen in Int + Decimal
+            self.label_Time.setGeometry(QtCore.QRect(650, 400, 250, 80))  # Label resize da Minuten Timer relativ groß
+            self.unit_time -= 1  # Sekundenweise decrement
+            num = self.unit_time / 60  # 120s in Minuten wandeln
+            separate = math.modf(num)  # Dezimalzahl trennen in Int + Decimal
             new_string = str(int(separate[1])).zfill(2) + ":" + str(round(separate[0] * 60)).zfill(
-                2) + "min"                                                  # Timer String zusammenbauen, zfill um "0" vor der Zahl zu setzen
+                2) + "min"  # Timer String zusammenbauen, zfill um "0" vor der Zahl zu setzen
             self.label_Time.setText(new_string)
             self.label_Time.adjustSize()
         else:
             self.myTime.stop()
 
-    def stopTimer(self):    # ToDo: Entweder entfernen oder umtippen, kA.
+    def stopTimer(self):  # ToDo: Entweder entfernen oder umtippen, kA.
         self.label_Time.setText("ASDFASD")
         self.close()
         self.deleteLater()
 
-    def back(self):         # ToDo: Funktion überprüfen, ob überhaupt nötig
+    def back(self):  # ToDo: Funktion überprüfen, ob überhaupt nötig
         print("Button Pressed back")
-
-
-#if __name__ == "__main__":
-#    import sys
-#    app = QtWidgets.QApplication(sys.argv)
-#    win = Ui_Dialog()
-#    sys.exit(app.exec_())

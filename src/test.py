@@ -89,7 +89,6 @@ class Controller:
 
 
 def main():
-    os.system("SocketTest.py 1")
     app = QtWidgets.QApplication(sys.argv)
     controller = Controller()
     controller.show_login()

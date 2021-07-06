@@ -1,4 +1,3 @@
-
 '''
 Das ist unser Code für die Projektarbeit an der Rudolf Diesel Fachschule in Nürnberg.
 Der Code ist hauptsächlich zur Steuerung unseres nachhaltigen Süßigkeitenautomaten.
@@ -11,18 +10,19 @@ mainwindow.py
             PoseModule.py
 
 mainwindow.py
-    Pick Sweets, one out of three. If one is picked, we open unitselectwindow.py and save the picked ID.
+    Wenn eine der drei Süßigkeiten ausgewählt wurde, wird das Object unitselectwindow aufgerufen und die Süßigkeit als ID übergeben und gespeichert.
 unitselectwindow.py
-    Pick 1 out of four Units to do. From there we open the userdialog.py where we explain the Unit and do the exercise recognition.
+    Wenn eine der 4 Übungen ausgewählt wurde, wird das Object userdialog aufgerufen, in dem dann die Kameraauswertung gestartet wird.
 
 '''
-
+# ToDo: GPIOs einbauen und fertig machen
 # ToDo: Kommentare anpassen/übersetzen, Code Refactoren um Warnungen zu entfernen.
 
 
 from PyQt5 import Qt, QtCore, QtGui
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
+from gpioread import *
 import os
 from unitselectwindow import UnitSelectWindow
 
@@ -40,6 +40,8 @@ class UI_MainWindow(QMainWindow):
         fileWin1 = os.path.join(path, "misc/MainwindowDescr.txt")
         self.fileexpl = open(fileWin1, encoding='utf-8', mode="r").read()
 
+    # SetupUI initialisiert die grundlegenden Fenster Eigenschaften und ruft die Funktionen der anderen Label auf um
+    # diese zu erstellen und anzuzeigen.
     def setupUi(self, w, h):
         self.setObjectName("MainWindow")
         self.resize(w, h)
@@ -53,6 +55,7 @@ class UI_MainWindow(QMainWindow):
         self.labelJPG("misc/PlaceHolder.jpg", 1440, 210)
         self.labelTXT(self.fileexpl, 180, 580)
 
+    # LabelTXT zur Anzeige der Süßigkeiten Bezeichnungen und der Erklärung für den Benutzer.
     def labelTXT(self, txt, x, y):
         self.label_txt = QLabel(self)
         self.label_txt.move(x, y)
@@ -61,6 +64,7 @@ class UI_MainWindow(QMainWindow):
         self.label_txt.setStyleSheet("color: black; font: bold; font-size: 22px")
         self.label_txt.adjustSize()
 
+    # LabelJPG zur Anzeige der Bilder der Süßigkeiten
     def labelJPG(self, jpg, x, y):
         path = os.path.dirname(os.path.abspath(__file__))
         self.label_jpg = QLabel(self)
@@ -68,40 +72,54 @@ class UI_MainWindow(QMainWindow):
         self.label_jpg.setPixmap(QtGui.QPixmap(os.path.join(path, jpg)))
         self.label_jpg.setObjectName("label_jpg")
 
+    # MouseReleaseEvent = "MausLoslassEvent", heißt: Wenn die Maus in den unten bestimmten Bereichen geklickt und die
+    # Taste losgelassen wird, werden folgende Funktionen ausgelöst.
     def mouseReleaseEvent(self, a0: QtGui.QMouseEvent) -> None:
         x = a0.x()
         y = a0.y()
-        # Leftmost GIF
+        # Linkes Bild
         if 180 <= x <= 480 and 210 <= y <= 510:
             self.DialogWindowOne()
-        # 2nd leftmost GIF
+        # Mittleres Bild
         if 810 <= x <= 810 + 300 and 210 <= y <= 510:
             self.DialogWindowTwo()
-        # 3rd leftmost GIF
+        # Rechtes Bild
         if 1440 <= x <= 1440 + 300 and 210 <= y <= 510:
             self.DialogWindowThree()
 
-    def DialogWindowOne(self):  # Function des ganz linken GIFs
-        self.id_sweets = 1
-#        self.switch_window.emit()
-        # Call UnitSelectWindow with parameter id_sweets to recognize which sweet was chosen.
-        self.win = UnitSelectWindow(self.id_sweets)
-        self.win.setupUI(1920, 1080)
-        self.win.show()
+    # Funktion des ersten Bildes
+    def DialogWindowOne(self):
+        # Eingänge der Schalter abfragen, ob der Automat überhaupt eingeschalten ist.
+        if readInput(5) and readInput(6):
+            self.id_sweets = 1
+            # Erstellt Objekt win mit Konstruktor UnitSelectWindow und zeigt das erstellte Fenster an. Es wird die ID der
+            # ausgewählten Süßigkeit übergeben.
+            self.win = UnitSelectWindow(self.id_sweets)
+            self.win.setupUI(1920, 1080)
+            self.win.show()
 
-    def DialogWindowTwo(self):  # Function des 2. GIFS von Links
-        self.id_sweets = 2
-        # Call UnitSelectWindow with parameter id_sweets to recognize which sweet was chosen.
-        self.win = UnitSelectWindow(self.id_sweets)
-        self.win.setupUI(1920, 1080)
-        self.win.show()
+    # Funktion des zweiten Bildes
+    def DialogWindowTwo(self):
+        # Eingänge der Schalter abfragen, ob der Automat überhaupt eingeschalten ist.
+        if readInput(5) and readInput(6):
+            self.id_sweets = 2
+            # Erstellt Objekt win mit Konstruktor UnitSelectWindow und zeigt das erstellte Fenster an. Es wird die ID
+            # der ausgewählten Süßigkeit übergeben.
+            self.win = UnitSelectWindow(self.id_sweets)
+            self.win.setupUI(1920, 1080)
+            self.win.show()
 
-    def DialogWindowThree(self):  # Function des 3. GIFS von Links
-        self.id_sweets = 3
-        # Call UnitSelectWindow with parameter id_sweets to recognize which sweet was chosen.
-        self.win = UnitSelectWindow(self.id_sweets)
-        self.win.setupUI(1920, 1080)
-        self.win.show()
+    # Funktion des dritten Bildes
+    def DialogWindowThree(self):
+        # Eingänge der Schalter abfragen, ob der Automat überhaupt eingeschalten ist.
+        if readInput(5) and readInput(6):
+            self.id_sweets = 3
+            # Erstellt Objekt win mit Konstruktor UnitSelectWindow und zeigt das erstellte Fenster an. Es wird die ID der
+            # ausgewählten Süßigkeit übergeben.
+            self.win = UnitSelectWindow(self.id_sweets)
+            self.win.setupUI(1920, 1080)
+            self.win.show()
+
 
 '''
 class Controller:
@@ -127,9 +145,11 @@ class Controller:
         self.DialogWindow.show()
 '''
 
+
 def main():
     import sys
     app = QApplication(sys.argv)
+    # Erstellt Objekt win mit UI_MainWindow() und erstellt im Anschluss das User Interface und zeigt es an.
     win = UI_MainWindow()
     win.setupUi(win.width, win.height)
     win.show()

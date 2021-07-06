@@ -1,8 +1,8 @@
 from time import sleep
 
-from PyQt5.QtGui import QMovie, QMouseEvent
+from PyQt5.QtGui import QMovie
 from PyQt5.QtWidgets import QWidget, QLabel
-from PyQt5 import QtCore, Qt, QtWidgets, QtGui
+from PyQt5 import QtCore, Qt, QtGui
 from PyQt5.QtCore import Qt
 import os
 
