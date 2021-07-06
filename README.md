@@ -24,6 +24,8 @@ Ob der Benutzer die Übung ordnungsgemäß ausführt, wird mittels einer Kamerae
   - L3xow
 
 ## Installationshinweis
-- IDE verwendet: PyCharm
-- Packages needed: opencv-python, mediapipe, pigpio, pyqt5
+- Zip herunterladen und entpacken
+- Ordner in IDE einfügen
+- pip install requirements.txt
+- Done
 
