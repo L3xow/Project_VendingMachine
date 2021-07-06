@@ -19,13 +19,19 @@ Ob der Benutzer die Übung ordnungsgemäß ausführt, wird mittels einer Kamerae
 - PiGPIOZero
 
 
+## Installationshinweis
+### Git Clone
+-   Verzeichnis erstellen
+-   In Pfadzeile `cmd` eingeben
+-   `git clone https://github.com/L3xow/Project_VendingMachine` Copy&Paste
+-   Projektordner öffnen und loslegen
+
+### Download ZIP
+-   ZIP downloaden und entpacken
+-   IDE öffnen und Projekt darin öffnen
+-   Done
+
+
 
 ### Verantwortlich für Software 
   - L3xow
-
-## Installationshinweis
-- Zip herunterladen und entpacken
-- Ordner in IDE einfügen
-- pip install requirements.txt
-- Done
-
