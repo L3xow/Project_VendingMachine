@@ -36,13 +36,21 @@ class UI_MainWindow(QMainWindow):
         self.label_txt = QLabel
         self.label_jpg = QLabel
 
+
+        # path wird als Variable angelegt, um auf den Programmpfad zurückzuverweisen. Diese macht es möglich die
+        # Bilder ohne Absoluten Pfad aufzurufen.
         path = os.path.dirname(os.path.abspath(__file__))
         fileWin1 = os.path.join(path, "misc/MainwindowDescr.txt")
         self.fileexpl = open(fileWin1, encoding='utf-8', mode="r").read()
 
-    # SetupUI initialisiert die grundlegenden Fenster Eigenschaften und ruft die Funktionen der anderen Label auf um
-    # diese zu erstellen und anzuzeigen.
     def setupUi(self, w, h):
+        """
+        Funktion zum initialisieren der Elemente des Fensters.
+
+        :param w: (int) Weite des Fensters
+        :param h: (int) Höhe des Fensters
+        :return:
+        """
         self.setObjectName("MainWindow")
         self.resize(w, h)
         self.setStyleSheet("background-color: rgb(255,255,255)")
@@ -55,8 +63,15 @@ class UI_MainWindow(QMainWindow):
         self.labelJPG("misc/PlaceHolder.jpg", 1440, 210)
         self.labelTXT(self.fileexpl, 180, 580)
 
-    # LabelTXT zur Anzeige der Süßigkeiten Bezeichnungen und der Erklärung für den Benutzer.
     def labelTXT(self, txt, x, y):
+        """
+        Funktion zur erstellung des labelTXT Elements, um einen Text anzuzeigen.
+
+        :param txt: (string) Textstring der in dem Element angezeigt werden soll.
+        :param x: (int) Position des Labels in x-Richtung.
+        :param y: (int) Position des Labels in y-Richtung.
+        :return:
+        """
         self.label_txt = QLabel(self)
         self.label_txt.move(x, y)
         self.label_txt.setText(str(txt))
@@ -64,86 +79,53 @@ class UI_MainWindow(QMainWindow):
         self.label_txt.setStyleSheet("color: black; font: bold; font-size: 22px")
         self.label_txt.adjustSize()
 
-    # LabelJPG zur Anzeige der Bilder der Süßigkeiten
     def labelJPG(self, jpg, x, y):
+        """
+        Funktion zum anzeigen des Bild-Labels.
+
+        :param jpg: (path) Bildpfad der angezeigt werden soll, Ordnerstruktur beachten.
+        :param x: (int) Position des Bildes in x-Richtung.
+        :param y: (int) Position des Bildes in y-Richtung.
+        :return:
+        """
         path = os.path.dirname(os.path.abspath(__file__))
         self.label_jpg = QLabel(self)
         self.label_jpg.setGeometry(QtCore.QRect(x, y, 300, 300))  # x y width height
         self.label_jpg.setPixmap(QtGui.QPixmap(os.path.join(path, jpg)))
         self.label_jpg.setObjectName("label_jpg")
 
-    # MouseReleaseEvent = "MausLoslassEvent", heißt: Wenn die Maus in den unten bestimmten Bereichen geklickt und die
-    # Taste losgelassen wird, werden folgende Funktionen ausgelöst.
     def mouseReleaseEvent(self, a0: QtGui.QMouseEvent) -> None:
+        """
+        Funktion zur Erkennung eines MausReleaseEvents, heißt, wenn die Maus lossless wird, werden die Koordinaten x,
+        y zurückgegeben.
+
+        :param a0: -/-
+        :return: -/-
+        """
         x = a0.x()
         y = a0.y()
         # Linkes Bild
         if 180 <= x <= 480 and 210 <= y <= 510:
-            self.DialogWindowOne()
+            self.DialogWindow(1, 1920, 1080)
         # Mittleres Bild
         if 810 <= x <= 810 + 300 and 210 <= y <= 510:
-            self.DialogWindowTwo()
+            self.DialogWindow(2, 1920, 1080)
         # Rechtes Bild
         if 1440 <= x <= 1440 + 300 and 210 <= y <= 510:
-            self.DialogWindowThree()
+            self.DialogWindow(3, 1920, 1080)
 
-    # Funktion des ersten Bildes
-    def DialogWindowOne(self):
-        # Eingänge der Schalter abfragen, ob der Automat überhaupt eingeschalten ist.
-        if readInput(5) and readInput(6):
-            self.id_sweets = 1
-            # Erstellt Objekt win mit Konstruktor UnitSelectWindow und zeigt das erstellte Fenster an. Es wird die ID der
-            # ausgewählten Süßigkeit übergeben.
-            self.win = UnitSelectWindow(self.id_sweets)
-            self.win.setupUI(1920, 1080)
-            self.win.show()
+    def DialogWindow(self, id, w, h):
+        """
+        Funktion zum ausführen des zweiten Fensters der Benutzeroberfläche Übungsauswahl.
 
-    # Funktion des zweiten Bildes
-    def DialogWindowTwo(self):
-        # Eingänge der Schalter abfragen, ob der Automat überhaupt eingeschalten ist.
-        if readInput(5) and readInput(6):
-            self.id_sweets = 2
-            # Erstellt Objekt win mit Konstruktor UnitSelectWindow und zeigt das erstellte Fenster an. Es wird die ID
-            # der ausgewählten Süßigkeit übergeben.
-            self.win = UnitSelectWindow(self.id_sweets)
-            self.win.setupUI(1920, 1080)
-            self.win.show()
-
-    # Funktion des dritten Bildes
-    def DialogWindowThree(self):
-        # Eingänge der Schalter abfragen, ob der Automat überhaupt eingeschalten ist.
-        if readInput(5) and readInput(6):
-            self.id_sweets = 3
-            # Erstellt Objekt win mit Konstruktor UnitSelectWindow und zeigt das erstellte Fenster an. Es wird die ID der
-            # ausgewählten Süßigkeit übergeben.
-            self.win = UnitSelectWindow(self.id_sweets)
-            self.win.setupUI(1920, 1080)
-            self.win.show()
-
-
-'''
-class Controller:
-
-    def __init__(selfs):
-        pass
-
-    def show_mainwindow(self):
-        self.MainWindow = UI_MainWindow()
-        self.MainWindow.switch_window.connect(self.show_unit)
-        self.MainWindow.show()
-
-    def show_unit(self):
-        self.UnitWindow = UnitSelectWindow(1)
-        self.UnitWindow.switch_window.connect(self.show_dialog)
-        self.MainWindow.close()
-        self.UnitWindow.show()
-
-    def show_dialog(self):
-        self.DialogWindow = Ui_Dialog()
-        self.DialogWindow.switch_window.connect(self.show_mainwindow)
-        self.show_unit.close()
-        self.DialogWindow.show()
-'''
+        :param id: (int) Wert zwischen 1-3 bezogen auf die Süßigkeit die ausgewählt wurde.
+        :param w: (int) Weite des Fensters
+        :param h: (int) Höhe des Fensters
+        :return: unitselectwindow Fenster wird ausgeführt
+        """
+        self.win = UnitSelectWindow(id)
+        self.win.setupUI(w, h)
+        self.win.show()
 
 
 def main():
@@ -151,7 +133,9 @@ def main():
     app = QApplication(sys.argv)
     # Erstellt Objekt win mit UI_MainWindow() und erstellt im Anschluss das User Interface und zeigt es an.
     win = UI_MainWindow()
+    # Funktion SetupUI wird ausgeführt, und somit das Fenster initialisiert.
     win.setupUi(win.width, win.height)
+    # Funktion show zeigt das vorher initialisierte Fenster an.
     win.show()
     sys.exit(app.exec())
 
