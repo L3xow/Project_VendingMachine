@@ -34,7 +34,9 @@ class WindowTwo(QtWidgets.QWidget):
 
         layout = QtWidgets.QGridLayout()
 
-        self.label = QtWidgets.QLabel(text)
+        self.label = QtWidgets.QLabel("Das Ziel wäre gewesen:\n"
+                                      "Test\n"
+                                      "Neue Zeile" + " " + str(5))
         layout.addWidget(self.label)
 
         self.button = QtWidgets.QPushButton('Close')

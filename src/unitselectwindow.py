@@ -74,7 +74,7 @@ class UnitSelectWindow(QWidget):
         # ToDo: Funktion anpassen, Text wird hier nicht als übergabe benötigt, glaube ich.
         # First and most important explanation, filler txt-file, GIF File, Exercise ID, saved sweet id which was
         # chosen in first Window from User
-        self.w = Ui_Dialog("src/misc/Mainwindowdescr.txt", "src/misc/Dialogwindowdescr.txt", "src/misc/Hampelmann.gif", 1, self.id_sweets, 120)
+        self.w = Ui_Dialog("src/misc/Mainwindowdescr.txt", "src/misc/Dialogwindowdescr.txt", "src/misc/Hampelmann.gif", 1, self.id_sweets, 5)
         self.w.setupUI(1600, 900)
         self.close()
         self.w.show()

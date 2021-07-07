@@ -40,15 +40,25 @@ class QTCore:
 
 class Ui_Dialog(QWidget):
     fileGIF = ''
-    count = 10000  # Countdown-Timer in ms           # ToDo: Zeit auf 10000 ändern, nur aufgrund Debugging
+    count = 2000  # Countdown-Timer in ms           # ToDo: Zeit auf 10000 ändern, nur aufgrund Debugging
 
-    def __init__(self, file1, file2, fileGIF, ID, id_sweets, unit_time, parent=None):
+    def __init__(self, file2, fileGIF, ID, id_sweets, unit_time, parent=None):
+        """
+        Konstruktor für das DialogFenster das ebenfalls die Kameraauswertung vornimmt.
+
+        :param file2: (path) : Ist die Einverständnisfrage an den Benutzer, ob er alles verstanden hat.
+        :param fileGIF: (path) : Ist der Pfad der Animationen die nochmals in der Mitte des Fensters angezeigt werden.
+        :param ID: (int) : ID der gewählten Übung ( 1-4 ) um diese nochmals in der Mitte anzuzeigen.
+        :param id_sweets: (int) : ID der gewählten Süßigkeit in der ersten Maske, um damit die Motoren anzusteuern.
+        :param unit_time: (int) : Vorgegebene Zeit in Minuten, die der Benutzer hat um das Ziel zu erreichen.
+        :param parent:
+        """
         super().__init__(parent)
         self.label_GIF = QLabel
         self.label_txt = QLabel
         self.label_Time = QLabel
 
-        # Init Variables
+        # Initialisiert sämtliche Variablen des Konstruktors
         self.fileGIF = fileGIF
         self.fileText2 = open(file2, encoding='utf-8', mode="r").read()
         self.trainingID = ID
@@ -56,27 +66,45 @@ class Ui_Dialog(QWidget):
         self.cap = cv2.VideoCapture(0)  # (0) = ID erste Webcam
         self.unit_time = unit_time  # Zeit in s für Übung
 
-        # Init Timer
+        # Initialisiert die Timer für die Zeitvorgabe an den Benutzer
+        # MyCount ist in dem Fall der Countdown von 10s
         self.myCount = QTimer()
         self.myCount.timeout.connect(self.countdown)
+        # MyTime ist die Zeit für die Übung
         self.myTime = QTimer()
         self.myTime.timeout.connect(self.timer)
 
     def setupUI(self, w, h):
+        """
+        SetupUI ist die Funktion zur ersten Initialisierung des Fensters in dem alle Elemente angezeigt und erstellt werden.
+        :param w: (int) : Weite des Fensters
+        :param h: (int) : Höhe des Fensters
+        :return:
+        """
         self.setObjectName("Dialog")
         self.setWindowTitle("Help Automat")
         self.resize(w, h)
         self.setStyleSheet("background-color: rgb(0, 0, 0)")  # 49 49 51
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setWindowFlag(Qt.WindowStaysOnTopHint)
+        # Funktionsaufruf um den Button OK zu erstellen
         self.buttonOK()
+        # Funktionsaufruf um den Button Back zu erstellen
         self.buttonBack()
+        # Funktionsaufruf des Text Labels
         self.labelTXT(self.fileText2)
+        # Funktionsaufruf zum erstellen der Timer Label
         self.labelTimer()
+        # Funktionsaufruf zum erstellen des GIFs/der Animation in der mitte des Fensters
         self.labelGIF()
         print(self.id_sweets, self.trainingID)
 
     def labelGIF(self):
+        """
+        Initialisiert und erstellt das Animierte Label.
+
+        :return:
+        """
         self.label_GIF = QLabel("label_GIF", self)
         self.label_GIF.setGeometry(QtCore.QRect(600, 210, 300, 300))  # x y width height
         self.label_GIF.setText("")
@@ -85,6 +113,11 @@ class Ui_Dialog(QWidget):
         self.movie.start()
 
     def buttonOK(self):
+        """
+        Initialisiert und erstellt den Button OK.
+
+        :return:
+        """
         self.button_ok = QPushButton(self)
         self.button_ok.setText("Okay")
         self.button_ok.clicked.connect(self.ok)
@@ -94,6 +127,11 @@ class Ui_Dialog(QWidget):
             "border-color: grey; background-color: rgb(54, 73, 78); font-size: 20px; ")
 
     def buttonBack(self):
+        """
+        Initialisiert und erstellt den Button Back.
+
+        :return:
+        """
         self.button_back = QPushButton(self)
         self.button_back.setText("Zurück")
         self.button_back.clicked.connect(lambda: self.close())
@@ -104,6 +142,12 @@ class Ui_Dialog(QWidget):
             "border-color: grey; background-color: rgb(54, 73, 78); font-size: 20px; ")
 
     def labelTXT(self, fileText1):
+        """
+        Initialisiert und erstellt das Text Label für die Einverständniserklärung.
+
+        :param fileText1: (str) : Text, ausgelesen aus der von oben übergebenen File.
+        :return:
+        """
         self.label_txt = QtWidgets.QLabel(self)
         self.label_txt.setGeometry(QtCore.QRect(100, 10, 400, 440))  # x, y, width, height
         self.label_txt.setWordWrap(True)
@@ -112,6 +156,11 @@ class Ui_Dialog(QWidget):
         self.label_txt.setText(str(fileText1))
 
     def labelTimer(self):
+        """
+        Initialisiert und erstellt das Timer Label für den Countdown und den Übungstimer
+
+        :return:
+        """
         self.label_Time = QLabel("label_Time", self)
         self.label_Time.setGeometry(QtCore.QRect(650, 400, 300, 120))
         self.label_Time.setObjectName("label_Time")
@@ -120,6 +169,14 @@ class Ui_Dialog(QWidget):
         self.label_Time.hide()
 
     def ok(self):
+        """
+        Diese Funktion versteckt und zeigt die benötigten Label für die Kameraauswertung-Maske.
+        Hier findet ebenfalls die Kameraauswertung statt. lmList ( Array ) enthält alle LandmarkIDs, deren x, y, und z
+        Koordinaten in einem 3 dimensionalen Array.
+        Hier werden lediglich die IDs und die Positionen mit programmierten Bereichen verglichen und ein Zähler inkrementiert.
+
+        :return:
+        """
         # Sämtliche Anzeigen des Fensters verstecken
         self.label_txt.hide()
         self.label_GIF.setVisible(False)
@@ -131,7 +188,9 @@ class Ui_Dialog(QWidget):
         # Init for Detection
         detector = pm.poseDetector()
         flipflopflag = False
-        count = 0
+        self.unitDone = False # New
+        self.unitCounter = 0 # New
+        self.unitCheck = 0 # New
         while True:
             success, img = self.cap.read()
             img = detector.findPose(img, draw=True)
@@ -151,54 +210,55 @@ class Ui_Dialog(QWidget):
                 # ID 1 = Hampelmann
                 # ID 2 = Kniebeugen
                 if self.trainingID == 1:
+                    self.unitCheck = 5
                     # Anzahl an ausführungen die gewertet werden
-                    if count < 5:
+                    if self.unitCounter < self.unitCheck:
                         # Bereiche der Ruheposition
                         if (lmList[27][1] - lmList[28][1]) >= 110 \
                                 and not flipflopflag and self.myTime.isActive():
                             flipflopflag = True
-                            count += 1
-                            print(count)
+                            self.unitCounter += 1
+                            print(self.unitCounter)
 
                         # Bereiche der Arbeitsposition
                         if (lmList[27][1] - lmList[28][1]) <= 50 \
                                 and flipflopflag and self.myTime.isActive():
                             flipflopflag = False
-                            count += 1
-                            print(count)
+                            self.unitCounter += 1
+                            print(self.unitCounter)
                     else:
-                        # Ausgabe der Süßigkeit. Motor ansteuern, Timer beenden um Programm für neudurchlauf vorzubereiten
-                        self.myTime.stop()  # ToDo: Überprüfen ob alles nötig/Zeilen sparen
-                        print("SUCCESS")
-                        self.label_Time.setStyleSheet("color: green; font-size: 88px; font: bold")
-                        self.label_Time.setText("Perfect you did it!")
-                        self.label_Time.adjustSize()
-                        self.label_Time.move(407, 400)
-                        self.label_Time.show()
-                        start(1)  # id_sweets
-                        # ToDo: Motor ansteuern, Handeingriff abwarten, Fenster schließen -> new Cycle
+                        self.unitDone = True
                         break
                 # Hier beginnt dann TrainingsID 2
                 elif self.trainingID == 2:
                     '''Hier dann weitere Auswertungen für ID 2'''
 
-            cv2.putText(img, str(int(count)), (70, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
+            cv2.putText(img, str(int(self.unitCounter)), (70, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
             cv2.imshow("Image", img)  # ToDo: Zeit ändern + Image auskommentieren
             cv2.waitKey(10)
 
-    '''
-    Countdown = Function for displaying the inital Countdown before the unit.
-    Timer = Function for displaying the time the user has to complete the unit.  
-    '''
-
     def countdown(self):
+        """
+        Wird aufgerufen durch den erstellen Countdown Timer MyCount. Hier wird lediglich der Countdown auf 0 gezählt
+        und ständig im 100ms Takt im Fenster aktualisiert und angezeigt.
+
+        :return:
+        """
         if self.count != 0:
             self.count -= 100
-            self.label_Time.setText(str(self.count / 1000) + "s")
+            self.label_Time.setText(str(self.count / 1000) + " s")
             if self.count == 0:  # wenn Countdown fertig, dann neuen Timer starten für Übungszeit
                 self.myTime.start(1000)
 
     def timer(self):
+        """
+        Wird aufgerufen durch den erstellten Übungstimer MyTime. Hier wird ein Minutentimer erstellt und
+        so geformt, dass dieser richtig im Label Timer angezeigt werden kann.
+        Wenn dieser Timer abgelaufen ist, und je nachdem die Übungsauswertung ausfiel, werden verschiedene
+        Funktionen zum weiteren Ablauf aufgerufen.
+
+        :return:
+        """
         self.myCount.stop()
         if self.count == 0 and self.unit_time != 0:
             self.label_Time.setGeometry(QtCore.QRect(650, 400, 250, 80))  # Label resize da Minuten Timer relativ groß
@@ -206,16 +266,56 @@ class Ui_Dialog(QWidget):
             num = self.unit_time / 60  # 120s in Minuten wandeln
             separate = math.modf(num)  # Dezimalzahl trennen in Int + Decimal
             new_string = str(int(separate[1])).zfill(2) + ":" + str(round(separate[0] * 60)).zfill(
-                2) + "min"  # Timer String zusammenbauen, zfill um "0" vor der Zahl zu setzen
+                2) + " min"  # Timer String zusammenbauen, zfill um "0" vor der Zahl zu setzen
             self.label_Time.setText(new_string)
             self.label_Time.adjustSize()
         else:
-            self.myTime.stop()
-
-    def stopTimer(self):  # ToDo: Entweder entfernen oder umtippen, kA.
-        self.label_Time.setText("ASDFASD")
-        self.close()
-        self.deleteLater()
+            print("debug1")
+            if self.unitDone:
+                self.myTime.stop()
+                self.Succeeded(self.id_sweets)
+            else:
+                print("debug2")
+                self.myTime.stop()
+                self.notSucceeded()
 
     def back(self):  # ToDo: Funktion überprüfen, ob überhaupt nötig
         print("Button Pressed back")
+
+    def notSucceeded(self):
+        """
+        Diese Funktion wird aufgerufen wenn der Benutzer nicht erfolgreich in seiner Aufgabe war.
+        Hier werden dann die Timer Label angepasst und ein Text ausgegeben, der den Benutzer darauf hinweist, dass er
+        nicht erfolgreich war, und ihm ebenfalls sagt warum.
+        Im Anschluss wird der 4. Motor mit dem Gesunden Nahrungsmittel angesteuert.
+
+        :return:
+        """
+        self.myTime.stop()
+        print("noSuccess")
+        self.label_Time.setStyleSheet("color: red; font-size: 54px; font: bold")
+        self.label_Time.setText("Es scheint als wäre das Ziel nicht erreicht!\n"
+                                "Das Ziel wären gewesen: " + str(self.unitCheck) + "\n"
+                                "Davon wurden erreicht: " + str(self.unitCounter))  # ToDo: Evtl /2 wegen Anzahl
+        self.label_Time.adjustSize()
+        self.label_Time.move(300, 400)
+        self.label_Time.show()
+        #start(4)  # Motor 4 für Gesunde Mahlzeit
+
+    def Succeeded(self, id_sweets):
+        """
+        Diese Funktion wird aufgerufen, wenn der Benutzer erfolgreich bei seiner Aufgabe war.
+        Es wird der Text von Label Time angepasst zu einer vorprogrammierten Benachrichtigung und einem Glückwunsch.
+        Anschließend wird der Motor mit der angegebenen ID angesteuert.
+
+        :param id_sweets: (int) : Bezogen auf die vorher gewählte Süßigkeit.
+        :return:
+        """
+        self.myTime.stop()
+        print("Success")
+        self.label_Time.setStyleSheet("color: green; font-size: 88px; font: bold")
+        self.label_Time.setText("Perfect you did it!")
+        self.label_Time.adjustSize()
+        self.label_Time.move(407, 400)
+        self.label_Time.show()
+        #start(id_sweets)  # id_sweets
