@@ -76,7 +76,9 @@ class Ui_Dialog(QWidget):
 
     def setupUI(self, w, h):
         """
-        SetupUI ist die Funktion zur ersten Initialisierung des Fensters in dem alle Elemente angezeigt und erstellt werden.
+        Funktion zum initialisieren und erstellen des Fensters der Süßigkeitenauswahl. Aufruf und Init aller
+        Labels und Elemente die anzuzeigen sind.
+
         :param w: (int) : Weite des Fensters
         :param h: (int) : Höhe des Fensters
         :return:

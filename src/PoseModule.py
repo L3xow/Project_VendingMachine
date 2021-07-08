@@ -6,6 +6,16 @@ import time
 class poseDetector():
 
     def __init__(self, mode=False, upBody = False, smooth = True, detectionCon = 0.5, trackCon = 0.5):
+        """
+        Konstruktor für das Objekt der Klasse poseDetector. Hier werden gewisse Einstellungen bereits vorkonfiguriert.
+        Dieses Objekt ist verantwortlich für die Kameraerkennung und festlegen/zeichnen der Landmarks.
+
+        :param mode: (bool) : Default: False; True für statische Bilder, False für Videofeed.
+        :param upBody: (bool) : Default: False; True für nur Oberkörper-Erkennung, False für gesamten Körper erkennen.
+        :param smooth: (bool) : Default: True; True für flüssigere Erkennung, auf Kosten der Leistung
+        :param detectionCon: (float) : Default: 0.5; DetectionConfidence, höher um stabilere Auswertung zu erreichen.
+        :param trackCon: (float) : Default: 0.5; TrackingConfidence, höher um genauere Auswertung der Landmarks zu erreichen.
+        """
 
         self.mode = mode
         self.upBody = upBody
@@ -19,6 +29,13 @@ class poseDetector():
 
 
     def findPose(self, img, draw = True):
+        """
+        Funktion zum finden des Körpers und der erkennung der Landmarks/Gelenke.
+
+        :param img: (object) : Image das von OpenCV eingelesen wird.
+        :param draw: (bool) : Default: True; False wenn keine Punkte eingezeichnet werden sollen.
+        :return: (object) : Gibt die eingezeichneten Punkte auf dem eingespeisten Videofeed wieder.
+        """
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         self.results = self.pose.process(imgRGB)
         if draw:
@@ -29,11 +46,20 @@ class poseDetector():
 
 
     def findPosition(self, img, draw=True):
+        """
+        Funktion zum erstellen des 3-dimensionalen Arrays. [0] = ID_Landmarks; [1] = x-Koordinate_Landmark;
+        [2] = y-Koordinate_Landmark; [3] = Visibility_Landmark.
+
+        :param img: (object) : Image das von OpenCV eingelesen wird.
+        :param draw: (bool) : Default: True; False wenn keine Punkte eingezeichnet werden sollen.
+        :return: (array) : 3D Array dass die Landmarks und Koordinaten enthält.
+        """
         lmList = []
         if self.results.pose_landmarks:
             for id, lm in enumerate(self.results.pose_landmarks.landmark):
                 h, w, c = img.shape
-                #print(id, lm)
+                # Koordinaten müssen umberechnet werden, da Mediapipe einen Floatwert von 0.0 - 1.0 gibt,
+                # der im Verhältnis zur Größe des Videos steht.
                 cx, cy = int(lm.x * w), int(lm.y * h)
                 lmList.append([id, cx, cy, lm.visibility*100])
                 if draw:
@@ -44,6 +70,12 @@ class poseDetector():
 
 
 def main():
+    """
+    Funktion zum testen und debuggen der Kameraauswertung. Somit kann PoseModule auch unabhängig von
+    mainwindow ausgeführt werden und getestet werden.
+
+    :return:
+    """
     cap = cv2.VideoCapture(0)
     pTime = 0
     count = 0

@@ -1,12 +1,8 @@
 # This Python file uses the following encoding: utf-8
 
-import gpiozero
-import os
-
 import pigpio
 from time import sleep
 
-#factory = PiGPIOFactory(host='192.168.137.231') #IP of RASPI
 
 '''
 Motor1 = PIN 21
@@ -17,6 +13,15 @@ ES = Motor2 - 10 = PIN 12
 '''
 
 def start(MotorID):
+    """
+    Funktion zum ansteuern der Motoren. Es wird eine ID übergeben, (1-4) mit der die GPIO bereits vorkonfiguriert sind.
+    Es wird zunächst eine IP Verbindung zum RPi aufgebaut, um dann die Status der GPIO abzufragen, bzw diese anzusteuern.
+    Anschließend werden die GPIO Pins vorbereitet, in diesem Fall auf Input oder Output konfiguriert.
+    GPIOs werden dann angesteuert oder, je nachdem ob es ein Eingang ist, abgefragt.
+
+    :param MotorID: (int) : Wert zwischen 1-4, Motor nummerierung von Links nach Rechts.
+    :return:
+    """
     pi = pigpio.pi("192.168.137.231", 8888)
     while pi.connected:
         if MotorID == 1:
@@ -54,6 +59,11 @@ def start(MotorID):
 #        motorgo.off()
 
 def main():
+    """
+    Testfunktion wenn kein Aufruf von außerhalb.
+
+    :return:
+    """
     start(1)
 
 if __name__ == "__main__":

@@ -12,6 +12,12 @@ from userdialog import Ui_Dialog
 class UnitSelectWindow(QWidget):
 
     def __init__(self, id_sweets, parent=None):
+        """
+        Konstruktor für UnitSelectWindow.
+
+        :param id_sweets: (int) : Speicher für gewählte Süßigkeit des Benutzers aus der ersten Maske.
+        :param parent: N/A
+        """
         super().__init__(parent)
         self.id_sweets = id_sweets
         self.label_txt = QLabel
@@ -23,6 +29,14 @@ class UnitSelectWindow(QWidget):
         self.fileexpl = open(fileWin1, encoding='utf-8', mode="r").read()
 
     def setupUI(self, w, h):
+        """
+        Funktion zum initialisieren und erstellen des Fensters der Süßigkeitenauswahl. Aufruf und Init aller
+        Labels und Elemente die anzuzeigen sind.
+
+        :param w: (int) : Weite des Fensters
+        :param h: (int) : Höhe des Fensters
+        :return:
+        """
         self.setObjectName("UnitSelectWindow")
         self.resize(w, h)
         self.setStyleSheet("background-color: rgb(255,255,255)")
@@ -36,6 +50,13 @@ class UnitSelectWindow(QWidget):
 
         # Text Label für Erklärung
     def labelTXT(self, txt, x, y):
+        """
+        Funktion zum anzeigen des Text Labels, welche wie in Maske 1 die Erklärung an den Benutzer anzeigen soll.
+
+        :param txt: (string) : String der Erklärung die aus der File "MainwindowDescr.txt" eingelesen wurde.
+        :param x: (int) Position des Labels in x-Richtung.
+        :param y: (int) Position des Labels in y-Richtung.
+        """
         self.label_txt = QLabel(self)
         self.label_txt.move(x, y)
         self.label_txt.setText(str(txt))
@@ -46,6 +67,14 @@ class UnitSelectWindow(QWidget):
         # Label configuration
         # GIF Label
     def labelGIF(self, fileGIF, x, y):
+        """
+        Funktion zum anzeigen des GIF Labels, welches die verfügbaren Übungen anzeigt.
+
+        :param fileGIF: (path) : Pfad der Animation die angezeigt werden soll.
+        :param x: (int) Position der Animation in x-Richtung.
+        :param y: (int) Position der Animation in y-Richtung.
+        :return:
+        """
         self.label_GIF = QLabel("", self)
         self.label_GIF.setGeometry(QtCore.QRect(x, y, self.width, self.height))  # x y width height
         self.label_GIF.setText("")
@@ -54,6 +83,13 @@ class UnitSelectWindow(QWidget):
         self.movie.start()
 
     def mouseReleaseEvent(self, a0: QtGui.QMouseEvent) -> None:
+        """
+        Funktion zur Erkennung eines MausReleaseEvents, heißt, wenn die Maus losgelassen wird, werden die Koordinaten x,
+        y zurückgegeben.
+
+        :param a0: -/-
+        :return: -/-
+        """
         x = a0.x()
         y = a0.y()
         # Leftmost GIF
@@ -71,34 +107,45 @@ class UnitSelectWindow(QWidget):
 
     # Funktionen um den Dialog zum bestätigen durch den Benutzer zu öffnen, führt auch zu Kameraauswertung
     def Unit_One(self):
-        # ToDo: Funktion anpassen, Text wird hier nicht als übergabe benötigt, glaube ich.
-        # First and most important explanation, filler txt-file, GIF File, Exercise ID, saved sweet id which was
-        # chosen in first Window from User
-        self.w = Ui_Dialog("src/misc/Mainwindowdescr.txt", "src/misc/Dialogwindowdescr.txt", "src/misc/Hampelmann.gif", 1, self.id_sweets, 5)
+        """
+        Funktion zum erstellen des Ui_Dialog Objekts der leftmost Übung.
+
+        :return:
+        """
+        self.w = Ui_Dialog("src/misc/Dialogwindowdescr.txt", "src/misc/Hampelmann.gif", 1, self.id_sweets, 5)
         self.w.setupUI(1600, 900)
         self.close()
         self.w.show()
 
     def Unit_Two(self):
-        # First and most important explanation, filler txt-file, GIF File, Exercise ID, saved sweet id which was
-        # chosen in first Window from User
-        self.w = Ui_Dialog("src/misc/Mainwindowdescr.txt", "src/misc/Dialogwindowdescr.txt", "src/misc/squats.gif", 2, self.id_sweets, 120)
+        """
+        Funktion zum erstellen des Ui_Dialog Objekts der 2nd leftmost Übung.
+
+        :return:
+        """
+        self.w = Ui_Dialog("src/misc/Dialogwindowdescr.txt", "src/misc/squats.gif", 2, self.id_sweets, 120)
         self.w.setupUI(1600, 900)
         self.w.show()
         self.close()
 
     def Unit_Three(self):
-        # First and most important explanation, filler txt-file, GIF File, Exercise ID, saved sweet id which was
-        # chosen in first Window from User
-        self.w = Ui_Dialog("src/misc/Mainwindowdescr.txt", "src/misc/Dialogwindowdescr.txt", "src/misc/pushup.gif", 3, self.id_sweets, 60)
+        """
+        Funktion zum erstellen des Ui_Dialog Objekts der 3rd leftmost Übung.
+
+        :return:
+        """
+        self.w = Ui_Dialog("src/misc/Dialogwindowdescr.txt", "src/misc/pushup.gif", 3, self.id_sweets, 60)
         self.w.setupUI(1600, 900)
         self.w.show()
         self.close()
 
     def Unit_Four(self):
-        # First and most important explanation, filler txt-file, GIF File, Exercise ID, saved sweet id which was
-        # chosen in first Window from User
-        self.w = Ui_Dialog("src/misc/Mainwindowdescr.txt", "src/misc/Dialogwindowdescr.txt", "src/misc/pushup.gif", 4, self.id_sweets, 60)
+        """
+        Funktion zum erstellen des Ui_Dialog Objekts der 4th leftmost Übung.
+
+        :return:
+        """
+        self.w = Ui_Dialog("src/misc/Dialogwindowdescr.txt", "src/misc/pushup.gif", 4, self.id_sweets, 60)
         self.w.setupUI(1600, 900)
         self.w.show()
         self.close()

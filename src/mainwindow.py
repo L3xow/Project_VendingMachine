@@ -28,10 +28,16 @@ from unitselectwindow import UnitSelectWindow
 
 
 class UI_MainWindow(QMainWindow):
+
     width = 1920
     height = 1080
 
     def __init__(self, parent=None):
+        """
+        Konstruktor von UI_MainWindow.
+
+        :param parent: N/A
+        """
         super().__init__(parent)
         self.label_txt = QLabel
         self.label_jpg = QLabel
@@ -43,16 +49,17 @@ class UI_MainWindow(QMainWindow):
         fileWin1 = os.path.join(path, "misc/MainwindowDescr.txt")
         self.fileexpl = open(fileWin1, encoding='utf-8', mode="r").read()
 
-    def setupUi(self, w, h):
+    def setupUi(self):
         """
-        Funktion zum initialisieren der Elemente des Fensters.
+        Funktion zum initialisieren und erstellen des Fensters der Süßigkeitenauswahl. Aufruf und Init aller
+        Labels und Elemente die anzuzeigen sind.
 
         :param w: (int) Weite des Fensters
         :param h: (int) Höhe des Fensters
         :return:
         """
         self.setObjectName("MainWindow")
-        self.resize(w, h)
+        self.resize(UI_MainWindow.width, UI_MainWindow.height)
         self.setStyleSheet("background-color: rgb(255,255,255)")
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.labelTXT("Platzhalter_Übung_1", 180, 180)
@@ -96,7 +103,7 @@ class UI_MainWindow(QMainWindow):
 
     def mouseReleaseEvent(self, a0: QtGui.QMouseEvent) -> None:
         """
-        Funktion zur Erkennung eines MausReleaseEvents, heißt, wenn die Maus lossless wird, werden die Koordinaten x,
+        Funktion zur Erkennung eines MausReleaseEvents, heißt, wenn die Maus losgelassen wird, werden die Koordinaten x,
         y zurückgegeben.
 
         :param a0: -/-
@@ -134,7 +141,7 @@ def main():
     # Erstellt Objekt win mit UI_MainWindow() und erstellt im Anschluss das User Interface und zeigt es an.
     win = UI_MainWindow()
     # Funktion SetupUI wird ausgeführt, und somit das Fenster initialisiert.
-    win.setupUi(win.width, win.height)
+    win.setupUi()
     # Funktion show zeigt das vorher initialisierte Fenster an.
     win.show()
     sys.exit(app.exec())
