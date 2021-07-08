@@ -1,0 +1,7 @@
+PoseModule module
+=================
+
+.. automodule:: PoseModule
+   :members:
+   :undoc-members:
+   :show-inheritance:

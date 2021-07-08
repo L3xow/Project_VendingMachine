@@ -1,0 +1,7 @@
+unitselectwindow module
+=======================
+
+.. automodule:: unitselectwindow
+   :members:
+   :undoc-members:
+   :show-inheritance:

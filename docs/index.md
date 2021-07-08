@@ -9,11 +9,7 @@
     <title>Welcome to Suessigkeitenautomat’s documentation! &#8212; Suessigkeitenautomat 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-<<<<<<< HEAD
-    <script data-url_root="./html/" id="documentation_options" src="_static/documentation_options.js"></script>
-=======
-    <script data-url_root="./html" id="documentation_options" src="_static/documentation_options.js"></script>
->>>>>>> parent of 6fce5fa (Update index.md)
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
