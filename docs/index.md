@@ -9,7 +9,7 @@
     <title>Welcome to Suessigkeitenautomat’s documentation! &#8212; Suessigkeitenautomat 1.0.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-    <script data-url_root="./html" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -37,15 +37,15 @@
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">src</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="PiTest.html">PiTest module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PoseModule.html">PoseModule module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gpioread.html">gpioread module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mainwindow.html">mainwindow module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="motor.html">motor module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test.html">test module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="unitselectwindow.html">unitselectwindow module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="userdialog.html">userdialog module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="./modules.html">src</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="./PiTest.html">PiTest module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="./PoseModule.html">PoseModule module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="./gpioread.html">gpioread module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="./mainwindow.html">mainwindow module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="./motor.html">motor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="./test.html">test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="./unitselectwindow.html">unitselectwindow module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="./userdialog.html">userdialog module</a></li>
 </ul>
 </li>
 </ul>
@@ -54,9 +54,9 @@
 <section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+<li><p><a class="reference internal" href="./genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="./py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="./search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </section>
 
@@ -79,21 +79,21 @@
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">src</a></li>
+<li class="toctree-l1"><a class="reference internal" href="./modules.html">src</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="modules.html" title="next chapter">src</a></li>
+      <li>Next: <a href="./modules.html" title="next chapter">src</a></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
+    <form class="search" action="./search.html" method="get">
       <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
