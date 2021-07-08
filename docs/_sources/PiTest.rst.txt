@@ -1,7 +1,0 @@
-PiTest module
-=============
-
-.. automodule:: PiTest
-   :members:
-   :undoc-members:
-   :show-inheritance:
