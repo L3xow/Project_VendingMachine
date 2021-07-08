@@ -1,0 +1,352 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>mainwindow module &mdash; Suessigkeitenautomat 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="motor module" href="motor.html" />
+    <link rel="prev" title="gpioread module" href="gpioread.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Suessigkeitenautomat
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="PiTest.html">PiTest module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PoseModule.html">PoseModule module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gpioread.html">gpioread module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">mainwindow module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="motor.html">motor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test.html">test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unitselectwindow.html">unitselectwindow module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userdialog.html">userdialog module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Suessigkeitenautomat</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">src</a> &raquo;</li>
+        
+      <li>mainwindow module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/mainwindow.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-mainwindow">
+<span id="mainwindow-module"></span><h1>mainwindow module<a class="headerlink" href="#module-mainwindow" title="Permalink to this headline">¶</a></h1>
+<p>Das ist unser Code für die Projektarbeit an der Rudolf Diesel Fachschule in Nürnberg.
+Der Code ist hauptsächlich zur Steuerung unseres nachhaltigen Süßigkeitenautomaten.</p>
+<p>Die Hierarchie des Programms ist wiefolgt:
+mainwindow.py</p>
+<blockquote>
+<div><dl class="simple">
+<dt>unitselectwindow.py</dt><dd><dl class="simple">
+<dt>userdialog.py</dt><dd><p>motor.py
+PoseModule.py</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt>mainwindow.py</dt><dd><p>Wenn eine der drei Süßigkeiten ausgewählt wurde, wird das Object unitselectwindow aufgerufen und die Süßigkeit als ID übergeben und gespeichert.</p>
+</dd>
+<dt>unitselectwindow.py</dt><dd><p>Wenn eine der 4 Übungen ausgewählt wurde, wird das Object userdialog aufgerufen, in dem dann die Kameraauswertung gestartet wird.</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="mainwindow.UI_MainWindow">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">mainwindow.</span></span><span class="sig-name descname"><span class="pre">UI_MainWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.UI_MainWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.UI_MainWindow.DialogWindow">
+<span class="sig-name descname"><span class="pre">DialogWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.UI_MainWindow.DialogWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Funktion zum ausführen des zweiten Fensters der Benutzeroberfläche Übungsauswahl.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> – (int) Wert zwischen 1-3 bezogen auf die Süßigkeit die ausgewählt wurde.</p></li>
+<li><p><strong>w</strong> – (int) Weite des Fensters</p></li>
+<li><p><strong>h</strong> – (int) Höhe des Fensters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>unitselectwindow Fenster wird ausgeführt</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mainwindow.UI_MainWindow.height">
+<span class="sig-name descname"><span class="pre">height</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1080</span></em><a class="headerlink" href="#mainwindow.UI_MainWindow.height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.UI_MainWindow.labelJPG">
+<span class="sig-name descname"><span class="pre">labelJPG</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jpg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.UI_MainWindow.labelJPG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Funktion zum anzeigen des Bild-Labels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>jpg</strong> – (path) Bildpfad der angezeigt werden soll, Ordnerstruktur beachten.</p></li>
+<li><p><strong>x</strong> – (int) Position des Bildes in x-Richtung.</p></li>
+<li><p><strong>y</strong> – (int) Position des Bildes in y-Richtung.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.UI_MainWindow.labelTXT">
+<span class="sig-name descname"><span class="pre">labelTXT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.UI_MainWindow.labelTXT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Funktion zur erstellung des labelTXT Elements, um einen Text anzuzeigen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>txt</strong> – (string) Textstring der in dem Element angezeigt werden soll.</p></li>
+<li><p><strong>x</strong> – (int) Position des Labels in x-Richtung.</p></li>
+<li><p><strong>y</strong> – (int) Position des Labels in y-Richtung.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.UI_MainWindow.mouseReleaseEvent">
+<span class="sig-name descname"><span class="pre">mouseReleaseEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">PyQt5.QtGui.QMouseEvent</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#mainwindow.UI_MainWindow.mouseReleaseEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Funktion zur Erkennung eines MausReleaseEvents, heißt, wenn die Maus losgelassen wird, werden die Koordinaten x,
+y zurückgegeben.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>a0</strong> – -/-</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>-/-</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.UI_MainWindow.setupUi">
+<span class="sig-name descname"><span class="pre">setupUi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.UI_MainWindow.setupUi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Funktion zum initialisieren und erstellen des Fensters der Süßigkeitenauswahl. Aufruf und Init aller
+Labels und Elemente die anzuzeigen sind.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>w</strong> – (int) Weite des Fensters</p></li>
+<li><p><strong>h</strong> – (int) Höhe des Fensters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mainwindow.UI_MainWindow.width">
+<span class="sig-name descname"><span class="pre">width</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1920</span></em><a class="headerlink" href="#mainwindow.UI_MainWindow.width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mainwindow.main">
+<span class="sig-prename descclassname"><span class="pre">mainwindow.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="motor.html" class="btn btn-neutral float-right" title="motor module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="gpioread.html" class="btn btn-neutral float-left" title="gpioread module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, TKallmeier.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

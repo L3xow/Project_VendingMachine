@@ -1,0 +1,7 @@
+gpioread module
+===============
+
+.. automodule:: gpioread
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+userdialog module
+=================
+
+.. automodule:: userdialog
+   :members:
+   :undoc-members:
+   :show-inheritance:
