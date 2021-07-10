@@ -22,11 +22,11 @@ def start(MotorID):
     :param MotorID: (int) : Wert zwischen 1-4, Motor nummerierung von Links nach Rechts.
     :return:
     """
-    pi = pigpio.pi("192.168.137.231", 8888)
+    pi = pigpio.pi("192.168.43.18", 8888)
     while pi.connected:
         if MotorID == 1:
             motor = 21
-            es = 20
+            es = 11
         elif MotorID == 2:
             motor = 22
             es = 12
@@ -40,11 +40,10 @@ def start(MotorID):
         pi.set_mode(motor, pigpio.OUTPUT)
         pi.set_mode(es, pigpio.INPUT)
 
-        if not pi.read(es):
-            pi.write(motor, 1)
-            sleep(2)
-            pi.write(motor, 0)
-            break
+        pi.write(motor, 0)
+        sleep(5.5)
+        pi.write(motor, 1)
+        break
 
 
 

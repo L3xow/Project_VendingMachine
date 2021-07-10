@@ -76,7 +76,7 @@ def main():
 
     :return:
     """
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture("misc/video.mkv")
     pTime = 0
     count = 0
     check = False
