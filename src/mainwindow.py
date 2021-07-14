@@ -25,6 +25,8 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 from gpioread import *
 import os
 from unitselectwindow import UnitSelectWindow
+import socket
+
 
 
 class UI_MainWindow(QMainWindow):
@@ -135,16 +137,59 @@ class UI_MainWindow(QMainWindow):
         self.win.show()
 
 
+
 def main():
     import sys
+    from time import sleep
     app = QApplication(sys.argv)
     # Erstellt Objekt win mit UI_MainWindow() und erstellt im Anschluss das User Interface und zeigt es an.
     win = UI_MainWindow()
     # Funktion SetupUI wird ausgeführt, und somit das Fenster initialisiert.
     win.setupUi()
     # Funktion show zeigt das vorher initialisierte Fenster an.
-    win.show()
+#    win.show()
+
+
+    s = server()
+    if s.conn:
+        #s.get_data()
+        s.send_data(b"Test")
+        sleep(2)
+        s.send_data(b"Test2")
+
     sys.exit(app.exec())
+
+class server:
+
+    def __init__(self):
+        self.data = 0
+        # Server erstellen
+        TCP_IP = '127.0.0.1'
+        TCP_PORT = 5005
+        print("asdf")
+
+        self.BUFF = 50
+
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.bind((TCP_IP, TCP_PORT))
+        s.listen(1)
+
+        self.conn, self.addr = s.accept()
+        print('Conn', self.addr)
+
+    def get_data(self):
+        self.data = self.conn.recv(self.BUFF)
+        print(self.data)
+        return self.data
+
+    def send_data(self, data):
+        print("data sent")
+        self.conn.send(data)
+
+
+
+
+
 
 
 if __name__ == "__main__":

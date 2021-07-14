@@ -1,13 +1,19 @@
-import pigpio
+import socket
+from time import sleep
 
 
+TCP_IP = '127.0.0.1'
+TCP_PORT = 5005
 
-pi = pigpio.pi("192.168.43.18", 8888)
+BUFF = 50
 
-test = pi.connected
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((TCP_IP, TCP_PORT))
+s.listen(1)
 
-if test:
-
-    h = pi.file_open("/home/pi/Desktop/test.py", 2 | 8)
-    pi.file_write(h, "Hello World")
-
+conn, addr = s.accept()
+print ('Conn', addr)
+while True:
+    data = conn.recv(BUFF)
+    print(data)
+    conn.send(data)
