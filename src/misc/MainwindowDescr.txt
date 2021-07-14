@@ -1,9 +1,9 @@
 Herzlich Willkommen
 
 Ihre Aufgabe:
-Wählen Sie zunächst einen Riegel aus, den Sie möchten.
+Wählen Sie eine Süßigkeit aus.
 
-Im Anschluss müssen Sie eine Übung auswählen die Sie ausführen wollen. Aber Achtung: Leichte Übung heißt nicht gleich leichte Ausführung!
+Im Anschluss müssen Sie eine Übung auswählen, die Sie ausführen wollen. Aber Achtung: Leichte Übung heißt nicht gleich leichte Ausführung!
 
 Wenn Sie sich für eine Übung entschieden haben, müssen Sie dies nochmals mit "Ok" bestätigen.
 
@@ -12,5 +12,3 @@ Zuletzt müssen Sie sich auf die gekennzeichnete Position stellen und sobald der
 Hinweis: Schummeln wird erkannt :)
 
 Viel Spaß und Viel Erfolg!
-
-Von hier an wünschen wir Ihnen Viel Erfolg und Viel Spaß. 

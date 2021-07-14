@@ -26,16 +26,16 @@ def start(MotorID):
     while pi.connected:
         if MotorID == 1:
             motor = 21
-            es = 11
+            es = 22
         elif MotorID == 2:
-            motor = 22
-            es = 12
+            motor = 20
+            es = 27
         elif MotorID == 3:
-            motor = 23
-            es = 13
+            motor = 16
+            es = 17
         elif MotorID == 4:
-            motor = 24
-            es = 14
+            motor = 11
+            es = 24
 
         pi.set_mode(motor, pigpio.OUTPUT)
         pi.set_mode(es, pigpio.INPUT)

@@ -121,7 +121,7 @@ class Ui_Dialog(QWidget):
         :return:
         """
         self.button_ok = QPushButton(self)
-        self.button_ok.setText("Okay")
+        self.button_ok.setText("Bestätigen")
         self.button_ok.clicked.connect(self.ok)
         self.button_ok.setGeometry(600, 600, 150, 75)  # x y
         self.button_ok.setStyleSheet(
@@ -135,7 +135,7 @@ class Ui_Dialog(QWidget):
         :return:
         """
         self.button_back = QPushButton(self)
-        self.button_back.setText("Zurück")
+        self.button_back.setText("Abbruch")
         self.button_back.clicked.connect(lambda: self.close())
         self.button_back.clicked.connect(self.back)
         self.button_back.setGeometry(800, 600, 150, 75)  # x y
@@ -174,7 +174,7 @@ class Ui_Dialog(QWidget):
 
     def ok(self):
         """
-        Diese Funktion versteckt und zeigt die benötigten Label für die Kameraauswertung-Maske.
+        Diese Funktion versteckt und zeigt die benötigten Label für die Kameraauswertungs-Maske.
         Hier findet ebenfalls die Kameraauswertung statt. lmList ( Array ) enthält alle LandmarkIDs, deren x, y, und z
         Koordinaten in einem 3 dimensionalen Array.
         Hier werden lediglich die IDs und die Positionen mit programmierten Bereichen verglichen und ein Zähler inkrementiert.

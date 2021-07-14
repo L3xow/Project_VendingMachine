@@ -29,7 +29,7 @@ import socket
 
 
 
-class UI_MainWindow(QMainWindow):
+class MainWindow(QMainWindow):
 
     width = 1920
     height = 1080
@@ -56,8 +56,6 @@ class UI_MainWindow(QMainWindow):
         Funktion zum initialisieren und erstellen des Fensters der Süßigkeitenauswahl. Aufruf und Init aller
         Labels und Elemente die anzuzeigen sind.
 
-        :param w: (int) Weite des Fensters
-        :param h: (int) Höhe des Fensters
         :return:
         """
         self.setObjectName("MainWindow")
@@ -143,11 +141,11 @@ def main():
     from time import sleep
     app = QApplication(sys.argv)
     # Erstellt Objekt win mit UI_MainWindow() und erstellt im Anschluss das User Interface und zeigt es an.
-    win = UI_MainWindow()
+    win = MainWindow()
     # Funktion SetupUI wird ausgeführt, und somit das Fenster initialisiert.
     win.setupUi()
     # Funktion show zeigt das vorher initialisierte Fenster an.
-#    win.show()
+    win.show()
 
 
     s = server()
