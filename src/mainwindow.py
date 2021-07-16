@@ -59,7 +59,7 @@ class MainWindow(QMainWindow):
         :return:
         """
         self.setObjectName("MainWindow")
-        self.resize(UI_MainWindow.width, UI_MainWindow.height)
+        self.resize(MainWindow.width, MainWindow.height)
         self.setStyleSheet("background-color: rgb(255,255,255)")
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.labelTXT("Platzhalter_Übung_1", 180, 180)
