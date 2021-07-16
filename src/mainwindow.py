@@ -148,12 +148,12 @@ def main():
     win.show()
 
 
-    s = server()
-    if s.conn:
-        #s.get_data()
-        s.send_data(b"Test")
-        sleep(2)
-        s.send_data(b"Test2")
+#    s = server()
+#    if s.conn:
+#        #s.get_data()
+#        s.send_data(b"Test")
+#        sleep(2)
+#        s.send_data(b"Test2")
 
     sys.exit(app.exec())
 
