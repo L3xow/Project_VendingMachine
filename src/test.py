@@ -15,5 +15,10 @@ conn, addr = s.accept()
 print ('Conn', addr)
 while True:
     data = conn.recv(BUFF)
-    print(data)
+    print(data.decode('utf-8'))
+    stringdata = data.decode('utf-8')
+    print(stringdata)
     conn.send(data)
+
+    if (data.decode('utf-8') == b'5'):
+        print("Dog")

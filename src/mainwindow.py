@@ -20,19 +20,18 @@ unitselectwindow.py
 
 
 from PyQt5 import Qt, QtCore, QtGui
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
-from gpioread import *
+from adminwindow import *
 import os
 from unitselectwindow import UnitSelectWindow
 import socket
-
-
+from threading import Thread
+from time import *
 
 class MainWindow(QMainWindow):
-
     width = 1920
     height = 1080
+    adminRight = 0
 
     def __init__(self, parent=None):
         """
@@ -43,7 +42,9 @@ class MainWindow(QMainWindow):
         super().__init__(parent)
         self.label_txt = QLabel
         self.label_jpg = QLabel
-
+        self.running = 0  # not listening
+        self.addr = None
+        self.conn = None
 
         # path wird als Variable angelegt, um auf den Programmpfad zurückzuverweisen. Diese macht es möglich die
         # Bilder ohne Absoluten Pfad aufzurufen.
@@ -68,6 +69,8 @@ class MainWindow(QMainWindow):
         self.labelJPG("misc/PlaceHolder.jpg", 810, 210)
         self.labelTXT("Platzhalter_Übung_3", 1440, 180)
         self.labelJPG("misc/PlaceHolder.jpg", 1440, 210)
+        self.labelJPG("misc/Logo3.png", 1729, 980)
+        self.label_jpg.adjustSize()
         self.labelTXT(self.fileexpl, 180, 580)
 
     def labelTXT(self, txt, x, y):
@@ -120,6 +123,8 @@ class MainWindow(QMainWindow):
         # Rechtes Bild
         if 1440 <= x <= 1440 + 300 and 210 <= y <= 510:
             self.DialogWindow(3, 1920, 1080)
+        if 1729 <= x <= 1900 and 980 <= y <= 1060:
+            self.admin = adminwindow()
 
     def DialogWindow(self, id, w, h):
         """
@@ -134,6 +139,74 @@ class MainWindow(QMainWindow):
         self.win.setupUI(w, h)
         self.win.show()
 
+    def socket_thread(self):
+        print("thread started..")
+        self.ls = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        port = 9999
+        self.ls.bind(('', port))
+        print("Server listening on port %s" % port)
+        self.ls.listen(2)
+        self.ls.settimeout(15)
+        while self.running != 0:
+            if self.conn is None:
+                try:
+                    (self.conn, self.addr) = self.ls.accept()
+                    print("client is at", self.addr[0], "on port", self.addr[1])
+
+                except socket.timeout as e:
+                    print("Waiting for Connection...")
+
+                except Exception as e:
+                    print("Connect exception: " + str(e))
+
+            if self.conn != None and adminwindow.fromAdminGo:
+                adminwindow.fromAdminGo = 0
+                print("connected to " + str(self.conn) + "," + str(self.addr))
+                self.conn.settimeout(15)
+                self.rc = ""
+                connect_start = time()  # actually, I use this for a timeout timer
+                if self.rc != "done":
+                    self.rc = ''
+                    try:
+                        self.conn.send(b"scan")
+                        self.rc = self.conn.recv(1000).decode('utf-8')
+                    except Exception as e:
+                        # we can wait on the line if desired
+                        print("socket error: " + repr(e))
+
+                    if len(self.rc):
+                        print("got data", self.rc)
+                        connect_start = time()  # reset timeout time
+                    elif (self.running == 0) or (time() - connect_start > 30):
+                        print("Tired of waiting on connection!")
+                        self.rc = "done"
+
+                print("closing connection")
+                self.conn.close()
+                self.conn = None
+                print("connection closed.")
+
+        print("closing listener...")
+        # self running became 0
+        self.ls.close()
+
+    def startc(self):
+        if self.running == 0:
+            print("Starting thread")
+            self.running = 1
+            self.thread = Thread(target=self.socket_thread)
+            self.thread.start()
+        else:
+            print("thread already started.")
+
+    def stopc(self):
+        if self.running:
+            print("stopping thread...")
+            self.running = 0
+            self.thread.join()
+        else:
+            print("thread not running")
+
 
 
 def main():
@@ -142,53 +215,70 @@ def main():
     app = QApplication(sys.argv)
     # Erstellt Objekt win mit UI_MainWindow() und erstellt im Anschluss das User Interface und zeigt es an.
     win = MainWindow()
+    win.startc()
     # Funktion SetupUI wird ausgeführt, und somit das Fenster initialisiert.
     win.setupUi()
     # Funktion show zeigt das vorher initialisierte Fenster an.
     win.show()
 
 
-#    s = server()
-#    if s.conn:
-#        #s.get_data()
-#        s.send_data(b"Test")
-#        sleep(2)
-#        s.send_data(b"Test2")
+
+
 
     sys.exit(app.exec())
 
+'''
 class server:
 
     def __init__(self):
         self.data = 0
         # Server erstellen
-        TCP_IP = '127.0.0.1'
+        TCP_IP = socket.gethostname()
         TCP_PORT = 5005
-        print("asdf")
+        print("Server")
 
         self.BUFF = 50
 
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s = socket.socket()
         s.bind((TCP_IP, TCP_PORT))
         s.listen(1)
+        while True:
+            self.conn, self.addr = s.accept()
+            print_lock.acquire()
+            print('Conn', self.addr)
+            print(self.conn)
+            start_new_thread(threaded,(self.conn,))
+            print("asdf")
+        s.close()
 
-        self.conn, self.addr = s.accept()
-        print('Conn', self.addr)
 
     def get_data(self):
         self.data = self.conn.recv(self.BUFF)
         print(self.data)
-        return self.data
+        return self.data.decode('utf-8')
 
     def send_data(self, data):
         print("data sent")
         self.conn.send(data)
 
 
+print_lock = threading.Lock()
+
+def threaded(c):
+    while True:
+        #data recv
+        data = c.recv(50)
+        print("asdddd")
+        if not data:
+            print("Bye")
+
+            print_lock.release()
+            break
+        c.send(data)
+    c.close()
 
 
-
-
+'''
 
 if __name__ == "__main__":
     main()

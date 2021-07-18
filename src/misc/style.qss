@@ -1,0 +1,24 @@
+
+
+QWidget
+{
+    color: #b1b1b1;
+    background-color: #323232;
+    selection-background-color:#323232;
+    selection-color: black;
+    background-clip: border;
+    border-image: none;
+    border: 0px transparent black;
+    outline: 0;
+}
+
+
+
+QLabel#Labeltochange {
+	font-size: 20px;
+	background-color: blue;
+}
+
+QLabel::hover {
+	background-color: black;
+}
