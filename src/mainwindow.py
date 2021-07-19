@@ -23,6 +23,8 @@ from PyQt5 import Qt, QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 from adminwindow import *
 import os
+
+from src.errorwindow import errorwindow
 from unitselectwindow import UnitSelectWindow
 import socket
 from threading import Thread
@@ -40,11 +42,16 @@ class MainWindow(QMainWindow):
         :param parent: N/A
         """
         super().__init__(parent)
+        self.admin = adminwindow()
         self.label_txt = QLabel
         self.label_jpg = QLabel
+        self.errorLabel = QLabel(self)
         self.running = 0  # not listening
         self.addr = None
         self.conn = None
+        self.startScan = 0
+        self.gotData = False
+        self.error = errorwindow()
 
         # path wird als Variable angelegt, um auf den Programmpfad zurückzuverweisen. Diese macht es möglich die
         # Bilder ohne Absoluten Pfad aufzurufen.
@@ -72,6 +79,9 @@ class MainWindow(QMainWindow):
         self.labelJPG("misc/Logo3.png", 1729, 980)
         self.label_jpg.adjustSize()
         self.labelTXT(self.fileexpl, 180, 580)
+
+
+
 
     def labelTXT(self, txt, x, y):
         """
@@ -116,7 +126,19 @@ class MainWindow(QMainWindow):
         y = a0.y()
         # Linkes Bild
         if 180 <= x <= 480 and 210 <= y <= 510:
-            self.DialogWindow(1, 1920, 1080)
+            self.startScan = 1 # Eigene Variable zum merken des Starts
+            while self.startScan != 0: # Wenn StartScan != 0 dann Schleife laufen lassen
+                self.admin.fromAdminGo = 1 # Globale Variable zum Scanauftrag schicken
+                if self.gotData:
+                    if getConfigCodes(self.admin.rfid) and int(getConfigValue(self.admin.rfid)) >= -5:
+                        print(self.admin.rfid)
+                        self.DialogWindow(1, 1920, 1080)
+                        self.startScan = 0
+                        self.gotData = False
+                        break
+                    else:
+                        self.error.setupUI(1)
+                        break
         # Mittleres Bild
         if 810 <= x <= 810 + 300 and 210 <= y <= 510:
             self.DialogWindow(2, 1920, 1080)
@@ -124,7 +146,8 @@ class MainWindow(QMainWindow):
         if 1440 <= x <= 1440 + 300 and 210 <= y <= 510:
             self.DialogWindow(3, 1920, 1080)
         if 1729 <= x <= 1900 and 980 <= y <= 1060:
-            self.admin = adminwindow()
+            self.admin.setupUI()
+            self.admin.show()
 
     def DialogWindow(self, id, w, h):
         """
@@ -159,8 +182,8 @@ class MainWindow(QMainWindow):
                 except Exception as e:
                     print("Connect exception: " + str(e))
 
-            if self.conn != None and adminwindow.fromAdminGo:
-                adminwindow.fromAdminGo = 0
+            if self.conn != None and self.admin.fromAdminGo:
+                self.admin.fromAdminGo = 0
                 print("connected to " + str(self.conn) + "," + str(self.addr))
                 self.conn.settimeout(15)
                 self.rc = ""
@@ -170,12 +193,15 @@ class MainWindow(QMainWindow):
                     try:
                         self.conn.send(b"scan")
                         self.rc = self.conn.recv(1000).decode('utf-8')
+                        self.admin.rfid = self.rc
+                        self.admin.updateEdit()
                     except Exception as e:
                         # we can wait on the line if desired
                         print("socket error: " + repr(e))
 
                     if len(self.rc):
                         print("got data", self.rc)
+                        self.gotData = True
                         connect_start = time()  # reset timeout time
                     elif (self.running == 0) or (time() - connect_start > 30):
                         print("Tired of waiting on connection!")
@@ -208,6 +234,18 @@ class MainWindow(QMainWindow):
             print("thread not running")
 
 
+def getConfigCodes(searchstring):
+    config = cp.ConfigParser()
+    config.read("config.ini")
+    for option in config.options("RFID"):
+        if option == searchstring:
+            return True
+
+def getConfigValue(searchstring):
+    config = cp.ConfigParser()
+    config.read("config.ini")
+    ret = config["RFID"][searchstring]
+    return ret
 
 def main():
     import sys
@@ -220,6 +258,7 @@ def main():
     win.setupUi()
     # Funktion show zeigt das vorher initialisierte Fenster an.
     win.show()
+
 
 
 

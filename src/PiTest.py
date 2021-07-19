@@ -5,7 +5,7 @@ from time import sleep
 class client():
 
     def __init__(self):
-        TCP_IP = socket.gethostname()
+        TCP_IP = 'localhost'
         TCP_PORT = 9999
         self.data = 0
         self.BUFF = 1000
@@ -32,9 +32,9 @@ if __name__ == "__main__":
     while data == 0:
         print("asdf")
         data = c.get_data()
-        sleep(10)
+        sleep(8)
         #start rfid
-        c.send_data("rfidcode")
+        c.send_data("rfidcode2")
 
 
 
