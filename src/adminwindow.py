@@ -5,7 +5,7 @@ from PyQt5.QtGui import QValidator, QIntValidator
 from PyQt5.QtWidgets import QDialog, QInputDialog, QWidget, QLineEdit, QLabel, QPushButton
 import configparser as cp
 
-from src.mainwindow import MainWindow
+
 
 
 
@@ -18,6 +18,8 @@ class adminwindow(QDialog):
         self.setObjectName("AdminWindow")
         self.resize(1600, 900)
         self.setWindowFlag(Qt.FramelessWindowHint)
+        self.changeMoneyRFID = QLineEdit(self)
+        self.moneylabel = QLabel(self)
 
     def setupUI(self):
         #ButtonINIT
@@ -43,7 +45,6 @@ class adminwindow(QDialog):
         self.inputSweetsTwo = QLineEdit(self)
         self.inputSweetsThree = QLineEdit(self)
         self.inputSweetsFour = QLineEdit(self)
-        self.changeMoneyRFID = QLineEdit(self)
         self.inputMoney = QLineEdit(self)
 
         #TxtLabelINIT
@@ -54,7 +55,7 @@ class adminwindow(QDialog):
         self.textlabel("Guthaben:", 500, 400)
         self.textlabel("Set Guthaben:", 700, 400)
 
-        self.moneylabel = QLabel(self)
+
         self.moneylabel.resize(50, 40)
         self.moneylabel.move(700, 450)
         self.moneylabel.setAlignment(Qt.AlignmentFlag(Qt.AlignRight))

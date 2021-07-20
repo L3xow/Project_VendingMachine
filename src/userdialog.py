@@ -25,6 +25,7 @@ from PyQt5.QtWidgets import QLabel, QPushButton, QWidget
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QMovie
 import PoseModule as pm
+import configparser as cp
 from motor import start  # ToDo: muss geändert werden
 import cv2
 
@@ -33,16 +34,21 @@ import cv2
 # import motor
 
 # ToDo: Designfragen klären, Farben, usw.
+from src.errorwindow import errorwindow
+
 
 class QTCore:
     pass
+
+
+
 
 
 class Ui_Dialog(QWidget):
     fileGIF = ''
     cdtime = 10000  # Countdown-Timer in ms           # ToDo: Zeit auf 10000 ändern, nur aufgrund Debugging
 
-    def __init__(self, file2, fileGIF, ID, id_sweets, unit_time, parent=None):
+    def __init__(self, file2, fileGIF, ID, id_sweets, unit_time, rfid, parent=None):
         """
         Konstruktor für das DialogFenster das ebenfalls die Kameraauswertung vornimmt.
 
@@ -65,6 +71,7 @@ class Ui_Dialog(QWidget):
         self.trainingID = ID
         self.id_sweets = id_sweets
         self.unit_time = unit_time  # Zeit in s für Übung
+        self.rfid = rfid
 
         # Initialisiert die Timer für die Zeitvorgabe an den Benutzer
         # MyCount ist in dem Fall der Countdown von 10s
@@ -100,6 +107,7 @@ class Ui_Dialog(QWidget):
         # Funktionsaufruf zum erstellen des GIFs/der Animation in der mitte des Fensters
         self.labelGIF()
         print(self.id_sweets, self.trainingID)
+        print(self.rfid)
 
     def labelGIF(self):
         """
@@ -181,6 +189,7 @@ class Ui_Dialog(QWidget):
 
         :return:
         """
+
         # Sämtliche Anzeigen des Fensters verstecken
         self.label_txt.hide()
         self.label_GIF.setVisible(False)
@@ -333,6 +342,8 @@ class Ui_Dialog(QWidget):
 
         :return:
         """
+        self.decrementMoney()
+        self.decrementCounterPunishment
         self.myTime.stop()
         print("noSuccess")
         self.label_Time.setStyleSheet("color: red; font-size: 54px; font: bold")
@@ -354,6 +365,8 @@ class Ui_Dialog(QWidget):
         :param id_sweets: (int) : Bezogen auf die vorher gewählte Süßigkeit.
         :return:
         """
+        self.decrementMoney()
+        self.decrementCounterSweets()
         self.myTime.stop()
         print("Success")
         self.label_Time.setStyleSheet("color: green; font-size: 88px; font: bold")
@@ -362,3 +375,69 @@ class Ui_Dialog(QWidget):
         self.label_Time.move(407, 400)
         self.label_Time.show()
         # start(id_sweets)  # id_sweets
+
+    def decrementMoney(self):
+        config = cp.ConfigParser()
+        config.read("config.ini")
+        value = config["RFID"][self.rfid]
+        value = int(value)
+        print(value)
+        value -= 1
+        cfgfile = open("config.ini", "w")
+        config["RFID"][self.rfid] = str(value)
+        config.write(cfgfile)
+        cfgfile.close()
+        del config
+
+    def decrementCounterSweets(self):
+        config = cp.ConfigParser()
+        config.read("config.ini")
+        cfgfile = open("config.ini", "w")
+        if self.id_sweets == 1:
+            counter = config["DEFAULT"]["SweetCountOne"]
+            counter = int(counter)
+            counter -= 1
+            if counter <= 5:
+                err = errorwindow()
+                err.setupUI(3, 1)
+            config["DEFAULT"]["SweetCountOne"] = str(counter)
+            config.write(cfgfile)
+            cfgfile.close()
+            del config
+        elif self.id_sweets == 2:
+            counter = config["DEFAULT"]["SweetCountTwo"]
+            counter = int(counter)
+            counter -= 1
+            if counter <= 5:
+                err = errorwindow()
+                err.setupUI(3, 2)
+            config["DEFAULT"]["SweetCountTwo"] = str(counter)
+            config.write(cfgfile)
+            cfgfile.close()
+            del config
+        elif self.id_sweets == 3:
+            counter = config["DEFAULT"]["SweetCountThree"]
+            counter = int(counter)
+            counter -= 1
+            if counter <= 5:
+                err = errorwindow()
+                err.setupUI(3, 3)
+            config["DEFAULT"]["SweetCountThree"] = str(counter)
+            config.write(cfgfile)
+            cfgfile.close()
+            del config
+
+    def decrementCounterPunishment(self):
+        config = cp.ConfigParser()
+        config.read("config.ini")
+        counter = config["DEFAULT"]["SweetCountFour"]
+        counter = int(counter)
+        counter -= 1
+        if counter <= 5:
+            err = errorwindow()
+            err.setupUI(3, 4)
+        cfgfile = open("config.ini", "w")
+        config["DEFAULT"]["SweetCountFour"] = str(counter)
+        config.write(cfgfile)
+        cfgfile.close()
+        del config

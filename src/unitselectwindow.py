@@ -6,12 +6,13 @@ from PyQt5 import QtCore, Qt, QtGui
 from PyQt5.QtCore import Qt
 import os
 
+from src.adminwindow import adminwindow
 from userdialog import Ui_Dialog
 
 
 class UnitSelectWindow(QWidget):
 
-    def __init__(self, id_sweets, parent=None):
+    def __init__(self, id_sweets, rfid, parent=None):
         """
         Konstruktor für UnitSelectWindow.
 
@@ -23,6 +24,7 @@ class UnitSelectWindow(QWidget):
         self.label_txt = QLabel
         self.width = 300
         self.height = 300
+        self.rfid = rfid
 
         path = os.path.dirname(os.path.abspath(__file__))
         fileWin1 = os.path.join(path, "misc/MainwindowDescr.txt")
@@ -112,7 +114,7 @@ class UnitSelectWindow(QWidget):
 
         :return:
         """
-        self.w = Ui_Dialog("src/misc/Dialogwindowdescr.txt", "src/misc/Hampelmann.gif", 1, self.id_sweets, 60)
+        self.w = Ui_Dialog("src/misc/Dialogwindowdescr.txt", "src/misc/Hampelmann.gif", 1, self.id_sweets, 60, self.rfid)
         self.w.setupUI(1600, 900)
         self.close()
         self.w.show()
@@ -123,7 +125,7 @@ class UnitSelectWindow(QWidget):
 
         :return:
         """
-        self.w = Ui_Dialog("src/misc/Dialogwindowdescr.txt", "src/misc/squats.gif", 2, self.id_sweets, 120)
+        self.w = Ui_Dialog("src/misc/Dialogwindowdescr.txt", "src/misc/squats.gif", 2, self.id_sweets, 120, self.rfid)
         self.w.setupUI(1600, 900)
         self.w.show()
         self.close()
@@ -134,7 +136,7 @@ class UnitSelectWindow(QWidget):
 
         :return:
         """
-        self.w = Ui_Dialog("src/misc/Dialogwindowdescr.txt", "src/misc/pushup.gif", 3, self.id_sweets, 60)
+        self.w = Ui_Dialog("src/misc/Dialogwindowdescr.txt", "src/misc/pushup.gif", 3, self.id_sweets, 60,self.rfid)
         self.w.setupUI(1600, 900)
         self.w.show()
         self.close()
@@ -145,7 +147,7 @@ class UnitSelectWindow(QWidget):
 
         :return:
         """
-        self.w = Ui_Dialog("src/misc/Dialogwindowdescr.txt", "src/misc/pushup.gif", 4, self.id_sweets, 60)
+        self.w = Ui_Dialog("src/misc/Dialogwindowdescr.txt", "src/misc/pushup.gif", 4, self.id_sweets, 60, self.rfid)
         self.w.setupUI(1600, 900)
         self.w.show()
         self.close()

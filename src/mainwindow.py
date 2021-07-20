@@ -20,10 +20,12 @@ unitselectwindow.py
 
 
 from PyQt5 import Qt, QtCore, QtGui
+from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 from adminwindow import *
 import os
 
+from src import gpioread
 from src.errorwindow import errorwindow
 from unitselectwindow import UnitSelectWindow
 import socket
@@ -52,6 +54,9 @@ class MainWindow(QMainWindow):
         self.startScan = 0
         self.gotData = False
         self.error = errorwindow()
+        self.errorTime = QTimer()
+        self.errorTime.timeout.connect(self.errorHandler)
+#        self.errorTime.start(1000)
 
         # path wird als Variable angelegt, um auf den Programmpfad zurückzuverweisen. Diese macht es möglich die
         # Bilder ohne Absoluten Pfad aufzurufen.
@@ -127,8 +132,8 @@ class MainWindow(QMainWindow):
         # Linkes Bild
         if 180 <= x <= 480 and 210 <= y <= 510:
             self.startScan = 1 # Eigene Variable zum merken des Starts
+            self.admin.fromAdminGo = 1  # Globale Variable zum Scanauftrag schicken
             while self.startScan != 0: # Wenn StartScan != 0 dann Schleife laufen lassen
-                self.admin.fromAdminGo = 1 # Globale Variable zum Scanauftrag schicken
                 if self.gotData:
                     if getConfigCodes(self.admin.rfid) and int(getConfigValue(self.admin.rfid)) >= -5:
                         print(self.admin.rfid)
@@ -141,10 +146,34 @@ class MainWindow(QMainWindow):
                         break
         # Mittleres Bild
         if 810 <= x <= 810 + 300 and 210 <= y <= 510:
-            self.DialogWindow(2, 1920, 1080)
+            self.startScan = 1  # Eigene Variable zum merken des Starts
+            self.admin.fromAdminGo = 1  # Globale Variable zum Scanauftrag schicken
+            while self.startScan != 0:  # Wenn StartScan != 0 dann Schleife laufen lassen
+                if self.gotData:
+                    if getConfigCodes(self.admin.rfid) and int(getConfigValue(self.admin.rfid)) >= -5:
+                        print(self.admin.rfid)
+                        self.DialogWindow(2, 1920, 1080)
+                        self.startScan = 0
+                        self.gotData = False
+                        break
+                    else:
+                        self.error.setupUI(1)
+                        break
         # Rechtes Bild
         if 1440 <= x <= 1440 + 300 and 210 <= y <= 510:
-            self.DialogWindow(3, 1920, 1080)
+            self.startScan = 1  # Eigene Variable zum merken des Starts
+            self.admin.fromAdminGo = 1  # Globale Variable zum Scanauftrag schicken
+            while self.startScan != 0:  # Wenn StartScan != 0 dann Schleife laufen lassen
+                if self.gotData:
+                    if getConfigCodes(self.admin.rfid) and int(getConfigValue(self.admin.rfid)) >= -5:
+                        print(self.admin.rfid)
+                        self.DialogWindow(3, 1920, 1080)
+                        self.startScan = 0
+                        self.gotData = False
+                        break
+                    else:
+                        self.error.setupUI(1)
+                        break
         if 1729 <= x <= 1900 and 980 <= y <= 1060:
             self.admin.setupUI()
             self.admin.show()
@@ -158,7 +187,7 @@ class MainWindow(QMainWindow):
         :param h: (int) Höhe des Fensters
         :return: unitselectwindow Fenster wird ausgeführt
         """
-        self.win = UnitSelectWindow(id)
+        self.win = UnitSelectWindow(id, self.admin.rfid)
         self.win.setupUI(w, h)
         self.win.show()
 
@@ -192,7 +221,9 @@ class MainWindow(QMainWindow):
                     self.rc = ''
                     try:
                         self.conn.send(b"scan")
+                        print("sent")
                         self.rc = self.conn.recv(1000).decode('utf-8')
+                        print("rcvd")
                         self.admin.rfid = self.rc
                         self.admin.updateEdit()
                     except Exception as e:
@@ -207,10 +238,10 @@ class MainWindow(QMainWindow):
                         print("Tired of waiting on connection!")
                         self.rc = "done"
 
-                print("closing connection")
-                self.conn.close()
-                self.conn = None
-                print("connection closed.")
+                # print("closing connection")
+                # self.conn.close()
+                # self.conn = None
+                # print("connection closed.")
 
         print("closing listener...")
         # self running became 0
@@ -233,18 +264,26 @@ class MainWindow(QMainWindow):
         else:
             print("thread not running")
 
+    def errorHandler(self):
+        if gpioread.readInput(6):
+            self.error.setupUI(5, 0)
+        elif gpioread.readInput(23):
+            self.error.setupUI(4, 0)
+
 
 def getConfigCodes(searchstring):
     config = cp.ConfigParser()
     config.read("config.ini")
     for option in config.options("RFID"):
         if option == searchstring:
+            del config
             return True
 
 def getConfigValue(searchstring):
     config = cp.ConfigParser()
     config.read("config.ini")
     ret = config["RFID"][searchstring]
+    del config
     return ret
 
 def main():
