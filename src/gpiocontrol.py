@@ -13,3 +13,15 @@ def readInput(input):
     pi = pigpio.pi("192.168.43.18", 8888)
     pi.set_mode(input, pigpio.INPUT)
     return pi.read(input)
+
+def writeOutput(output, level):
+    """
+    Funktion zum schalten von Ausgängen des RaspberryPis über Remote GPIo.
+
+    :param output: (int) : GPIO des zu steuernden Ausgangs
+    :param level: (bool) : Zustand des zu steuerenden Ausgangs: 0 = HIGH, 1 = LOW
+    :return:
+    """
+    pi = pigpio.pi("192.168.43.18", 8888)
+    pi.set_mode(output, pigpio.OUTPUT)
+    pi.write(output, level)

@@ -1,5 +1,3 @@
-from time import sleep
-
 from PyQt5.QtGui import QMovie
 from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5 import QtCore, Qt, QtGui

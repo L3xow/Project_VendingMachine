@@ -1,12 +1,16 @@
-from PyQt5 import Qt, QtGui
+from PyQt5 import Qt
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QDialog, QPushButton, QLabel
 from PyQt5.QtCore import Qt
 
 
-
 class errorwindow(QDialog):
     def __init__(self):
+        """
+        Konstruktor für errorwindow.
+        Initialisiert und erstellt alle dafür vorgesehenen Attribute und Eigenschaften.
+
+        """
         super().__init__()
         self.setWindowTitle("ErrorMsg")
         self.setObjectName("ErrorMsg")
@@ -16,8 +20,25 @@ class errorwindow(QDialog):
         self.buttonOk = QPushButton("Ok", self)
         self.textlabel = QLabel(self)
         self.pixlabel = QLabel(self)
+        self.greenLED = 13
+        self.redLED = 26
+        self.yellowLED = 19
+        self.sweets = 0
 
-    def setupUI(self, ErrID, SweetID):
+        self.pixmap_error = QPixmap("src/misc/error.png")
+        self.smaller_pixmap_error = self.pixmap_error.scaled(64, 64, Qt.KeepAspectRatio, Qt.FastTransformation)
+        self.pixmap_warning = QPixmap("src/misc/warning.png")
+        self.smaller_pixmap_warning = self.pixmap_warning.scaled(64, 64, Qt.KeepAspectRatio, Qt.FastTransformation)
+
+    def setupUI(self, ErrID, SweetID=0):
+        """
+        Erstellt und zeigt das Error Window mit dementsprechenden Fehlern an.
+
+        :param ErrID: (int) : ID des Fehlers, welche im Programm hinterlegt sind.
+        :param SweetID: (int) : ID der gewählten Süßigkeit, wird benötigt um anzuzeigen
+        welche Süßigkeit genau einen zu niedrigen Füllstand hat.
+        :return:
+        """
         self.sweets = SweetID
         self.buttonOk.resize(120, 50)
         self.buttonOk.move((400-120)/2, 300-50)
@@ -29,10 +50,6 @@ class errorwindow(QDialog):
         self.textlabel.setWordWrap(True)
         self.textlabel.resize(300, 200)
 
-        self.pixmap_error = QPixmap("src/misc/error.png")
-        self.smaller_pixmap_error = self.pixmap_error.scaled(64, 64, Qt.KeepAspectRatio, Qt.FastTransformation)
-        self.pixmap_warning = QPixmap("src/misc/warning.png")
-        self.smaller_pixmap_warning = self.pixmap_warning.scaled(64, 64, Qt.KeepAspectRatio, Qt.FastTransformation)
         self.pixlabel.setPixmap(self.smaller_pixmap_error)
         self.pixlabel.move(10, 10)
         self.pixlabel.show()
@@ -47,7 +64,7 @@ class errorwindow(QDialog):
 
 
         self.show()
-        
+
         # ToDo: LEDs nach farben einfügen
         if ErrID == 1:
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
@@ -70,7 +87,19 @@ class errorwindow(QDialog):
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
             self.textlabel.setText("Error: Wartungsschalter an der Rückseite ist ausgeschalten!")
             self.show()
+        elif ErrID == 6:
+            self.pixlabel.setPixmap(self.smaller_pixmap_error)
+            self.textlabel.setText("Error: RFID ist kein AdminRFID! Zugriff Verweigert!")
+            self.show()
 
     def butOK(self):
+        """
+        Quittiert den Fehler und ändert die Zustände der LEDs des Automaten.
+
+        :return:
+        """
         # ToDo: LED GREEN and RESET other LEDS
+        # gpiocontrol.writeOutput(self.greenLED, 0)
+        # gpiocontrol.writeOutput(self.yellowLED, 1)
+        # gpiocontrol.writeOutput(self.redLED, 1)
         self.close()

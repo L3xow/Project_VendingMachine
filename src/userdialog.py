@@ -1,23 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-
-'''
-
-
-Pose IDs:
-
-16 rechtes Handgelenk
-15 linkes Handgelenk
-28 rechter Knöchel
-27 linker Knöchel           Visibility > 95 um Genauigkeit zu Gewährleisten
-
-24 rechte Hüfte
-23 linke Hüfte
-0 Nase
-
-
-'''
 import math
 
 from PyQt5 import QtCore, QtWidgets
@@ -26,12 +6,10 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QMovie
 import PoseModule as pm
 import configparser as cp
-from motor import start  # ToDo: muss geändert werden
 import cv2
 
 
 # ToDo: Motor.py muss noch komplett gecodet werden, brauche aber erst einen funktionierenden RasPi
-# import motor
 
 # ToDo: Designfragen klären, Farben, usw.
 from src.errorwindow import errorwindow
@@ -57,6 +35,7 @@ class Ui_Dialog(QWidget):
         :param ID: (int) : ID der gewählten Übung ( 1-4 ) um diese nochmals in der Mitte anzuzeigen.
         :param id_sweets: (int) : ID der gewählten Süßigkeit in der ersten Maske, um damit die Motoren anzusteuern.
         :param unit_time: (int) : Vorgegebene Zeit in Minuten, die der Benutzer hat um das Ziel zu erreichen.
+        :param rfid: (string) : RFID Code zum abziehen des Geldwertes.
         :param parent:
         """
         super().__init__(parent)
@@ -377,6 +356,14 @@ class Ui_Dialog(QWidget):
         # start(id_sweets)  # id_sweets
 
     def decrementMoney(self):
+        """
+        Funktion dient zum dekrementieren des oben übergebenen RFID Codes sobald eine Übung
+        ausgeführt wurde. Config File wird geöffnet und der aktuelle Wert des RFID Codes aus-
+        gelesen, anschließend zu Integer gewandelt und um mit -1 addiert. Danach wird der Wert
+        des Codes in der File aktualisiert.
+
+        :return:
+        """
         config = cp.ConfigParser()
         config.read("config.ini")
         value = config["RFID"][self.rfid]
@@ -390,6 +377,14 @@ class Ui_Dialog(QWidget):
         del config
 
     def decrementCounterSweets(self):
+        """
+        Funktion dient zum dekrementieren des Füllstandes der jeweiligen Süßigkeit.
+        Zuerst wird der Ist- Wert ausgelesen, dann mit -1 addiert und anschließend wieder
+        in der File aktualisiert.
+        Dies geschieht für jede der drei Süßigkeiten
+
+        :return:
+        """
         config = cp.ConfigParser()
         config.read("config.ini")
         cfgfile = open("config.ini", "w")
@@ -428,6 +423,12 @@ class Ui_Dialog(QWidget):
             del config
 
     def decrementCounterPunishment(self):
+        """
+        Funktion dient zum dekrementieren des Bestrafungs-Füllstandes. Ist-Wert wird
+        ausgelesene, mit -1 addiert und anschließend in der Config File aktualisiert.
+
+        :return:
+        """
         config = cp.ConfigParser()
         config.read("config.ini")
         counter = config["DEFAULT"]["SweetCountFour"]

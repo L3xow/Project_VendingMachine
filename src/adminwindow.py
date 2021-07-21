@@ -1,8 +1,6 @@
-import sys
-
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QValidator, QIntValidator
-from PyQt5.QtWidgets import QDialog, QInputDialog, QWidget, QLineEdit, QLabel, QPushButton
+from PyQt5.QtGui import QIntValidator
+from PyQt5.QtWidgets import QDialog, QLineEdit, QLabel, QPushButton
 import configparser as cp
 
 
@@ -13,6 +11,10 @@ class adminwindow(QDialog):
     fromAdminGo = 0
     rfid = ""
     def __init__(self):
+        """
+        Konstruktor für adminwindow.
+
+        """
         super().__init__()
         self.setWindowTitle("AdminWindow")
         self.setObjectName("AdminWindow")
@@ -22,6 +24,13 @@ class adminwindow(QDialog):
         self.moneylabel = QLabel(self)
 
     def setupUI(self):
+        """
+        Erstellt und initialisiert sämtliche Button, Anzeigen und Eingabefelder von
+        adminwindow. Ist-Werte der Füllstände werden aus der Config File ausgelesen
+        und als Default Wert in die Eingabefelder eingetragen.
+
+        :return:
+        """
         #ButtonINIT
         buttonSweetsOne = QPushButton("Save", self)
         buttonSweetsTwo = QPushButton("Save", self)
@@ -219,21 +228,29 @@ class adminwindow(QDialog):
         cfgfile.close()
 
     def scanrfid(self):
+        """
+        Startet bei Aufruf den Scanvorgang des RFIDs über den Socket Server.
+
+        :return:
+        """
         self.fromAdminGo = 1
 
     def updateEdit(self):
+        """
+        Funktion dient zum anzeigen des Guthabens und des gescannten RFID Codes im
+        Eingabefeld des Adminfensters.
+
+        :return:
+        """
         self.changeMoneyRFID.setText(str(self.rfid))
 
         self.config = cp.ConfigParser()
         self.config.read("config.ini")
 
         if self.config.has_option("RFID", self.rfid):
-            print(self.rfid)
-            print(self.config["RFID"][self.rfid])
             self.moneylabel.setText(self.config["RFID"][self.rfid])
             self.moneylabel.show()
             self.readRFID = self.config["RFID"][self.rfid]
-            print("asdfsad")
         else:
             cfgfile = open("config.ini", "w")
             self.config.set("RFID", self.rfid, "0")
@@ -242,6 +259,12 @@ class adminwindow(QDialog):
 
 
     def set(self):
+        """
+        Funktion dient zum setzen des im Eingabefeld eingegebenen Wertes.
+        Wert wird dann in der Config File aktualisiert.
+
+        :return:
+        """
         self.config["RFID"][self.rfid] = self.inputMoney.text()
         with open("config.ini", "w") as configfile:
             self.config.write(configfile)

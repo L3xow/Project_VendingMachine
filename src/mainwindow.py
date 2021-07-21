@@ -1,18 +1,15 @@
 '''
-Das ist unser Code für die Projektarbeit an der Rudolf Diesel Fachschule in Nürnberg.
-Der Code ist hauptsächlich zur Steuerung unseres nachhaltigen Süßigkeitenautomaten.
 
-Die Hierarchie des Programms ist wiefolgt:
-mainwindow.py
-    unitselectwindow.py
-        userdialog.py
-            motor.py
-            PoseModule.py
+Das ist unser Code für die Projektarbeit "nachhaltiger Süßigkeitenautomat" an der Rudolf Diesel
+Fachschule in Nürnberg.
+Es wird eine Grafikoberfläche angezeigt, die eine Auswahl einer Süßigkeit von dreien ermöglichen
+soll. Anschließend darf der Benutzer sich eine Übung aussuchen, die er absolvieren möchte.
+Dies wird mittels des Algorithmus von Mediapipe überwacht und ausgewertet.
+Im Anschluss wird entweder die gewählte Süßigkeit ausgegeben, oder wenn die Übung nicht erfolgreich war,
+eine Bestrafung in Form eines gesunden Snacks ausgegeben.
 
-mainwindow.py
-    Wenn eine der drei Süßigkeiten ausgewählt wurde, wird das Object unitselectwindow aufgerufen und die Süßigkeit als ID übergeben und gespeichert.
-unitselectwindow.py
-    Wenn eine der 4 Übungen ausgewählt wurde, wird das Object userdialog aufgerufen, in dem dann die Kameraauswertung gestartet wird.
+Es werden Störungen überwacht und Füllstände ausgewertet.
+Ebenfalls gibt es ein RFID System damit die Süßigkeit auch bezahlt werden kann.
 
 '''
 # ToDo: GPIOs einbauen und fertig machen
@@ -21,11 +18,11 @@ unitselectwindow.py
 
 from PyQt5 import Qt, QtCore, QtGui
 from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
+from PyQt5.QtWidgets import QApplication, QMainWindow
 from adminwindow import *
 import os
 
-from src import gpioread
+from src import gpiocontrol
 from src.errorwindow import errorwindow
 from unitselectwindow import UnitSelectWindow
 import socket
@@ -57,6 +54,7 @@ class MainWindow(QMainWindow):
         self.errorTime = QTimer()
         self.errorTime.timeout.connect(self.errorHandler)
 #        self.errorTime.start(1000)
+        self.error.setupUI(5, 2)
 
         # path wird als Variable angelegt, um auf den Programmpfad zurückzuverweisen. Diese macht es möglich die
         # Bilder ohne Absoluten Pfad aufzurufen.
@@ -122,7 +120,10 @@ class MainWindow(QMainWindow):
     def mouseReleaseEvent(self, a0: QtGui.QMouseEvent) -> None:
         """
         Funktion zur Erkennung eines MausReleaseEvents, heißt, wenn die Maus losgelassen wird, werden die Koordinaten x,
-        y zurückgegeben.
+        y zurückgegeben. Hier werden ebenfalls die weiteren Fenster ausgeführt. Dazu
+        wird überwacht, ob ein RFID Chip vorliegt, ob dieser in der Liste anliegt und ob
+        genügend Geldwert hinterlegt ist.
+        Wenn benötigt werden Fehler ausgegeben.
 
         :param a0: -/-
         :return: -/-
@@ -175,8 +176,20 @@ class MainWindow(QMainWindow):
                         self.error.setupUI(1)
                         break
         if 1729 <= x <= 1900 and 980 <= y <= 1060:
-            self.admin.setupUI()
-            self.admin.show()
+            self.startScan = 1  # Eigene Variable zum merken des Starts
+            self.admin.fromAdminGo = 1  # Globale Variable zum Scanauftrag schicken
+            while self.startScan != 0:  # Wenn StartScan != 0 dann Schleife laufen lassen
+                if self.gotData:
+                    if self.admin.rfid == "admincode" or self.admin.rfid == "admincode2":
+                        print(type(self.admin.rfid))
+                        self.admin.setupUI()
+                        self.admin.show()
+                        self.startScan = 0
+                        self.gotData = False
+                        break
+                    else:
+                        self.error.setupUI(6)
+                        break
 
     def DialogWindow(self, id, w, h):
         """
@@ -192,6 +205,13 @@ class MainWindow(QMainWindow):
         self.win.show()
 
     def socket_thread(self):
+        """
+        Stellt den Server Prozess als Thread dar. Verwaltet sämtliche TCP Angelegenheiten
+        mit dem Raspberry Pi, um einen Scanbefehl zu erteilen und um den gescannten RFID
+        Code zurückzugeben.
+
+        :return:
+        """
         print("thread started..")
         self.ls = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         port = 9999
@@ -248,6 +268,11 @@ class MainWindow(QMainWindow):
         self.ls.close()
 
     def startc(self):
+        """
+        Startet den Server Thread.
+
+        :return:
+        """
         if self.running == 0:
             print("Starting thread")
             self.running = 1
@@ -257,6 +282,11 @@ class MainWindow(QMainWindow):
             print("thread already started.")
 
     def stopc(self):
+        """
+        Stoppt den Server Thread.
+
+        :return:
+        """
         if self.running:
             print("stopping thread...")
             self.running = 0
@@ -265,13 +295,28 @@ class MainWindow(QMainWindow):
             print("thread not running")
 
     def errorHandler(self):
-        if gpioread.readInput(6):
+        """
+        Eigens für die Anwendung entwickelter ErrorHandler. Falls gewisse Schalter
+        ausgeschalten sind, werden dementsprechend Fehler angezeigt und das Programm
+        pausiert.
+
+        :return:
+        """
+        if gpiocontrol.readInput(6):
             self.error.setupUI(5, 0)
-        elif gpioread.readInput(23):
+        elif gpiocontrol.readInput(23):
             self.error.setupUI(4, 0)
 
 
 def getConfigCodes(searchstring):
+    """
+    Funktion dient zum suchen nach RFID Codes in der Config.ini, damit überprüft
+    wird, ob der gegebene RFID Code schon einmal im System aufgetaucht ist oder
+    nicht.
+
+    :param searchstring: (string) : String nach dem die Datei durchsucht werden soll.
+    :return: (bool) : Gibt True/False zurück wenn Code vorhanden ist oder nicht.
+    """
     config = cp.ConfigParser()
     config.read("config.ini")
     for option in config.options("RFID"):
@@ -280,6 +325,13 @@ def getConfigCodes(searchstring):
             return True
 
 def getConfigValue(searchstring):
+    """
+    Funktion dient zum auslesen des Geldwerts des gescannten RFID Codes. Damit
+    überprüft werden kann, ob genügend Kontingent darauf vorhanden ist.
+
+    :param searchstring: (string) : String nach dem die Datei durchsucht werden soll.
+    :return: (string) : Geldwert als String
+    """
     config = cp.ConfigParser()
     config.read("config.ini")
     ret = config["RFID"][searchstring]
@@ -288,7 +340,6 @@ def getConfigValue(searchstring):
 
 def main():
     import sys
-    from time import sleep
     app = QApplication(sys.argv)
     # Erstellt Objekt win mit UI_MainWindow() und erstellt im Anschluss das User Interface und zeigt es an.
     win = MainWindow()
@@ -305,58 +356,6 @@ def main():
 
     sys.exit(app.exec())
 
-'''
-class server:
-
-    def __init__(self):
-        self.data = 0
-        # Server erstellen
-        TCP_IP = socket.gethostname()
-        TCP_PORT = 5005
-        print("Server")
-
-        self.BUFF = 50
-
-        s = socket.socket()
-        s.bind((TCP_IP, TCP_PORT))
-        s.listen(1)
-        while True:
-            self.conn, self.addr = s.accept()
-            print_lock.acquire()
-            print('Conn', self.addr)
-            print(self.conn)
-            start_new_thread(threaded,(self.conn,))
-            print("asdf")
-        s.close()
-
-
-    def get_data(self):
-        self.data = self.conn.recv(self.BUFF)
-        print(self.data)
-        return self.data.decode('utf-8')
-
-    def send_data(self, data):
-        print("data sent")
-        self.conn.send(data)
-
-
-print_lock = threading.Lock()
-
-def threaded(c):
-    while True:
-        #data recv
-        data = c.recv(50)
-        print("asdddd")
-        if not data:
-            print("Bye")
-
-            print_lock.release()
-            break
-        c.send(data)
-    c.close()
-
-
-'''
 
 if __name__ == "__main__":
     main()
