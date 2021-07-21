@@ -54,7 +54,6 @@ class MainWindow(QMainWindow):
         self.errorTime = QTimer()
         self.errorTime.timeout.connect(self.errorHandler)
 #        self.errorTime.start(1000)
-        self.error.setupUI(5, 2)
 
         # path wird als Variable angelegt, um auf den Programmpfad zurückzuverweisen. Diese macht es möglich die
         # Bilder ohne Absoluten Pfad aufzurufen.
