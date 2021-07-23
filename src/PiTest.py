@@ -14,7 +14,7 @@ class client():
 
         self.s = socket.socket()
         self.s.connect((TCP_IP, TCP_PORT))
-        self.s.setblocking(1)
+        self.s.setblocking(True)
         sleep(1)
 
     def get_data(self):

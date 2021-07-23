@@ -1,4 +1,5 @@
 import math
+from threading import Thread
 
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QLabel, QPushButton, QWidget
@@ -43,6 +44,9 @@ class Ui_Dialog(QWidget):
         self.label_txt = QLabel
         self.label_Time = QLabel
         self.unitCheck = 0
+        self.countrunning = 0
+        self.timerrunning = 0
+        self.cap = cv2.VideoCapture(0)
 
         # Initialisiert sämtliche Variablen des Konstruktors
         self.fileGIF = fileGIF
@@ -54,11 +58,11 @@ class Ui_Dialog(QWidget):
 
         # Initialisiert die Timer für die Zeitvorgabe an den Benutzer
         # MyCount ist in dem Fall der Countdown von 10s
-        self.myCount = QTimer()
-        self.myCount.timeout.connect(self.countdown)
+        # self.myCount = QTimer()
+        # self.myCount.timeout.connect(self.countdown)
         # MyTime ist die Zeit für die Übung
-        self.myTime = QTimer()
-        self.myTime.timeout.connect(self.timer)
+        # self.myTime = QTimer()
+        # self.myTime.timeout.connect(self.timer)
 
     def setupUI(self, w, h):
         """
@@ -176,7 +180,6 @@ class Ui_Dialog(QWidget):
         self.button_back.hide()
 
         self.label_Time.show()
-        self.cap = cv2.VideoCapture(0)  # (0) = ID erste Webcam
         # Init for Detection
         detector = pm.poseDetector()
         flipflopflag = False
@@ -185,8 +188,8 @@ class Ui_Dialog(QWidget):
         self.unitCheck = 0  # New
         while True:
             success, img = self.cap.read()
-            img = detector.findPose(img, draw=True)
-            lmList = detector.findPosition(img, draw=True)
+            img = detector.findPose(img, draw=False)
+            lmList = detector.findPosition(img, draw=False)
 
             if len(lmList) != 0:
                 if lmList[27][3] > 80 and lmList[28][3] > 80:
@@ -199,7 +202,7 @@ class Ui_Dialog(QWidget):
             # Element 3 enthält die Visibility des Landmarks
             if len(lmList) != 0:
                 if self.trainingID == 1:  # Übung 1
-                    self.unitCheck = 40   # Anzahl an ausführungen die gewertet werden
+                    self.unitCheck = 10   # Anzahl an ausführungen die gewertet werden
                     if self.unitCounter < self.unitCheck:
                         # Bereiche der Ruheposition
                         if ((lmList[27][1] - lmList[28][1]) <= 100) and (lmList[12][2] < lmList[14][2]) \
@@ -212,6 +215,8 @@ class Ui_Dialog(QWidget):
                                 and (lmList[11][2] > lmList[13][2]) and flipflopflag and self.myTime.isActive():
                             flipflopflag = False
                             self.unitCounter += 1
+                    else:
+                        self.unitDone = True
 
                 # Hier beginnt dann TrainingsID 2 Liegestützen
                 elif self.trainingID == 2:  # Übung 2
@@ -229,6 +234,8 @@ class Ui_Dialog(QWidget):
                                 and flipflopflag and self.myTime.isActive():  # Abstand zwischen den Beinen, flipflopflag = Verriegelung damit nicht ständig hochgezählt wird
                             flipflopflag = False
                             self.unitCounter += 1
+                    else:
+                        self.unitDone = True
 
                 # Hier beginnt dann TrainingsID 3 Squats
                 elif self.trainingID == 3:
@@ -246,6 +253,8 @@ class Ui_Dialog(QWidget):
                                 and flipflopflag and self.myTime.isActive():
                             flipflopflag = False
                             self.unitCounter += 1
+                    else:
+                        self.unitDone = True
 
                 # Hier beginnt dann TrainingsID 4 Ausfallschritte
                 elif self.trainingID == 4:
@@ -264,6 +273,8 @@ class Ui_Dialog(QWidget):
                                 and flipflopflag and self.myTime.isActive():
                             flipflopflag = False
                             self.unitCounter += 1
+                    else:
+                        self.unitDone = True
 
 #            cv2.putText(img, str(int(self.unitCounter)), (70, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
 #            cv2.imshow("Image", img)  # ToDo: Zeit ändern + Image auskommentieren
@@ -276,11 +287,15 @@ class Ui_Dialog(QWidget):
 
         :return:
         """
-        if Ui_Dialog.cdtime != 0:
-            Ui_Dialog.cdtime -= 100
-            self.label_Time.setText(str(Ui_Dialog.cdtime / 1000) + " s")
-            if Ui_Dialog.cdtime == 0:  # wenn Countdown fertig, dann neuen Timer starten für Übungszeit
-                self.myTime.start(1000)
+        print("Countdown started")
+        while self.countrunning != 0:
+            if Ui_Dialog.cdtime != 0:
+                Ui_Dialog.cdtime -= 100
+                self.label_Time.setText(str(Ui_Dialog.cdtime / 1000) + " s")
+                if Ui_Dialog.cdtime == 0:  # wenn Countdown fertig, dann neuen Timer starten für Übungszeit
+                    self.timerstart()
+                    print("Counter stop")
+                    self.countstop()
 
     def timer(self):
         """
@@ -291,23 +306,25 @@ class Ui_Dialog(QWidget):
 
         :return:
         """
-        self.myCount.stop()
-        if Ui_Dialog.cdtime == 0 and self.unit_time != 0:
-            self.label_Time.setGeometry(QtCore.QRect(650, 400, 250, 80))  # Label resize da Minuten Timer relativ groß
-            self.unit_time -= 1  # Sekundenweise decrement
-            num = self.unit_time / 60  # 120s in Minuten wandeln
-            separate = math.modf(num)  # Dezimalzahl trennen in Int + Decimal
-            new_string = str(int(separate[1])).zfill(2) + ":" + str(round(separate[0] * 60)).zfill(
-                2) + " min"  # Timer String zusammenbauen, zfill um "0" vor der Zahl zu setzen
-            self.label_Time.setText(new_string)
-            self.label_Time.adjustSize()
-        else:
-            if self.unitDone:
-                self.myTime.stop()
-                self.Succeeded(self.id_sweets)
+        print("Timer started")
+        while self.timerrunning != 0:
+            if Ui_Dialog.cdtime == 0 and self.unit_time != 0:
+                self.label_Time.setGeometry(QtCore.QRect(650, 400, 250, 80))  # Label resize da Minuten Timer relativ groß
+                self.unit_time -= 1  # Sekundenweise decrement
+                num = self.unit_time / 60  # 120s in Minuten wandeln
+                separate = math.modf(num)  # Dezimalzahl trennen in Int + Decimal
+                new_string = str(int(separate[1])).zfill(2) + ":" + str(round(separate[0] * 60)).zfill(
+                    2) + " min"  # Timer String zusammenbauen, zfill um "0" vor der Zahl zu setzen
+                self.label_Time.setText(new_string)
+                self.label_Time.adjustSize()
             else:
-                self.myTime.stop()
-                self.notSucceeded()
+                print("timer stop")
+                if self.unitDone:
+                    self.timerstop()
+                    self.Succeeded(self.id_sweets)
+                else:
+                    self.timerstop()
+                    self.notSucceeded()
 
     def back(self):  # ToDo: Funktion überprüfen, ob überhaupt nötig
         print("Button Pressed back")
@@ -442,3 +459,26 @@ class Ui_Dialog(QWidget):
         config.write(cfgfile)
         cfgfile.close()
         del config
+
+    def countstart(self):
+        if self.countrunning == 0:
+            self.countrunning = 1
+            self.threadcount = Thread(target=self.countdown)
+            self.threadcount.start()
+
+    def countstop(self):
+        if self.countrunning:
+            self.countrunning = 0
+            self.threadcount.join()
+
+    def timerstart(self):
+        if self.timerrunning == 0:
+            self.timerrunning = 1
+            self.threadtimer = Thread(target=self.timer)
+            self.threadtimer.start()
+
+    def timerstop(self):
+        if self.timerrunning:
+            self.timerrunning = 0
+            self.threadtimer.join()
+

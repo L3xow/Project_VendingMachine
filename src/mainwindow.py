@@ -17,7 +17,6 @@ Ebenfalls gibt es ein RFID System damit die Süßigkeit auch bezahlt werden kann
 
 
 from PyQt5 import Qt, QtCore, QtGui
-from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from adminwindow import *
 import os
@@ -46,14 +45,12 @@ class MainWindow(QMainWindow):
         self.label_jpg = QLabel
         self.errorLabel = QLabel(self)
         self.running = 0  # not listening
+        self.runningerr = 0 # error thread not started
         self.addr = None
         self.conn = None
         self.startScan = 0
         self.gotData = False
         self.error = errorwindow()
-        self.errorTime = QTimer()
-        self.errorTime.timeout.connect(self.errorHandler)
-#        self.errorTime.start(1000)
 
         # path wird als Variable angelegt, um auf den Programmpfad zurückzuverweisen. Diese macht es möglich die
         # Bilder ohne Absoluten Pfad aufzurufen.
@@ -293,7 +290,18 @@ class MainWindow(QMainWindow):
         else:
             print("thread not running")
 
-    def errorHandler(self):
+    def errorstart(self):
+        if self.runningerr == 0:
+            self.runningerr = 1
+            self.threaderr = Thread(target=self.err_thread)
+            self.threaderr.start()
+
+    def errorstop(self):
+        if self.runningerr:
+            self.runningerr = 0
+            self.threaderr.join()
+
+    def err_thread(self):
         """
         Eigens für die Anwendung entwickelter ErrorHandler. Falls gewisse Schalter
         ausgeschalten sind, werden dementsprechend Fehler angezeigt und das Programm
@@ -301,10 +309,16 @@ class MainWindow(QMainWindow):
 
         :return:
         """
-        if gpiocontrol.readInput(6):
-            self.error.setupUI(5, 0)
-        elif gpiocontrol.readInput(23):
-            self.error.setupUI(4, 0)
+        while self.runningerr != 0:
+            sleep(1)
+            print("thread")
+            try:
+                if gpiocontrol.readInput(6):
+                    self.error.setupUI(5, 0)
+                elif gpiocontrol.readInput(23):
+                    self.error.setupUI(4, 0)
+            except Exception as e:
+                print(e)
 
 
 def getConfigCodes(searchstring):
@@ -342,6 +356,7 @@ def main():
     app = QApplication(sys.argv)
     # Erstellt Objekt win mit UI_MainWindow() und erstellt im Anschluss das User Interface und zeigt es an.
     win = MainWindow()
+    win.errorstart()
     win.startc()
     # Funktion SetupUI wird ausgeführt, und somit das Fenster initialisiert.
     win.setupUi()
