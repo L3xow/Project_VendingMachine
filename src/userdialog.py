@@ -193,8 +193,8 @@ class Ui_Dialog(QWidget):
 
             if len(lmList) != 0:
                 if lmList[27][3] > 80 and lmList[28][3] > 80:
-                    if not self.myCount.isActive():
-                        self.myCount.start(100)
+                    if not self.countrunning:
+                        self.countstart()
             # Array lmList enthält die 32 Landmarks der PoseDetection.
             # Element 0 enthält die ID
             # Element 1 enthält die X Koordinate des Landmarks
