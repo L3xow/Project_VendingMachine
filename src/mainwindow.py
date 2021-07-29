@@ -51,6 +51,7 @@ class MainWindow(QMainWindow):
         self.startScan = 0
         self.gotData = False
         self.error = errorwindow()
+#        self.error.setupUI(2, 0)
 
         # path wird als Variable angelegt, um auf den Programmpfad zurückzuverweisen. Diese macht es möglich die
         # Bilder ohne Absoluten Pfad aufzurufen.
@@ -78,6 +79,7 @@ class MainWindow(QMainWindow):
         self.labelJPG("misc/Logo3.png", 1729, 980)
         self.label_jpg.adjustSize()
         self.labelTXT(self.fileexpl, 180, 580)
+
 
 
 
@@ -139,6 +141,7 @@ class MainWindow(QMainWindow):
                         self.gotData = False
                         break
                     else:
+                        print("error")
                         self.error.setupUI(1)
                         break
         # Mittleres Bild
@@ -176,7 +179,7 @@ class MainWindow(QMainWindow):
             self.admin.fromAdminGo = 1  # Globale Variable zum Scanauftrag schicken
             while self.startScan != 0:  # Wenn StartScan != 0 dann Schleife laufen lassen
                 if self.gotData:
-                    if self.admin.rfid == "admincode" or self.admin.rfid == "admincode2":
+                    if self.admin.rfid == "670621518554" or self.admin.rfid == "admincode2":
                         print(type(self.admin.rfid))
                         self.admin.setupUI()
                         self.admin.show()
@@ -309,14 +312,19 @@ class MainWindow(QMainWindow):
 
         :return:
         """
+        val = 0
+        print("error started")
         while self.runningerr != 0:
             sleep(1)
             print("thread")
             try:
-                if gpiocontrol.readInput(6):
-                    self.error.setupUI(5, 0)
+                if gpiocontrol.readInput(23):
+                    print(val)
+                    val += 1
+#                    self.error.setupUI(3, 0)
                 elif gpiocontrol.readInput(23):
-                    self.error.setupUI(4, 0)
+                    print("error2")
+#                    self.error.setupUI(4, 0)
             except Exception as e:
                 print(e)
 

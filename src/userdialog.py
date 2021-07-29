@@ -8,12 +8,14 @@ from PyQt5.QtGui import QMovie
 import PoseModule as pm
 import configparser as cp
 import cv2
+from time import *
 
 
 # ToDo: Motor.py muss noch komplett gecodet werden, brauche aber erst einen funktionierenden RasPi
 
 # ToDo: Designfragen klären, Farben, usw.
 from src.errorwindow import errorwindow
+from src.motor import start
 
 
 class QTCore:
@@ -25,7 +27,6 @@ class QTCore:
 
 class Ui_Dialog(QWidget):
     fileGIF = ''
-    cdtime = 10000  # Countdown-Timer in ms           # ToDo: Zeit auf 10000 ändern, nur aufgrund Debugging
 
     def __init__(self, file2, fileGIF, ID, id_sweets, unit_time, rfid, parent=None):
         """
@@ -47,6 +48,7 @@ class Ui_Dialog(QWidget):
         self.countrunning = 0
         self.timerrunning = 0
         self.cap = cv2.VideoCapture(0)
+        self.cdtime = 10000  # Countdown-Timer in ms           # ToDo: Zeit auf 10000 ändern, nur aufgrund Debugging
 
         # Initialisiert sämtliche Variablen des Konstruktors
         self.fileGIF = fileGIF
@@ -188,12 +190,14 @@ class Ui_Dialog(QWidget):
         self.unitCheck = 0  # New
         while True:
             success, img = self.cap.read()
-            img = detector.findPose(img, draw=False)
-            lmList = detector.findPosition(img, draw=False)
+            img = detector.findPose(img, draw=True)
+            lmList = detector.findPosition(img, draw=True)
 
             if len(lmList) != 0:
                 if lmList[27][3] > 80 and lmList[28][3] > 80:
+                    print("started")
                     if not self.countrunning:
+                        print("asdf")
                         self.countstart()
             # Array lmList enthält die 32 Landmarks der PoseDetection.
             # Element 0 enthält die ID
@@ -206,13 +210,13 @@ class Ui_Dialog(QWidget):
                     if self.unitCounter < self.unitCheck:
                         # Bereiche der Ruheposition
                         if ((lmList[27][1] - lmList[28][1]) <= 100) and (lmList[12][2] < lmList[14][2]) \
-                                and (lmList[11][2] < lmList[13][2]) and not flipflopflag and self.myTime.isActive():
+                                and (lmList[11][2] < lmList[13][2]) and not flipflopflag:
                             flipflopflag = True
                             self.unitCounter += 1
 
                         # Bereiche der Arbeitsposition
                         if ((lmList[27][1] - lmList[28][1]) >= 100) and (lmList[12][2] > lmList[14][2]) \
-                                and (lmList[11][2] > lmList[13][2]) and flipflopflag and self.myTime.isActive():
+                                and (lmList[11][2] > lmList[13][2]) and flipflopflag:
                             flipflopflag = False
                             self.unitCounter += 1
                     else:
@@ -277,7 +281,7 @@ class Ui_Dialog(QWidget):
                         self.unitDone = True
 
 #            cv2.putText(img, str(int(self.unitCounter)), (70, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
-#            cv2.imshow("Image", img)  # ToDo: Zeit ändern + Image auskommentieren
+            cv2.imshow("Image", img)  # ToDo: Zeit ändern + Image auskommentieren
             cv2.waitKey(10)
 
     def countdown(self):
@@ -289,13 +293,15 @@ class Ui_Dialog(QWidget):
         """
         print("Countdown started")
         while self.countrunning != 0:
-            if Ui_Dialog.cdtime != 0:
-                Ui_Dialog.cdtime -= 100
-                self.label_Time.setText(str(Ui_Dialog.cdtime / 1000) + " s")
-                if Ui_Dialog.cdtime == 0:  # wenn Countdown fertig, dann neuen Timer starten für Übungszeit
+            if self.cdtime != 0:
+                self.cdtime -= 500
+                sleep(0.5)
+                print(self.cdtime)
+                self.label_Time.setText(str(self.cdtime / 1000) + " s")
+                if self.cdtime == 0:  # wenn Countdown fertig, dann neuen Timer starten für Übungszeit
                     self.timerstart()
-                    print("Counter stop")
-                    self.countstop()
+                    break
+
 
     def timer(self):
         """
@@ -308,7 +314,8 @@ class Ui_Dialog(QWidget):
         """
         print("Timer started")
         while self.timerrunning != 0:
-            if Ui_Dialog.cdtime == 0 and self.unit_time != 0:
+            if self.cdtime == 0 and self.unit_time != 0:
+                sleep(1)
                 self.label_Time.setGeometry(QtCore.QRect(650, 400, 250, 80))  # Label resize da Minuten Timer relativ groß
                 self.unit_time -= 1  # Sekundenweise decrement
                 num = self.unit_time / 60  # 120s in Minuten wandeln
@@ -319,12 +326,15 @@ class Ui_Dialog(QWidget):
                 self.label_Time.adjustSize()
             else:
                 print("timer stop")
+                print(self.unitDone)
                 if self.unitDone:
-                    self.timerstop()
+                    print("succeded")
                     self.Succeeded(self.id_sweets)
+                    break
                 else:
-                    self.timerstop()
+                    print("not succeeded")
                     self.notSucceeded()
+                    break
 
     def back(self):  # ToDo: Funktion überprüfen, ob überhaupt nötig
         print("Button Pressed back")
@@ -350,7 +360,8 @@ class Ui_Dialog(QWidget):
         self.label_Time.adjustSize()
         self.label_Time.move(300, 400)
         self.label_Time.show()
-        # start(4)  # Motor 4 für Gesunde Mahlzeit
+        start(4)  # Motor 4 für Gesunde Mahlzeit
+        self.close()
 
     def Succeeded(self, id_sweets):
         """
@@ -361,16 +372,17 @@ class Ui_Dialog(QWidget):
         :param id_sweets: (int) : Bezogen auf die vorher gewählte Süßigkeit.
         :return:
         """
+        print("succeeded")
         self.decrementMoney()
         self.decrementCounterSweets()
-        self.myTime.stop()
         print("Success")
         self.label_Time.setStyleSheet("color: green; font-size: 88px; font: bold")
         self.label_Time.setText("Perfect you did it!")
         self.label_Time.adjustSize()
         self.label_Time.move(407, 400)
         self.label_Time.show()
-        # start(id_sweets)  # id_sweets
+        start(id_sweets)  # id_sweets
+        self.close()
 
     def decrementMoney(self):
         """

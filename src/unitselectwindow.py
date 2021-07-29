@@ -112,7 +112,7 @@ class UnitSelectWindow(QWidget):
 
         :return:
         """
-        self.w = Ui_Dialog("src/misc/Dialogwindowdescr.txt", "src/misc/Hampelmann.gif", 1, self.id_sweets, 60, self.rfid)
+        self.w = Ui_Dialog("src/misc/Dialogwindowdescr.txt", "src/misc/Hampelmann.gif", 1, self.id_sweets, 30, self.rfid)
         self.w.setupUI(1600, 900)
         self.close()
         self.w.show()

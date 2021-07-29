@@ -2,7 +2,7 @@
 
 import pigpio
 
-
+pi = pigpio.pi("192.168.137.61", 8888)
 def readInput(input):
     """
     Funktion zum abfragen von RPi GPIO Status. Hier muss die IP des RPis geändert werden.
@@ -10,9 +10,10 @@ def readInput(input):
     :param input: (int) : Nummer des GPIO.
     :return: (bool) : True oder False je nach Schaltzustand des Eingangs.
     """
-    pi = pigpio.pi("192.168.43.18", 8888)
     pi.set_mode(input, pigpio.INPUT)
-    return pi.read(input)
+    val = pi.read(input)
+    print("status " + str(val))
+    return val
 
 def writeOutput(output, level):
     """
@@ -22,6 +23,5 @@ def writeOutput(output, level):
     :param level: (bool) : Zustand des zu steuerenden Ausgangs: 0 = HIGH, 1 = LOW
     :return:
     """
-    pi = pigpio.pi("192.168.43.18", 8888)
     pi.set_mode(output, pigpio.OUTPUT)
     pi.write(output, level)

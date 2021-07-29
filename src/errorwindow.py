@@ -3,6 +3,8 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QDialog, QPushButton, QLabel
 from PyQt5.QtCore import Qt
 
+from src import gpiocontrol
+
 
 class errorwindow(QDialog):
     def __init__(self):
@@ -20,8 +22,8 @@ class errorwindow(QDialog):
         self.buttonOk = QPushButton("Ok", self)
         self.textlabel = QLabel(self)
         self.pixlabel = QLabel(self)
-        self.greenLED = 13
-        self.redLED = 26
+        self.greenLED = 26
+        self.redLED = 13
         self.yellowLED = 19
         self.sweets = 0
 
@@ -55,42 +57,54 @@ class errorwindow(QDialog):
         self.pixlabel.show()
 
 
-
         self.setStyleSheet(
             "QDialog { background-color: rgb(200,200,200); }"
             "QPushButton { border: 2px solid white; font-size: 10px; font-weight: bold; "
             "background-color: DimGrey; color: white;} "
             "QPushButton::pressed { border: 3px solid grey; }")
 
-
-        self.show()
-
         # ToDo: LEDs nach farben einfügen
         if ErrID == 1:
+            print("debug")
+            gpiocontrol.writeOutput(self.redLED, 0)
+            gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
 #            self.pixlabel.setPixmap(QtGui.QPixmap("error.png"))
             self.textlabel.setText("Error: RFID Code nicht angelegt oder nicht genügend Guthaben!")
             self.textlabel.show()
         elif ErrID == 2:
+            gpiocontrol.writeOutput(self.redLED, 0)
+            gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
             self.textlabel.setText("Error: RFID noch einmal scannen!")
             self.textlabel.show()
         elif ErrID == 3:
+            gpiocontrol.writeOutput(self.yellowLED, 0)
+            gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_warning)
             self.textlabel.setText("Warnung: Füllstand " + str(self.sweets) + ". Süßigkeit zu niedrig")
             self.show()
         elif ErrID == 4:
+            gpiocontrol.writeOutput(self.redLED, 0)
+            gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
             self.textlabel.setText("Error: Plexiglas Platte nicht ordnungsgemäß befestigt!")
             self.show()
         elif ErrID == 5:
+            gpiocontrol.writeOutput(self.redLED, 0)
+            gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
             self.textlabel.setText("Error: Wartungsschalter an der Rückseite ist ausgeschalten!")
             self.show()
         elif ErrID == 6:
+            gpiocontrol.writeOutput(self.redLED, 0)
+            gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
             self.textlabel.setText("Error: RFID ist kein AdminRFID! Zugriff Verweigert!")
             self.show()
+
+        self.show()
+
 
     def butOK(self):
         """
@@ -99,7 +113,7 @@ class errorwindow(QDialog):
         :return:
         """
         # ToDo: LED GREEN and RESET other LEDS
-        # gpiocontrol.writeOutput(self.greenLED, 0)
-        # gpiocontrol.writeOutput(self.yellowLED, 1)
-        # gpiocontrol.writeOutput(self.redLED, 1)
+        gpiocontrol.writeOutput(self.greenLED, 0)
+        gpiocontrol.writeOutput(self.yellowLED, 1)
+        gpiocontrol.writeOutput(self.redLED, 1)
         self.close()
