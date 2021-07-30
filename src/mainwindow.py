@@ -17,6 +17,7 @@ Ebenfalls gibt es ein RFID System damit die Süßigkeit auch bezahlt werden kann
 
 
 from PyQt5 import Qt, QtCore, QtGui
+from PyQt5.QtCore import pyqtSlot, QRunnable, QThreadPool, QObject
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from adminwindow import *
 import os
@@ -50,8 +51,15 @@ class MainWindow(QMainWindow):
         self.conn = None
         self.startScan = 0
         self.gotData = False
+        self.TESTBIT = True
         self.error = errorwindow()
-#        self.error.setupUI(2, 0)
+        self.error_monitor = ErrorMonitor()
+        self.thread = QtCore.QThread(self)
+        self.error_monitor.error_signal.connect(self.callError)
+        self.error_monitor.moveToThread(self.thread)
+        self.thread.started.connect(self.error_monitor.monitor_errors)
+        self.thread.start()
+
 
         # path wird als Variable angelegt, um auf den Programmpfad zurückzuverweisen. Diese macht es möglich die
         # Bilder ohne Absoluten Pfad aufzurufen.
@@ -80,9 +88,15 @@ class MainWindow(QMainWindow):
         self.label_jpg.adjustSize()
         self.labelTXT(self.fileexpl, 180, 580)
 
+    @QtCore.pyqtSlot(int)
+    def callError(self, ErrID):
+        self.error.setupUI(ErrID, 0)
 
-
-
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Space:
+            self.ERRORBIT = True
+        elif event.key() == Qt.Key_Space and self.ERRORBIT:
+            self.ERRORBIT = False
 
     def labelTXT(self, txt, x, y):
         """
@@ -130,20 +144,24 @@ class MainWindow(QMainWindow):
         y = a0.y()
         # Linkes Bild
         if 180 <= x <= 480 and 210 <= y <= 510:
-            self.startScan = 1 # Eigene Variable zum merken des Starts
-            self.admin.fromAdminGo = 1  # Globale Variable zum Scanauftrag schicken
-            while self.startScan != 0: # Wenn StartScan != 0 dann Schleife laufen lassen
-                if self.gotData:
-                    if getConfigCodes(self.admin.rfid) and int(getConfigValue(self.admin.rfid)) >= -5:
-                        print(self.admin.rfid)
-                        self.DialogWindow(1, 1920, 1080)
-                        self.startScan = 0
-                        self.gotData = False
-                        break
-                    else:
-                        print("error")
-                        self.error.setupUI(1)
-                        break
+            if self.TESTBIT:
+                self.DialogWindow(1, 1920, 1080)
+            else:
+                self.error.setupUI(1)
+            # self.startScan = 1 # Eigene Variable zum merken des Starts
+            # self.admin.fromAdminGo = 1  # Globale Variable zum Scanauftrag schicken
+            # while self.startScan != 0: # Wenn StartScan != 0 dann Schleife laufen lassen
+            #     if self.gotData:
+            #         if getConfigCodes(self.admin.rfid) and int(getConfigValue(self.admin.rfid)) >= -5:
+            #             print(self.admin.rfid)
+            #             self.DialogWindow(1, 1920, 1080)
+            #             self.startScan = 0
+            #             self.gotData = False
+            #             break
+            #         else:
+            #             print("error")
+            #             self.error.setupUI(1)
+            #             break
         # Mittleres Bild
         if 810 <= x <= 810 + 300 and 210 <= y <= 510:
             self.startScan = 1  # Eigene Variable zum merken des Starts
@@ -293,41 +311,6 @@ class MainWindow(QMainWindow):
         else:
             print("thread not running")
 
-    def errorstart(self):
-        if self.runningerr == 0:
-            self.runningerr = 1
-            self.threaderr = Thread(target=self.err_thread)
-            self.threaderr.start()
-
-    def errorstop(self):
-        if self.runningerr:
-            self.runningerr = 0
-            self.threaderr.join()
-
-    def err_thread(self):
-        """
-        Eigens für die Anwendung entwickelter ErrorHandler. Falls gewisse Schalter
-        ausgeschalten sind, werden dementsprechend Fehler angezeigt und das Programm
-        pausiert.
-
-        :return:
-        """
-        val = 0
-        print("error started")
-        while self.runningerr != 0:
-            sleep(1)
-            print("thread")
-            try:
-                if gpiocontrol.readInput(23):
-                    print(val)
-                    val += 1
-#                    self.error.setupUI(3, 0)
-                elif gpiocontrol.readInput(23):
-                    print("error2")
-#                    self.error.setupUI(4, 0)
-            except Exception as e:
-                print(e)
-
 
 def getConfigCodes(searchstring):
     """
@@ -359,13 +342,29 @@ def getConfigValue(searchstring):
     del config
     return ret
 
+
+class ErrorMonitor(QObject):
+    error_signal = QtCore.pyqtSignal(int)
+
+    @QtCore.pyqtSlot()
+    def monitor_errors(self):
+        while True:
+            sleep(1)
+            if gpiocontrol.readInput(23):
+                print("errordetected")
+                #self.error_signal.emit(4)
+            elif gpiocontrol.readInput(6):
+                print("errordetected")
+                #self.error_signal.emit(5)
+
+
 def main():
     import sys
     app = QApplication(sys.argv)
     # Erstellt Objekt win mit UI_MainWindow() und erstellt im Anschluss das User Interface und zeigt es an.
     win = MainWindow()
-    win.errorstart()
-    win.startc()
+#    win.errorstart()
+#    win.startc()
     # Funktion SetupUI wird ausgeführt, und somit das Fenster initialisiert.
     win.setupUi()
     # Funktion show zeigt das vorher initialisierte Fenster an.

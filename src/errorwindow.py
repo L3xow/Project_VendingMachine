@@ -66,39 +66,39 @@ class errorwindow(QDialog):
         # ToDo: LEDs nach farben einfügen
         if ErrID == 1:
             print("debug")
-            gpiocontrol.writeOutput(self.redLED, 0)
-            gpiocontrol.writeOutput(self.greenLED, 1)
+            # gpiocontrol.writeOutput(self.redLED, 0)
+            # gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
 #            self.pixlabel.setPixmap(QtGui.QPixmap("error.png"))
             self.textlabel.setText("Error: RFID Code nicht angelegt oder nicht genügend Guthaben!")
             self.textlabel.show()
         elif ErrID == 2:
-            gpiocontrol.writeOutput(self.redLED, 0)
-            gpiocontrol.writeOutput(self.greenLED, 1)
+            # gpiocontrol.writeOutput(self.redLED, 0)
+            # gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
             self.textlabel.setText("Error: RFID noch einmal scannen!")
             self.textlabel.show()
         elif ErrID == 3:
-            gpiocontrol.writeOutput(self.yellowLED, 0)
-            gpiocontrol.writeOutput(self.greenLED, 1)
+            # gpiocontrol.writeOutput(self.yellowLED, 0)
+            # gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_warning)
             self.textlabel.setText("Warnung: Füllstand " + str(self.sweets) + ". Süßigkeit zu niedrig")
             self.show()
         elif ErrID == 4:
-            gpiocontrol.writeOutput(self.redLED, 0)
-            gpiocontrol.writeOutput(self.greenLED, 1)
+            # gpiocontrol.writeOutput(self.redLED, 0)
+            # gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
             self.textlabel.setText("Error: Plexiglas Platte nicht ordnungsgemäß befestigt!")
             self.show()
         elif ErrID == 5:
-            gpiocontrol.writeOutput(self.redLED, 0)
-            gpiocontrol.writeOutput(self.greenLED, 1)
+            # gpiocontrol.writeOutput(self.redLED, 0)
+            # gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
             self.textlabel.setText("Error: Wartungsschalter an der Rückseite ist ausgeschalten!")
             self.show()
         elif ErrID == 6:
-            gpiocontrol.writeOutput(self.redLED, 0)
-            gpiocontrol.writeOutput(self.greenLED, 1)
+            # gpiocontrol.writeOutput(self.redLED, 0)
+            # gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
             self.textlabel.setText("Error: RFID ist kein AdminRFID! Zugriff Verweigert!")
             self.show()
@@ -113,7 +113,7 @@ class errorwindow(QDialog):
         :return:
         """
         # ToDo: LED GREEN and RESET other LEDS
-        gpiocontrol.writeOutput(self.greenLED, 0)
-        gpiocontrol.writeOutput(self.yellowLED, 1)
-        gpiocontrol.writeOutput(self.redLED, 1)
+        # gpiocontrol.writeOutput(self.greenLED, 0)
+        # gpiocontrol.writeOutput(self.yellowLED, 1)
+        # gpiocontrol.writeOutput(self.redLED, 1)
         self.close()
