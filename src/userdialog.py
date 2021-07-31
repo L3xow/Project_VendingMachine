@@ -47,7 +47,7 @@ class Ui_Dialog(QWidget):
         self.unitCheck = 0
         self.countrunning = 0
         self.timerrunning = 0
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(1)
         self.cdtime = 10000  # Countdown-Timer in ms           # ToDo: Zeit auf 10000 ändern, nur aufgrund Debugging
 
         # Initialisiert sämtliche Variablen des Konstruktors
