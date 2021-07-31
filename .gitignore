@@ -44,7 +44,6 @@ htmlcov/
 .cache
 nosetests.xml
 coverage.xml
-config.ini
 *.cover
 .hypothesis/
 .pytest_cache/
@@ -117,4 +116,4 @@ docs/.idea/vcs.xml
 docs/.idea/modules.xml
 docs/.idea/misc.xml
 docs/.idea/docs.iml
-config.ini
+
