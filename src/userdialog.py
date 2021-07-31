@@ -28,7 +28,7 @@ class QTCore:
 class Ui_Dialog(QWidget):
     fileGIF = ''
 
-    def __init__(self, file2, fileGIF, ID, id_sweets, unit_time, rfid, parent=None):
+    def __init__(self, parent=None):
         """
         Konstruktor für das DialogFenster das ebenfalls die Kameraauswertung vornimmt.
 
@@ -47,26 +47,10 @@ class Ui_Dialog(QWidget):
         self.unitCheck = 0
         self.countrunning = 0
         self.timerrunning = 0
-        self.cap = cv2.VideoCapture(1)
         self.cdtime = 10000  # Countdown-Timer in ms           # ToDo: Zeit auf 10000 ändern, nur aufgrund Debugging
 
-        # Initialisiert sämtliche Variablen des Konstruktors
-        self.fileGIF = fileGIF
-        self.fileText2 = open(file2, encoding='utf-8', mode="r").read()
-        self.trainingID = ID
-        self.id_sweets = id_sweets
-        self.unit_time = unit_time  # Zeit in s für Übung
-        self.rfid = rfid
 
-        # Initialisiert die Timer für die Zeitvorgabe an den Benutzer
-        # MyCount ist in dem Fall der Countdown von 10s
-        # self.myCount = QTimer()
-        # self.myCount.timeout.connect(self.countdown)
-        # MyTime ist die Zeit für die Übung
-        # self.myTime = QTimer()
-        # self.myTime.timeout.connect(self.timer)
-
-    def setupUI(self, w, h):
+    def setupUI(self, w, h, file2, fileGIF, ID, id_sweets, unit_time, rfid,):
         """
         Funktion zum initialisieren und erstellen des Fensters der Süßigkeitenauswahl. Aufruf und Init aller
         Labels und Elemente die anzuzeigen sind.
@@ -75,10 +59,20 @@ class Ui_Dialog(QWidget):
         :param h: (int) : Höhe des Fensters
         :return:
         """
+        # Initialisiert sämtliche Variablen des Konstruktors
+        self.fileGIF = fileGIF
+        self.fileText2 = open(file2, encoding='utf-8', mode="r").read()
+        self.trainingID = ID
+        self.id_sweets = id_sweets
+        self.unit_time = unit_time  # Zeit in s für Übung
+        self.rfid = rfid
+        self.cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+
         self.setObjectName("Dialog")
         self.setWindowTitle("Help Automat")
         self.resize(w, h)
-        self.setStyleSheet("background-color: rgb(0, 0, 0)")  # 49 49 51
+        self.move(1920/2 - 1600/2, 1080/2 - 900/2)
+        self.setStyleSheet("background-color: rgb(49, 49, 51)")  # 49 49 51
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setWindowFlag(Qt.WindowStaysOnTopHint)
         # Funktionsaufruf um den Button OK zu erstellen
@@ -90,9 +84,6 @@ class Ui_Dialog(QWidget):
         # Funktionsaufruf zum erstellen der Timer Label
         self.labelTimer()
         # Funktionsaufruf zum erstellen des GIFs/der Animation in der mitte des Fensters
-        self.labelGIF()
-        print(self.id_sweets, self.trainingID)
-        print(self.rfid)
 
     def labelGIF(self):
         """
@@ -157,12 +148,14 @@ class Ui_Dialog(QWidget):
         :return:
         """
         self.label_Time = QLabel("label_Time", self)
-        self.label_Time.move(550, 400)
         #        self.label_Time.setGeometry(QtCore.QRect(650, 400, 300, 120))
         self.label_Time.setObjectName("label_Time")
         self.label_Time.setStyleSheet("color: rgba(255, 0, 0, 1); font: bold; font-size: 200px")
         self.label_Time.setText(str("10.00") + " s")  # ToDo: Zeit auf 10s ändern, nur aufgrund Debugging
         self.label_Time.adjustSize()
+        x = self.label_Time.width()
+        y = self.label_Time.height()
+        self.label_Time.move(1600/2 - x/2, 900/2 - y/2)
         self.label_Time.hide()
 
     def ok(self):
@@ -174,10 +167,9 @@ class Ui_Dialog(QWidget):
 
         :return:
         """
-
         # Sämtliche Anzeigen des Fensters verstecken
         self.label_txt.hide()
-        self.label_GIF.setVisible(False)
+#        self.label_GIF.setVisible(False)
         self.button_ok.hide()
         self.button_back.hide()
 
@@ -195,9 +187,7 @@ class Ui_Dialog(QWidget):
 
             if len(lmList) != 0:
                 if lmList[27][3] > 80 and lmList[28][3] > 80:
-                    print("started")
                     if not self.countrunning:
-                        print("asdf")
                         self.countstart()
             # Array lmList enthält die 32 Landmarks der PoseDetection.
             # Element 0 enthält die ID
@@ -281,8 +271,8 @@ class Ui_Dialog(QWidget):
                         self.unitDone = True
 
 #            cv2.putText(img, str(int(self.unitCounter)), (70, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
-            cv2.imshow("Image", img)  # ToDo: Zeit ändern + Image auskommentieren
-            cv2.waitKey(10)
+#            cv2.imshow("Image", img)  # ToDo: Zeit ändern + Image auskommentieren
+            cv2.waitKey(20)
 
     def countdown(self):
         """
@@ -294,10 +284,14 @@ class Ui_Dialog(QWidget):
         print("Countdown started")
         while self.countrunning != 0:
             if self.cdtime != 0:
-                self.cdtime -= 500
-                sleep(0.5)
+                self.cdtime -= 200
+                sleep(0.2)
                 print(self.cdtime)
                 self.label_Time.setText(str(self.cdtime / 1000) + " s")
+                self.label_Time.adjustSize()
+                x = self.label_Time.width()
+                y = self.label_Time.height()
+                self.label_Time.move(1600 / 2 - x / 2, 900 / 2 - y / 2)
                 if self.cdtime == 0:  # wenn Countdown fertig, dann neuen Timer starten für Übungszeit
                     self.timerstart()
                     break
@@ -324,6 +318,9 @@ class Ui_Dialog(QWidget):
                     2) + " min"  # Timer String zusammenbauen, zfill um "0" vor der Zahl zu setzen
                 self.label_Time.setText(new_string)
                 self.label_Time.adjustSize()
+                x = self.label_Time.width()
+                y = self.label_Time.height()
+                self.label_Time.move(1600 / 2 - x / 2, 900 / 2 - y / 2)
             else:
                 print("timer stop")
                 print(self.unitDone)
@@ -338,6 +335,7 @@ class Ui_Dialog(QWidget):
 
     def back(self):  # ToDo: Funktion überprüfen, ob überhaupt nötig
         print("Button Pressed back")
+        self.cap.release()
 
     def notSucceeded(self):
         """
@@ -350,7 +348,6 @@ class Ui_Dialog(QWidget):
         """
         self.decrementMoney()
         self.decrementCounterPunishment
-        self.myTime.stop()
         print("noSuccess")
         self.label_Time.setStyleSheet("color: red; font-size: 54px; font: bold")
         self.label_Time.setText("Es scheint als wäre das Ziel nicht erreicht!\n"
@@ -360,6 +357,7 @@ class Ui_Dialog(QWidget):
         self.label_Time.adjustSize()
         self.label_Time.move(300, 400)
         self.label_Time.show()
+        self.cap.release()
         start(4)  # Motor 4 für Gesunde Mahlzeit
         self.close()
 
@@ -382,6 +380,7 @@ class Ui_Dialog(QWidget):
         self.label_Time.move(407, 400)
         self.label_Time.show()
         start(id_sweets)  # id_sweets
+        self.cap.release()
         self.close()
 
     def decrementMoney(self):

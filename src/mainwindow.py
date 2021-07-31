@@ -14,7 +14,7 @@ Ebenfalls gibt es ein RFID System damit die Süßigkeit auch bezahlt werden kann
 '''
 # ToDo: GPIOs einbauen und fertig machen
 # ToDo: Kommentare anpassen/übersetzen, Code Refactoren um Warnungen zu entfernen.
-
+import errno
 
 from PyQt5 import Qt, QtCore, QtGui
 from PyQt5.QtCore import pyqtSlot, QRunnable, QThreadPool, QObject
@@ -24,10 +24,12 @@ import os
 
 from src import gpiocontrol
 from src.errorwindow import errorwindow
-from unitselectwindow import UnitSelectWindow
 import socket
 from threading import Thread
 from time import *
+
+from src.unitselectwindow import UnitSelectWindow
+
 
 class MainWindow(QMainWindow):
     width = 1920
@@ -144,12 +146,15 @@ class MainWindow(QMainWindow):
         y = a0.y()
         # Linkes Bild
         if 180 <= x <= 480 and 210 <= y <= 510:
-            if self.TESTBIT:
-                self.DialogWindow(1, 1920, 1080)
-            else:
-                self.error.setupUI(1)
-            # self.startScan = 1 # Eigene Variable zum merken des Starts
-            # self.admin.fromAdminGo = 1  # Globale Variable zum Scanauftrag schicken
+            self.client = client()
+            self.client.send_data("scan")
+            self.data = self.client.get_data()
+            self.admin.rfid = self.data
+            if self.data:
+                if getConfigCodes(self.admin.rfid) and int(getConfigValue(self.admin.rfid)) >= -5:
+                    self.DialogWindow(1, 1920, 1080)
+                else:
+                    self.error.setupUI(1)
             # while self.startScan != 0: # Wenn StartScan != 0 dann Schleife laufen lassen
             #     if self.gotData:
             #         if getConfigCodes(self.admin.rfid) and int(getConfigValue(self.admin.rfid)) >= -5:
@@ -193,20 +198,18 @@ class MainWindow(QMainWindow):
                         self.error.setupUI(1)
                         break
         if 1729 <= x <= 1900 and 980 <= y <= 1060:
-            self.startScan = 1  # Eigene Variable zum merken des Starts
-            self.admin.fromAdminGo = 1  # Globale Variable zum Scanauftrag schicken
-            while self.startScan != 0:  # Wenn StartScan != 0 dann Schleife laufen lassen
-                if self.gotData:
-                    if self.admin.rfid == "670621518554" or self.admin.rfid == "admincode2":
-                        print(type(self.admin.rfid))
-                        self.admin.setupUI()
-                        self.admin.show()
-                        self.startScan = 0
-                        self.gotData = False
-                        break
-                    else:
-                        self.error.setupUI(6)
-                        break
+            self.client = client()
+            self.client.send_data("scan")
+            self.data = self.client.get_data()
+            self.admin.rfid = self.data
+            if self.data:
+                if self.admin.rfid == "670621518554" or self.admin.rfid == "admincode2" or self.admin.rfid == "rfidcode":
+                    print(type(self.admin.rfid))
+                    self.admin.setupUI()
+                    self.admin.show()
+                else:
+                    self.error.setupUI(6)
+
 
     def DialogWindow(self, id, w, h):
         """
@@ -221,95 +224,96 @@ class MainWindow(QMainWindow):
         self.win.setupUI(w, h)
         self.win.show()
 
-    def socket_thread(self):
-        """
-        Stellt den Server Prozess als Thread dar. Verwaltet sämtliche TCP Angelegenheiten
-        mit dem Raspberry Pi, um einen Scanbefehl zu erteilen und um den gescannten RFID
-        Code zurückzugeben.
+    # def client_thread(self):
+    #     """
+    #     Stellt den Server Prozess als Thread dar. Verwaltet sämtliche TCP Angelegenheiten
+    #     mit dem Raspberry Pi, um einen Scanbefehl zu erteilen und um den gescannten RFID
+    #     Code zurückzugeben.
+    #
+    #     :return:
+    #     """
+    #     print("thread started..")
+    #     self.ls = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    #     port = 9999
+    #     self.ls.bind(('', port))
+    #     print("Server listening on port %s" % port)
+    #     self.ls.listen(1)
+    #     self.ls.settimeout(15)
+    #     while self.running != 0:
+    #         if self.conn is None:
+    #             try:
+    #                 (self.conn, self.addr) = self.ls.accept()
+    #                 print("client is at", self.addr[0], "on port", self.addr[1])
+    #
+    #             except socket.timeout as e:
+    #                 print("Waiting for Connection...")
+    #
+    #             except Exception as e:
+    #                 print("Connect exception: " + str(e))
+    #
+    #         if self.conn != None and self.admin.fromAdminGo:
+    #             sleep(1)
+    #             self.admin.fromAdminGo = 0
+    #             print("connected to " + str(self.conn) + "," + str(self.addr))
+    #             self.conn.settimeout(15)
+    #             self.rc = ""
+    #             connect_start = time()  # actually, I use this for a timeout timer
+    #             if self.rc != "done":
+    #                 self.rc = ''
+    #                 try:
+    #                     self.conn.send(b"scan")
+    #                     print("sent")
+    #                     self.rc = self.conn.recv(20).decode('utf-8')
+    #                     print("rcvd")
+    #                     self.admin.rfid = self.rc
+    #                     self.admin.updateEdit()
+    #                 except Exception as e:
+    #                     # we can wait on the line if desired
+    #                     print("socket error: " + repr(e))
+    #
+    #                 if len(self.rc):
+    #                     print("got data", self.rc)
+    #                     self.gotData = True
+    #                     connect_start = time()  # reset timeout time
+    #                 elif (self.running == 0) or (time() - connect_start > 30):
+    #                     print("Tired of waiting on connection!")
+    #                     self.rc = "done"
+    #
+    #             # print("closing connection")
+    #             # self.conn.close()
+    #             # self.conn = None
+    #             # print("connection closed.")
+    #
+    #     print("closing listener...")
+    #     # self running became 0
+    #     self.ls.close()
 
-        :return:
-        """
-        print("thread started..")
-        self.ls = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        port = 9999
-        self.ls.bind(('', port))
-        print("Server listening on port %s" % port)
-        self.ls.listen(2)
-        self.ls.settimeout(15)
-        while self.running != 0:
-            if self.conn is None:
-                try:
-                    (self.conn, self.addr) = self.ls.accept()
-                    print("client is at", self.addr[0], "on port", self.addr[1])
-
-                except socket.timeout as e:
-                    print("Waiting for Connection...")
-
-                except Exception as e:
-                    print("Connect exception: " + str(e))
-
-            if self.conn != None and self.admin.fromAdminGo:
-                self.admin.fromAdminGo = 0
-                print("connected to " + str(self.conn) + "," + str(self.addr))
-                self.conn.settimeout(15)
-                self.rc = ""
-                connect_start = time()  # actually, I use this for a timeout timer
-                if self.rc != "done":
-                    self.rc = ''
-                    try:
-                        self.conn.send(b"scan")
-                        print("sent")
-                        self.rc = self.conn.recv(1000).decode('utf-8')
-                        print("rcvd")
-                        self.admin.rfid = self.rc
-                        self.admin.updateEdit()
-                    except Exception as e:
-                        # we can wait on the line if desired
-                        print("socket error: " + repr(e))
-
-                    if len(self.rc):
-                        print("got data", self.rc)
-                        self.gotData = True
-                        connect_start = time()  # reset timeout time
-                    elif (self.running == 0) or (time() - connect_start > 30):
-                        print("Tired of waiting on connection!")
-                        self.rc = "done"
-
-                # print("closing connection")
-                # self.conn.close()
-                # self.conn = None
-                # print("connection closed.")
-
-        print("closing listener...")
-        # self running became 0
-        self.ls.close()
-
-    def startc(self):
-        """
-        Startet den Server Thread.
-
-        :return:
-        """
-        if self.running == 0:
-            print("Starting thread")
-            self.running = 1
-            self.thread = Thread(target=self.socket_thread)
-            self.thread.start()
-        else:
-            print("thread already started.")
-
-    def stopc(self):
-        """
-        Stoppt den Server Thread.
-
-        :return:
-        """
-        if self.running:
-            print("stopping thread...")
-            self.running = 0
-            self.thread.join()
-        else:
-            print("thread not running")
+    # def startc(self):
+    #     """
+    #     Startet den Server Thread.
+    #
+    #     :return:
+    #     """
+    #     if self.running == 0:
+    #         print("Starting thread")
+    #         self.running = 1
+    #         self.thread = Thread(target=self.client_thread)
+    #         self.thread.start()
+    #     else:
+    #         print("thread already started.")
+    #
+    # def stopc(self):
+    #     """
+    #     Stoppt den Server Thread.
+    #
+    #     :return:
+    #     """
+    #     if self.running:
+    #         print("stopping thread...")
+    #         self.running = 0
+    #         self.thread.join()
+    #     else:
+    #         print("thread not running")
 
 
 def getConfigCodes(searchstring):
@@ -324,6 +328,7 @@ def getConfigCodes(searchstring):
     config = cp.ConfigParser()
     config.read("config.ini")
     for option in config.options("RFID"):
+        print(option)
         if option == searchstring:
             del config
             return True
@@ -356,6 +361,36 @@ class ErrorMonitor(QObject):
             elif gpiocontrol.readInput(6):
                 print("errordetected")
                 #self.error_signal.emit(5)
+
+
+class client():
+
+    def __init__(self):
+        print("Trying to connect")
+        TCP_IP = '192.168.2.41' # IP RasPi
+        TCP_PORT = 9999
+        self.data = 0
+        self.BUFF = 10
+
+        self.s = socket.socket()
+        self.s.connect((TCP_IP, TCP_PORT))
+
+    def get_data(self):
+        try:
+            self.data = self.s.recv(self.BUFF)
+            sleep(0.5)
+        except socket.error as e:
+            err = e.args[0]
+            if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
+                sleep(1)
+                print("No Data was available")
+            else:
+                print(e)
+        return self.data.decode('utf-8')
+
+    def send_data(self, data):
+        self.s.send(data.encode())
+        print("data sent")
 
 
 def main():

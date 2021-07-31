@@ -3,8 +3,7 @@ from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QDialog, QLineEdit, QLabel, QPushButton
 import configparser as cp
 
-
-
+from src.mainwindow import client
 
 
 class adminwindow(QDialog):
@@ -39,6 +38,7 @@ class adminwindow(QDialog):
         buttonSweetsReset = QPushButton("Reset all", self)
         buttonScan = QPushButton("Scan RFID", self)
         buttonSet = QPushButton("Set", self)
+        buttonClose = QPushButton("Close", self)
 
 
         #ConfigINIT
@@ -132,6 +132,10 @@ class adminwindow(QDialog):
         buttonSet.resize(80, 30)
         buttonSet.move(1000, 450)
         buttonSet.clicked.connect(self.set)
+
+        buttonClose.resize(120, 50)
+        buttonClose.move(1400, 800)
+        buttonClose.clicked.connect(lambda: self.close())
 
         self.setStyleSheet("QLineEdit { background-color: rgb(255, 255, 255); font-weight: bold; font-size: 12px; border: 2px solid white;}"
                            "QDialog { background-color: rgb(200,200,200); }"
@@ -233,7 +237,12 @@ class adminwindow(QDialog):
 
         :return:
         """
-        self.fromAdminGo = 1
+        self.client = client()
+        self.client.send_data("scan")
+        self.data = self.client.get_data()
+        self.rfid = self.data
+        if self.data:
+            self.updateEdit()
 
     def updateEdit(self):
         """
@@ -268,3 +277,5 @@ class adminwindow(QDialog):
         self.config["RFID"][self.rfid] = self.inputMoney.text()
         with open("config.ini", "w") as configfile:
             self.config.write(configfile)
+            self.moneylabel.setText(self.inputMoney.text())
+            self.moneylabel.show()
