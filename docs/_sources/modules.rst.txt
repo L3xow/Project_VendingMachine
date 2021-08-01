@@ -6,9 +6,11 @@ src
 
    PiTest
    PoseModule
-   gpioread
+   ServerTest
+   adminwindow
+   errorwindow
+   gpiocontrol
    mainwindow
    motor
-   test
    unitselectwindow
    userdialog

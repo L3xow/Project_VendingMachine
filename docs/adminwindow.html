@@ -1,0 +1,363 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>adminwindow.py &mdash; Suessigkeitenautomat 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="errorwindow module" href="errorwindow.html" />
+    <link rel="prev" title="ServerTest module" href="ServerTest.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Suessigkeitenautomat
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Inhalte:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="mainwindow.html">mainwindow.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="unitselectwindow.html">unitselectwindow.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="userdialog.html">userdialog.py</a></li>
+    <li class="toctree-l2 current"><a class="current reference internal" href="#">adminwindow.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="errorwindow.html">errorwindow.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="PoseModule.html">PoseModule.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="ServerTest.html">ServerTest.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="gpiocontrol.html">gpiocontrol.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="motor.html">motor.py</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Suessigkeitenautomat</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">src</a> &raquo;</li>
+        
+      <li>adminwindow.py</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/adminwindow.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-adminwindow">
+<span id="adminwindow-module"></span><h1>adminwindow.py<a class="headerlink" href="#module-adminwindow" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="adminwindow.adminwindow">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">adminwindow.</span></span><span class="sig-name descname"><span class="pre">adminwindow</span></span><a class="headerlink" href="#adminwindow.adminwindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="adminwindow.adminwindow.fromAdminGo">
+<span class="sig-name descname"><span class="pre">fromAdminGo</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#adminwindow.adminwindow.fromAdminGo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="adminwindow.adminwindow.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adminwindow.adminwindow.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setzt alle Werte auf Standardwert (20), speichert diese im Anschluss und aktualisiert
+diese in den Feldern.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="adminwindow.adminwindow.rfid">
+<span class="sig-name descname"><span class="pre">rfid</span></span><em class="property"> <span class="pre">=</span> <span class="pre">''</span></em><a class="headerlink" href="#adminwindow.adminwindow.rfid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="adminwindow.adminwindow.savefour">
+<span class="sig-name descname"><span class="pre">savefour</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adminwindow.adminwindow.savefour" title="Permalink to this definition">¶</a></dt>
+<dd><p>Speichert den Wert des dritten Feldes in die config.ini.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="adminwindow.adminwindow.saveone">
+<span class="sig-name descname"><span class="pre">saveone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adminwindow.adminwindow.saveone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Speichert den Wert des ersten Feldes in die config.ini.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="adminwindow.adminwindow.savethree">
+<span class="sig-name descname"><span class="pre">savethree</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adminwindow.adminwindow.savethree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Speichert den Wert des dritten Feldes in die config.ini.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="adminwindow.adminwindow.savetwo">
+<span class="sig-name descname"><span class="pre">savetwo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adminwindow.adminwindow.savetwo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Speichert den Wert des zweiten Feldes in die config.ini.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="adminwindow.adminwindow.scanrfid">
+<span class="sig-name descname"><span class="pre">scanrfid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adminwindow.adminwindow.scanrfid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Startet bei Aufruf den Scanvorgang des RFIDs über den Socket Server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="adminwindow.adminwindow.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adminwindow.adminwindow.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Funktion dient zum setzen des im Eingabefeld eingegebenen Wertes.
+Wert wird dann in der Config File aktualisiert.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="adminwindow.adminwindow.setupUI">
+<span class="sig-name descname"><span class="pre">setupUI</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adminwindow.adminwindow.setupUI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Erstellt und initialisiert sämtliche Button, Anzeigen und Eingabefelder von
+adminwindow. Ist-Werte der Füllstände werden aus der Config File ausgelesen
+und als Default Wert in die Eingabefelder eingetragen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="adminwindow.adminwindow.textlabel">
+<span class="sig-name descname"><span class="pre">textlabel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#adminwindow.adminwindow.textlabel" title="Permalink to this definition">¶</a></dt>
+<dd><p>&quot;UniversalLabel&quot;</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> -- (str) : Text der angezeigt werden soll.</p></li>
+<li><p><strong>x</strong> -- (int) : x-Koordinate</p></li>
+<li><p><strong>y</strong> -- (int) : y-Koordinate</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="adminwindow.adminwindow.updateEdit">
+<span class="sig-name descname"><span class="pre">updateEdit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adminwindow.adminwindow.updateEdit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Funktion dient zum anzeigen des Guthabens und des gescannten RFID Codes im
+Eingabefeld des Adminfensters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="errorwindow.html" class="btn btn-neutral float-right" title="errorwindow module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ServerTest.html" class="btn btn-neutral float-left" title="ServerTest module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, TKallmeier.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

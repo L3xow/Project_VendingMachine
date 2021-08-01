@@ -1,0 +1,7 @@
+adminwindow module
+==================
+
+.. automodule:: adminwindow
+   :members:
+   :undoc-members:
+   :show-inheritance:

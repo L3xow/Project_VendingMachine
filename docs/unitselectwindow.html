@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>unitselectwindow module &mdash; Suessigkeitenautomat 1.0.0 documentation</title>
+  <title>unitselectwindow.py &mdash; Suessigkeitenautomat 1.0.0 documentation</title>
   
 
   
@@ -42,7 +42,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="userdialog module" href="userdialog.html" />
-    <link rel="prev" title="test module" href="test.html" /> 
+    <link rel="prev" title="motor module" href="motor.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,17 +87,18 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Inhalte:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="PiTest.html">PiTest module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PoseModule.html">PoseModule module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gpioread.html">gpioread module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mainwindow.html">mainwindow module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="motor.html">motor module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test.html">test module</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">unitselectwindow module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="userdialog.html">userdialog module</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="mainwindow.html">mainwindow.py</a></li>
+    <li class="toctree-l2 current"><a class="current reference internal" href="#">unitselectwindow.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="userdialog.html">userdialog.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="adminwindow.html">adminwindow.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="errorwindow.html">errorwindow.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="PoseModule.html">PoseModule.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="ServerTest.html">ServerTest.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="gpiocontrol.html">gpiocontrol.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="motor.html">motor.py</a></li>
 </ul>
 </li>
 </ul>
@@ -150,7 +151,7 @@
         
           <li><a href="modules.html">src</a> &raquo;</li>
         
-      <li>unitselectwindow module</li>
+      <li>unitselectwindow.py</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -170,11 +171,15 @@
            <div itemprop="articleBody">
             
   <div class="section" id="module-unitselectwindow">
-<span id="unitselectwindow-module"></span><h1>unitselectwindow module<a class="headerlink" href="#module-unitselectwindow" title="Permalink to this headline">¶</a></h1>
+<span id="unitselectwindow-module"></span><h1>unitselectwindow.py<a class="headerlink" href="#module-unitselectwindow" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="unitselectwindow.UnitSelectWindow">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">unitselectwindow.</span></span><span class="sig-name descname"><span class="pre">UnitSelectWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_sweets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unitselectwindow.UnitSelectWindow" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">unitselectwindow.</span></span><span class="sig-name descname"><span class="pre">UnitSelectWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_sweets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rfid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#unitselectwindow.UnitSelectWindow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QWidget</span></code></p>
+<p>Dient zum anzeigen der Übungsauswahl-Maske. In dieser hat der Benutzer die Möglichkeit eine von vier Übungen
+auszuwählen. Diese werden als GIF (Graphics Interchange Format) Animation vorgestellt. Es wird auch der gleiche
+Text des MainWindows angezeigt, also die Erklärung, wie der Benutzer vorzugehen hat.
+Nach auswahl der Süßigkeit, wird weitergeschalten in das UserDialog Fenster.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="unitselectwindow.UnitSelectWindow.Unit_Four">
 <span class="sig-name descname"><span class="pre">Unit_Four</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#unitselectwindow.UnitSelectWindow.Unit_Four" title="Permalink to this definition">¶</a></dt>
@@ -226,9 +231,9 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>fileGIF</strong> – (path) : Pfad der Animation die angezeigt werden soll.</p></li>
-<li><p><strong>x</strong> – (int) Position der Animation in x-Richtung.</p></li>
-<li><p><strong>y</strong> – (int) Position der Animation in y-Richtung.</p></li>
+<li><p><strong>fileGIF</strong> -- (path) : Pfad der Animation die angezeigt werden soll.</p></li>
+<li><p><strong>x</strong> -- (int) Position der Animation in x-Richtung.</p></li>
+<li><p><strong>y</strong> -- (int) Position der Animation in y-Richtung.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -244,9 +249,9 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>txt</strong> – (string) : String der Erklärung die aus der File “MainwindowDescr.txt” eingelesen wurde.</p></li>
-<li><p><strong>x</strong> – (int) Position des Labels in x-Richtung.</p></li>
-<li><p><strong>y</strong> – (int) Position des Labels in y-Richtung.</p></li>
+<li><p><strong>txt</strong> -- (string) : String der Erklärung die aus der File &quot;MainwindowDescr.txt&quot; eingelesen wurde.</p></li>
+<li><p><strong>x</strong> -- (int) Position des Labels in x-Richtung.</p></li>
+<li><p><strong>y</strong> -- (int) Position des Labels in y-Richtung.</p></li>
 </ul>
 </dd>
 </dl>
@@ -259,7 +264,7 @@
 y zurückgegeben.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>a0</strong> – -/-</p>
+<dd class="field-odd"><p><strong>a0</strong> -- -/-</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>-/-</p>
@@ -275,8 +280,8 @@ Labels und Elemente die anzuzeigen sind.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>w</strong> – (int) : Weite des Fensters</p></li>
-<li><p><strong>h</strong> – (int) : Höhe des Fensters</p></li>
+<li><p><strong>w</strong> -- (int) : Weite des Fensters</p></li>
+<li><p><strong>h</strong> -- (int) : Höhe des Fensters</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -296,7 +301,7 @@ Labels und Elemente die anzuzeigen sind.</p>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="userdialog.html" class="btn btn-neutral float-right" title="userdialog module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="test.html" class="btn btn-neutral float-left" title="test module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="motor.html" class="btn btn-neutral float-left" title="motor module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>userdialog module &mdash; Suessigkeitenautomat 1.0.0 documentation</title>
+  <title>userdialog.py &mdash; Suessigkeitenautomat 1.0.0 documentation</title>
   
 
   
@@ -86,17 +86,18 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Inhalte:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="PiTest.html">PiTest module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PoseModule.html">PoseModule module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gpioread.html">gpioread module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mainwindow.html">mainwindow module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="motor.html">motor module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test.html">test module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="unitselectwindow.html">unitselectwindow module</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">userdialog module</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="mainwindow.html">mainwindow.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="unitselectwindow.html">unitselectwindow.py</a></li>
+    <li class="toctree-l2 current"><a class="current reference internal" href="#">userdialog.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="adminwindow.html">adminwindow.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="errorwindow.html">errorwindow.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="PoseModule.html">PoseModule.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="ServerTest.html">ServerTest.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="gpiocontrol.html">gpiocontrol.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="motor.html">motor.py</a></li>
 </ul>
 </li>
 </ul>
@@ -149,7 +150,7 @@
         
           <li><a href="modules.html">src</a> &raquo;</li>
         
-      <li>userdialog module</li>
+      <li>userdialog.py</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -169,15 +170,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="module-userdialog">
-<span id="userdialog-module"></span><h1>userdialog module<a class="headerlink" href="#module-userdialog" title="Permalink to this headline">¶</a></h1>
-<p>Pose IDs:</p>
-<p>16 rechtes Handgelenk
-15 linkes Handgelenk
-28 rechter Knöchel
-27 linker Knöchel           Visibility &gt; 95 um Genauigkeit zu Gewährleisten</p>
-<p>24 rechte Hüfte
-23 linke Hüfte
-0 Nase</p>
+<span id="userdialog-module"></span><h1>userdialog.py<a class="headerlink" href="#module-userdialog" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="userdialog.QTCore">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">userdialog.</span></span><span class="sig-name descname"><span class="pre">QTCore</span></span><a class="headerlink" href="#userdialog.QTCore" title="Permalink to this definition">¶</a></dt>
@@ -186,8 +179,16 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="userdialog.Ui_Dialog">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">userdialog.</span></span><span class="sig-name descname"><span class="pre">Ui_Dialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileGIF</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_sweets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#userdialog.Ui_Dialog" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">userdialog.</span></span><span class="sig-name descname"><span class="pre">Ui_Dialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#userdialog.Ui_Dialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QWidget</span></code></p>
+<p>Dient zum anzeigen der Maske zum bestätigen oder Abbrechen der gewählten Optionen und bereitet die Kameraauswertung
+vor. Sobald der Benutzer bestätigt, wird ein 10s Countdown Timer angezeigt. Dieser wird auf einem extra Thread aus-
+geführt um Performance zu sparen. Der Timer fängt an zu zählen, wenn der Benutzer sich vor der Kamera aufgestellt
+hat und diese ihn erkannt hat. Sobald der Countdown null erreicht hat, startet ein variabler Minuten Timer. Von da
+an werden die Ausführungen der Übungen des Benutzers ausgewertet und überwacht. Er muss nun über den gesamten Zeitraum
+die Übung ausführen. Am ende des Timers erfährt er, ob er erfolgreich war oder nicht.
+Nach der Übungsauswertung wird der Geldwert des RFID-Codes angepasst und die vorher gewählte Süßigkeit ausgegeben.
+Anschließend befindet sich der Automat wieder in Ausgangsstellung.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="userdialog.Ui_Dialog.Succeeded">
 <span class="sig-name descname"><span class="pre">Succeeded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_sweets</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#userdialog.Ui_Dialog.Succeeded" title="Permalink to this definition">¶</a></dt>
@@ -196,7 +197,7 @@ Es wird der Text von Label Time angepasst zu einer vorprogrammierten Benachricht
 Anschließend wird der Motor mit der angegebenen ID angesteuert.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>id_sweets</strong> – (int) : Bezogen auf die vorher gewählte Süßigkeit.</p>
+<dd class="field-odd"><p><strong>id_sweets</strong> -- (int) : Bezogen auf die vorher gewählte Süßigkeit.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p></p>
@@ -231,16 +232,73 @@ Anschließend wird der Motor mit der angegebenen ID angesteuert.</p>
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="userdialog.Ui_Dialog.count">
-<span class="sig-name descname"><span class="pre">count</span></span><em class="property"> <span class="pre">=</span> <span class="pre">2000</span></em><a class="headerlink" href="#userdialog.Ui_Dialog.count" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="userdialog.Ui_Dialog.countdown">
 <span class="sig-name descname"><span class="pre">countdown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#userdialog.Ui_Dialog.countdown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wird aufgerufen durch den erstellen Countdown Timer MyCount. Hier wird lediglich der Countdown auf 0 gezählt
 und ständig im 100ms Takt im Fenster aktualisiert und angezeigt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="userdialog.Ui_Dialog.countstart">
+<span class="sig-name descname"><span class="pre">countstart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#userdialog.Ui_Dialog.countstart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dient zum starten des CountdownTimer Threads(Prozesses)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="userdialog.Ui_Dialog.countstop">
+<span class="sig-name descname"><span class="pre">countstop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#userdialog.Ui_Dialog.countstop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dient zum stoppen des CountdownTimer Threads(Prozesses)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="userdialog.Ui_Dialog.decrementCounterPunishment">
+<span class="sig-name descname"><span class="pre">decrementCounterPunishment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#userdialog.Ui_Dialog.decrementCounterPunishment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Funktion dient zum dekrementieren des Bestrafungs-Füllstandes. Ist-Wert wird
+ausgelesene, mit -1 addiert und anschließend in der Config File aktualisiert.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="userdialog.Ui_Dialog.decrementCounterSweets">
+<span class="sig-name descname"><span class="pre">decrementCounterSweets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#userdialog.Ui_Dialog.decrementCounterSweets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Funktion dient zum dekrementieren des Füllstandes der jeweiligen Süßigkeit.
+Zuerst wird der Ist- Wert ausgelesen, dann mit -1 addiert und anschließend wieder
+in der File aktualisiert.
+Dies geschieht für jede der drei Süßigkeiten</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="userdialog.Ui_Dialog.decrementMoney">
+<span class="sig-name descname"><span class="pre">decrementMoney</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#userdialog.Ui_Dialog.decrementMoney" title="Permalink to this definition">¶</a></dt>
+<dd><p>Funktion dient zum dekrementieren des oben übergebenen RFID Codes sobald eine Übung
+ausgeführt wurde. Config File wird geöffnet und der aktuelle Wert des RFID Codes aus-
+gelesen, anschließend zu Integer gewandelt und um mit -1 addiert. Danach wird der Wert
+des Codes in der File aktualisiert.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p></p>
@@ -270,7 +328,7 @@ und ständig im 100ms Takt im Fenster aktualisiert und angezeigt.</p>
 <dd><p>Initialisiert und erstellt das Text Label für die Einverständniserklärung.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>fileText1</strong> – (str) : Text, ausgelesen aus der von oben übergebenen File.</p>
+<dd class="field-odd"><p><strong>fileText1</strong> -- (str) : Text, ausgelesen aus der von oben übergebenen File.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p></p>
@@ -306,7 +364,7 @@ Im Anschluss wird der 4. Motor mit dem Gesunden Nahrungsmittel angesteuert.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="userdialog.Ui_Dialog.ok">
 <span class="sig-name descname"><span class="pre">ok</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#userdialog.Ui_Dialog.ok" title="Permalink to this definition">¶</a></dt>
-<dd><p>Diese Funktion versteckt und zeigt die benötigten Label für die Kameraauswertung-Maske.
+<dd><p>Diese Funktion versteckt und zeigt die benötigten Label für die Kameraauswertungs-Maske.
 Hier findet ebenfalls die Kameraauswertung statt. lmList ( Array ) enthält alle LandmarkIDs, deren x, y, und z
 Koordinaten in einem 3 dimensionalen Array.
 Hier werden lediglich die IDs und die Positionen mit programmierten Bereichen verglichen und ein Zähler inkrementiert.</p>
@@ -319,14 +377,14 @@ Hier werden lediglich die IDs und die Positionen mit programmierten Bereichen ve
 
 <dl class="py method">
 <dt class="sig sig-object py" id="userdialog.Ui_Dialog.setupUI">
-<span class="sig-name descname"><span class="pre">setupUI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#userdialog.Ui_Dialog.setupUI" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">setupUI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileGIF</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_sweets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rfid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#userdialog.Ui_Dialog.setupUI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Funktion zum initialisieren und erstellen des Fensters der Süßigkeitenauswahl. Aufruf und Init aller
 Labels und Elemente die anzuzeigen sind.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>w</strong> – (int) : Weite des Fensters</p></li>
-<li><p><strong>h</strong> – (int) : Höhe des Fensters</p></li>
+<li><p><strong>w</strong> -- (int) : Weite des Fensters</p></li>
+<li><p><strong>h</strong> -- (int) : Höhe des Fensters</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -342,6 +400,28 @@ Labels und Elemente die anzuzeigen sind.</p>
 so geformt, dass dieser richtig im Label Timer angezeigt werden kann.
 Wenn dieser Timer abgelaufen ist, und je nachdem die Übungsauswertung ausfiel, werden verschiedene
 Funktionen zum weiteren Ablauf aufgerufen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="userdialog.Ui_Dialog.timerstart">
+<span class="sig-name descname"><span class="pre">timerstart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#userdialog.Ui_Dialog.timerstart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dient zum starten des ÜbungsTimer Threads(Prozesses)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="userdialog.Ui_Dialog.timerstop">
+<span class="sig-name descname"><span class="pre">timerstop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#userdialog.Ui_Dialog.timerstop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dient zum stoppen des ÜbungsTimer Threads(Prozesses)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p></p>

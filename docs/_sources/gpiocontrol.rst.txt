@@ -1,0 +1,7 @@
+gpiocontrol module
+==================
+
+.. automodule:: gpiocontrol
+   :members:
+   :undoc-members:
+   :show-inheritance:

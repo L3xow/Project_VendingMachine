@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>mainwindow module &mdash; Suessigkeitenautomat 1.0.0 documentation</title>
+  <title>mainwindow.py &mdash; Suessigkeitenautomat 1.0.0 documentation</title>
   
 
   
@@ -42,7 +42,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="motor module" href="motor.html" />
-    <link rel="prev" title="gpioread module" href="gpioread.html" /> 
+    <link rel="prev" title="gpiocontrol module" href="gpiocontrol.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,17 +87,18 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Inhalte:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="PiTest.html">PiTest module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PoseModule.html">PoseModule module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gpioread.html">gpioread module</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">mainwindow module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="motor.html">motor module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test.html">test module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="unitselectwindow.html">unitselectwindow module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="userdialog.html">userdialog module</a></li>
+    <li class="toctree-l2 current"><a class="current reference internal" href="#">mainwindow.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="unitselectwindow.html">unitselectwindow.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="userdialog.html">userdialog.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="adminwindow.html">adminwindow.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="errorwindow.html">errorwindow.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="PoseModule.html">PoseModule.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="ServerTest.html">ServerTest.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="gpiocontrol.html">gpiocontrol.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="motor.html">motor.py</a></li>
 </ul>
 </li>
 </ul>
@@ -150,7 +151,7 @@
         
           <li><a href="modules.html">src</a> &raquo;</li>
         
-      <li>mainwindow module</li>
+      <li>mainwindow.py</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -170,41 +171,61 @@
            <div itemprop="articleBody">
             
   <div class="section" id="module-mainwindow">
-<span id="mainwindow-module"></span><h1>mainwindow module<a class="headerlink" href="#module-mainwindow" title="Permalink to this headline">¶</a></h1>
-<p>Das ist unser Code für die Projektarbeit an der Rudolf Diesel Fachschule in Nürnberg.
-Der Code ist hauptsächlich zur Steuerung unseres nachhaltigen Süßigkeitenautomaten.</p>
-<p>Die Hierarchie des Programms ist wiefolgt:
-mainwindow.py</p>
-<blockquote>
-<div><dl class="simple">
-<dt>unitselectwindow.py</dt><dd><dl class="simple">
-<dt>userdialog.py</dt><dd><p>motor.py
-PoseModule.py</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</div></blockquote>
-<dl class="simple">
-<dt>mainwindow.py</dt><dd><p>Wenn eine der drei Süßigkeiten ausgewählt wurde, wird das Object unitselectwindow aufgerufen und die Süßigkeit als ID übergeben und gespeichert.</p>
-</dd>
-<dt>unitselectwindow.py</dt><dd><p>Wenn eine der 4 Übungen ausgewählt wurde, wird das Object userdialog aufgerufen, in dem dann die Kameraauswertung gestartet wird.</p>
-</dd>
-</dl>
+<span id="mainwindow-module"></span><h1>mainwindow.py<a class="headerlink" href="#module-mainwindow" title="Permalink to this headline">¶</a></h1>
+<p>Das ist unser Code für die Projektarbeit &quot;nachhaltiger Süßigkeitenautomat&quot; an der Rudolf Diesel
+Fachschule in Nürnberg.
+Es wird eine Grafikoberfläche angezeigt, auf der man eine von drei Süßigkeiten auswählen muss.
+Anschließend darf der Benutzer sich eine Übung aussuchen, die er absolvieren möchte.
+Die gewählte Übung wird anschließend mittels Kameraüberwachung ausgewertet. Dies geschieht mit dem Algorithmus von
+Mediapipe.
+Im Anschluss wird entweder die gewählte Süßigkeit ausgegeben, oder wenn die Übung nicht erfolgreich war,
+eine Bestrafung in Form eines gesunden Snacks ausgegeben.</p>
+<p>Weitere Systeme die im Hintergrund aktiv sind:
+RFID-Scanner, durch auswählen einer Süßigkeit wird mittels TCP-IP Verbindung auf einen Raspberry Pi verbunden und
+mitgeteilt dass dieser den RFID Scan vorbereiten soll. Wenn die Lesung eines RFID Codes erfolgreich war, wird dieser
+an das Mainprogramm gesendet und ausgewertet. Es wird überwacht, ob der Code genügend Guthaben vorhanden hat und
+ob dieser im System angelegt ist.
+In der Admin-Maske, die mittels Klick auf das Logo in der unteren Rechten Ecke zu öffnen ist, können RFID Codes angelegt
+und Geldwert hinzugefügt und ausgegeben werden.
+Die Admin-Maske bietet ebenfalls die Möglichkeit die Füllstände der Süßigkeiten einzusehen und zu ändern.</p>
+<p>Diverse Sensoren des Automaten ermöglichen einen störfreien Ablauf, dies wird überwacht mittels eines ErrorHandler-
+Prozesses, welcher jede Sekunde die Zustände der GPIO-Inputs des RasPis anfordert. Ist zum Beispiel die Platte zum
+nachfüllen geöffnet, darf keiner der Aktoren anlaufen. Um dem Benutzer diese Art der Fehler mitzuteilen wird ein Fehler
+auf dem Tablet ausgegeben. Ebenfalls werden verschiedene Status mit LEDs kenntlich gemacht. Mit beheben des Fehlers
+und bestätigen per &quot;Okay&quot; wird nochmals überprüft ob der Fehler behoben wurde. Wurde dieser behoben, wird der Automat
+für die Benutzung freigegeben.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="mainwindow.UI_MainWindow">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">mainwindow.</span></span><span class="sig-name descname"><span class="pre">UI_MainWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.UI_MainWindow" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="mainwindow.ErrorMonitor">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">mainwindow.</span></span><span class="sig-name descname"><span class="pre">ErrorMonitor</span></span><a class="headerlink" href="#mainwindow.ErrorMonitor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtCore.QObject</span></code></p>
+<p>Dient zum sekündlichen Abfragen der Sensoriken mittels Remote GPIO verbindung zum Raspi.
+Wenn ein Eingang nicht so ist wie er sein soll, wird ein Fehler mit der dazugehörigen ID ausgegeben.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mainwindow.ErrorMonitor.error_signal">
+<span class="sig-name descname"><span class="pre">error_signal</span></span><a class="headerlink" href="#mainwindow.ErrorMonitor.error_signal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.ErrorMonitor.monitor_errors">
+<span class="sig-name descname"><span class="pre">monitor_errors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.ErrorMonitor.monitor_errors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mainwindow.MainWindow">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">mainwindow.</span></span><span class="sig-name descname"><span class="pre">MainWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="mainwindow.UI_MainWindow.DialogWindow">
-<span class="sig-name descname"><span class="pre">DialogWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.UI_MainWindow.DialogWindow" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="mainwindow.MainWindow.DialogWindow">
+<span class="sig-name descname"><span class="pre">DialogWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.DialogWindow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Funktion zum ausführen des zweiten Fensters der Benutzeroberfläche Übungsauswahl.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>id</strong> – (int) Wert zwischen 1-3 bezogen auf die Süßigkeit die ausgewählt wurde.</p></li>
-<li><p><strong>w</strong> – (int) Weite des Fensters</p></li>
-<li><p><strong>h</strong> – (int) Höhe des Fensters</p></li>
+<li><p><strong>id</strong> -- (int) Wert zwischen 1-3 bezogen auf die Süßigkeit die ausgewählt wurde.</p></li>
+<li><p><strong>w</strong> -- (int) Weite des Fensters</p></li>
+<li><p><strong>h</strong> -- (int) Höhe des Fensters</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -214,20 +235,30 @@ PoseModule.py</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="mainwindow.UI_MainWindow.height">
-<span class="sig-name descname"><span class="pre">height</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1080</span></em><a class="headerlink" href="#mainwindow.UI_MainWindow.height" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="mainwindow.MainWindow.adminRight">
+<span class="sig-name descname"><span class="pre">adminRight</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#mainwindow.MainWindow.adminRight" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mainwindow.UI_MainWindow.labelJPG">
-<span class="sig-name descname"><span class="pre">labelJPG</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jpg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.UI_MainWindow.labelJPG" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="mainwindow.MainWindow.callError">
+<span class="sig-name descname"><span class="pre">callError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ErrID</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.callError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mainwindow.MainWindow.height">
+<span class="sig-name descname"><span class="pre">height</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1080</span></em><a class="headerlink" href="#mainwindow.MainWindow.height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.MainWindow.labelJPG">
+<span class="sig-name descname"><span class="pre">labelJPG</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jpg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.labelJPG" title="Permalink to this definition">¶</a></dt>
 <dd><p>Funktion zum anzeigen des Bild-Labels.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>jpg</strong> – (path) Bildpfad der angezeigt werden soll, Ordnerstruktur beachten.</p></li>
-<li><p><strong>x</strong> – (int) Position des Bildes in x-Richtung.</p></li>
-<li><p><strong>y</strong> – (int) Position des Bildes in y-Richtung.</p></li>
+<li><p><strong>jpg</strong> -- (path) Bildpfad der angezeigt werden soll, Ordnerstruktur beachten.</p></li>
+<li><p><strong>x</strong> -- (int) Position des Bildes in x-Richtung.</p></li>
+<li><p><strong>y</strong> -- (int) Position des Bildes in y-Richtung.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -237,15 +268,15 @@ PoseModule.py</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mainwindow.UI_MainWindow.labelTXT">
-<span class="sig-name descname"><span class="pre">labelTXT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.UI_MainWindow.labelTXT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="mainwindow.MainWindow.labelTXT">
+<span class="sig-name descname"><span class="pre">labelTXT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.labelTXT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Funktion zur erstellung des labelTXT Elements, um einen Text anzuzeigen.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>txt</strong> – (string) Textstring der in dem Element angezeigt werden soll.</p></li>
-<li><p><strong>x</strong> – (int) Position des Labels in x-Richtung.</p></li>
-<li><p><strong>y</strong> – (int) Position des Labels in y-Richtung.</p></li>
+<li><p><strong>txt</strong> -- (string) Textstring der in dem Element angezeigt werden soll.</p></li>
+<li><p><strong>x</strong> -- (int) Position des Labels in x-Richtung.</p></li>
+<li><p><strong>y</strong> -- (int) Position des Labels in y-Richtung.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -255,13 +286,16 @@ PoseModule.py</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mainwindow.UI_MainWindow.mouseReleaseEvent">
-<span class="sig-name descname"><span class="pre">mouseReleaseEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">PyQt5.QtGui.QMouseEvent</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#mainwindow.UI_MainWindow.mouseReleaseEvent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="mainwindow.MainWindow.mouseReleaseEvent">
+<span class="sig-name descname"><span class="pre">mouseReleaseEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">PyQt5.QtGui.QMouseEvent</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#mainwindow.MainWindow.mouseReleaseEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Funktion zur Erkennung eines MausReleaseEvents, heißt, wenn die Maus losgelassen wird, werden die Koordinaten x,
-y zurückgegeben.</p>
+y zurückgegeben. Hier werden ebenfalls die weiteren Fenster ausgeführt. Dazu
+wird überwacht, ob ein RFID Chip vorliegt, ob dieser in der Liste anliegt und ob
+genügend Geldwert hinterlegt ist.
+Wenn benötigt werden Fehler ausgegeben.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>a0</strong> – -/-</p>
+<dd class="field-odd"><p><strong>a0</strong> -- -/-</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>-/-</p>
@@ -270,16 +304,48 @@ y zurückgegeben.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="mainwindow.UI_MainWindow.setupUi">
-<span class="sig-name descname"><span class="pre">setupUi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.UI_MainWindow.setupUi" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="mainwindow.MainWindow.setupUi">
+<span class="sig-name descname"><span class="pre">setupUi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.setupUi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Funktion zum initialisieren und erstellen des Fensters der Süßigkeitenauswahl. Aufruf und Init aller
 Labels und Elemente die anzuzeigen sind.</p>
 <dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mainwindow.MainWindow.width">
+<span class="sig-name descname"><span class="pre">width</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1920</span></em><a class="headerlink" href="#mainwindow.MainWindow.width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mainwindow.client">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">mainwindow.</span></span><span class="sig-name descname"><span class="pre">client</span></span><a class="headerlink" href="#mainwindow.client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Dient zum Verbinden auf den Server(RasPi) zum anfragen und empfangen eines RFID-Codes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.client.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.client.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Versucht Daten zu empfangen, wenn etwas schief geht, wird ein interner Fehler ausgegeben damit der Programmablauf
+nicht abbricht.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(str) : Empfangener RFID Code als string, decoded in utf-8</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.client.send_data">
+<span class="sig-name descname"><span class="pre">send_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.client.send_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sendet die übergebenen Daten an den Server.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>w</strong> – (int) Weite des Fensters</p></li>
-<li><p><strong>h</strong> – (int) Höhe des Fensters</p></li>
-</ul>
+<dd class="field-odd"><p><strong>data</strong> -- (str) : Sendet String und encodet in davor in &quot;utf-8&quot;.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p></p>
@@ -287,11 +353,37 @@ Labels und Elemente die anzuzeigen sind.</p>
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="mainwindow.UI_MainWindow.width">
-<span class="sig-name descname"><span class="pre">width</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1920</span></em><a class="headerlink" href="#mainwindow.UI_MainWindow.width" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+</dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="mainwindow.getConfigCodes">
+<span class="sig-prename descclassname"><span class="pre">mainwindow.</span></span><span class="sig-name descname"><span class="pre">getConfigCodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">searchstring</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.getConfigCodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Funktion dient zum suchen nach RFID Codes in der Config.ini, damit überprüft
+wird, ob der gegebene RFID Code schon einmal im System aufgetaucht ist oder
+nicht.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>searchstring</strong> -- (string) : String nach dem die Datei durchsucht werden soll.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(bool) : Gibt True/False zurück wenn Code vorhanden ist oder nicht.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mainwindow.getConfigValue">
+<span class="sig-prename descclassname"><span class="pre">mainwindow.</span></span><span class="sig-name descname"><span class="pre">getConfigValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">searchstring</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.getConfigValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Funktion dient zum auslesen des Geldwerts des gescannten RFID Codes. Damit
+überprüft werden kann, ob genügend Kontingent darauf vorhanden ist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>searchstring</strong> -- (string) : String nach dem die Datei durchsucht werden soll.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(string) : Geldwert als String</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -308,7 +400,7 @@ Labels und Elemente die anzuzeigen sind.</p>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="motor.html" class="btn btn-neutral float-right" title="motor module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="gpioread.html" class="btn btn-neutral float-left" title="gpioread module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gpiocontrol.html" class="btn btn-neutral float-left" title="gpiocontrol module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

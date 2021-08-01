@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>PoseModule module &mdash; Suessigkeitenautomat 1.0.0 documentation</title>
+  <title>PoseModule.py &mdash; Suessigkeitenautomat 1.0.0 documentation</title>
   
 
   
@@ -41,8 +41,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="gpioread module" href="gpioread.html" />
-    <link rel="prev" title="PiTest module" href="PiTest.html" /> 
+    <link rel="next" title="ServerTest module" href="ServerTest.html" />
+    <link rel="prev" title="src" href="modules.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,17 +87,18 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Inhalte:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="PiTest.html">PiTest module</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">PoseModule module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gpioread.html">gpioread module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mainwindow.html">mainwindow module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="motor.html">motor module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test.html">test module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="unitselectwindow.html">unitselectwindow module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="userdialog.html">userdialog module</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="mainwindow.html">mainwindow.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="unitselectwindow.html">unitselectwindow.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="userdialog.html">userdialog.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="adminwindow.html">adminwindow.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="errorwindow.html">errorwindow.py</a></li>
+    <li class="toctree-l2 current"><a class="current reference internal" href="#">PoseModule.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="ServerTest.html">ServerTest.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="gpiocontrol.html">gpiocontrol.py</a></li>
+    <li class="toctree-l2"><a class="reference internal" href="motor.html">motor.py</a></li>
 </ul>
 </li>
 </ul>
@@ -150,7 +151,7 @@
         
           <li><a href="modules.html">src</a> &raquo;</li>
         
-      <li>PoseModule module</li>
+      <li>PoseModule.py</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -170,7 +171,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="module-PoseModule">
-<span id="posemodule-module"></span><h1>PoseModule module<a class="headerlink" href="#module-PoseModule" title="Permalink to this headline">¶</a></h1>
+<span id="posemodule-module"></span><h1>PoseModule.py<a class="headerlink" href="#module-PoseModule" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="PoseModule.main">
 <span class="sig-prename descclassname"><span class="pre">PoseModule.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#PoseModule.main" title="Permalink to this definition">¶</a></dt>
@@ -187,6 +188,10 @@ mainwindow ausgeführt werden und getestet werden.</p>
 <dt class="sig sig-object py" id="PoseModule.poseDetector">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">PoseModule.</span></span><span class="sig-name descname"><span class="pre">poseDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upBody</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detectionCon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trackCon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#PoseModule.poseDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Dient zur Auswertung des KameraInputs. Zuerst wird das Farbspektrum von RGB zu BGR gewandelt.
+Anschließend wird das gewandelte Bild an den Algorithmus von Mediapipe überreicht, welcher dann die sog. Landmarks
+einzeichnet und zurückgibt. Dazu erhalten wir ein Array bestehend aus den Landmark IDs und deren x, y und visibility
+Werten. Diese können nun verwendet werden, um bestimmte Bewegungen zu erkennen.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="PoseModule.poseDetector.findPose">
 <span class="sig-name descname"><span class="pre">findPose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">draw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#PoseModule.poseDetector.findPose" title="Permalink to this definition">¶</a></dt>
@@ -194,8 +199,8 @@ mainwindow ausgeführt werden und getestet werden.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>img</strong> – (object) : Image das von OpenCV eingelesen wird.</p></li>
-<li><p><strong>draw</strong> – (bool) : Default: True; False wenn keine Punkte eingezeichnet werden sollen.</p></li>
+<li><p><strong>img</strong> -- (object) : Image das von OpenCV eingelesen wird.</p></li>
+<li><p><strong>draw</strong> -- (bool) : Default: True; False wenn keine Punkte eingezeichnet werden sollen.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -212,8 +217,8 @@ mainwindow ausgeführt werden und getestet werden.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>img</strong> – (object) : Image das von OpenCV eingelesen wird.</p></li>
-<li><p><strong>draw</strong> – (bool) : Default: True; False wenn keine Punkte eingezeichnet werden sollen.</p></li>
+<li><p><strong>img</strong> -- (object) : Image das von OpenCV eingelesen wird.</p></li>
+<li><p><strong>draw</strong> -- (bool) : Default: True; False wenn keine Punkte eingezeichnet werden sollen.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -232,8 +237,8 @@ mainwindow ausgeführt werden und getestet werden.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="gpioread.html" class="btn btn-neutral float-right" title="gpioread module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="PiTest.html" class="btn btn-neutral float-left" title="PiTest module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ServerTest.html" class="btn btn-neutral float-right" title="ServerTest module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="modules.html" class="btn btn-neutral float-left" title="src" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

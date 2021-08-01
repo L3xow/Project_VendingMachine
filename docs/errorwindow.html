@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>src &mdash; Suessigkeitenautomat 1.0.0 documentation</title>
+  <title>errorwindow.py &mdash; Suessigkeitenautomat 1.0.0 documentation</title>
   
 
   
@@ -41,8 +41,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="PoseModule module" href="PoseModule.html" />
-    <link rel="prev" title="Welcome to Suessigkeitenautomat’s documentation!" href="index.html" /> 
+    <link rel="next" title="gpiocontrol module" href="gpiocontrol.html" />
+    <link rel="prev" title="adminwindow module" href="adminwindow.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,14 +87,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Inhalte:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">src</a><ul>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="mainwindow.html">mainwindow.py</a></li>
     <li class="toctree-l2"><a class="reference internal" href="unitselectwindow.html">unitselectwindow.py</a></li>
     <li class="toctree-l2"><a class="reference internal" href="userdialog.html">userdialog.py</a></li>
     <li class="toctree-l2"><a class="reference internal" href="adminwindow.html">adminwindow.py</a></li>
-    <li class="toctree-l2"><a class="reference internal" href="errorwindow.html">errorwindow.py</a></li>
+    <li class="toctree-l2 current"><a class="current reference internal" href="#">errorwindow.py</a></li>
     <li class="toctree-l2"><a class="reference internal" href="PoseModule.html">PoseModule.py</a></li>
     <li class="toctree-l2"><a class="reference internal" href="ServerTest.html">ServerTest.py</a></li>
     <li class="toctree-l2"><a class="reference internal" href="gpiocontrol.html">gpiocontrol.py</a></li>
@@ -149,13 +149,15 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>src</li>
+          <li><a href="modules.html">src</a> &raquo;</li>
+        
+      <li>errorwindow.py</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/errorwindow.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -168,21 +170,50 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="src">
-<h1>src<a class="headerlink" href="#src" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-    <li class="toctree-l2"><a class="reference internal" href="mainwindow.html">mainwindow.py</a></li>
-    <li class="toctree-l2"><a class="reference internal" href="unitselectwindow.html">unitselectwindow.py</a></li>
-    <li class="toctree-l2"><a class="reference internal" href="userdialog.html">userdialog.py</a></li>
-    <li class="toctree-l2"><a class="reference internal" href="adminwindow.html">adminwindow.py</a></li>
-    <li class="toctree-l2"><a class="reference internal" href="errorwindow.html">errorwindow.py</a></li>
-    <li class="toctree-l2"><a class="reference internal" href="PoseModule.html">PoseModule.py</a></li>
-    <li class="toctree-l2"><a class="reference internal" href="ServerTest.html">ServerTest.py</a></li>
-    <li class="toctree-l2"><a class="reference internal" href="gpiocontrol.html">gpiocontrol.py</a></li>
-    <li class="toctree-l2"><a class="reference internal" href="motor.html">motor.py</a></li>
+  <div class="section" id="module-errorwindow">
+<span id="errorwindow-module"></span><h1>errorwindow.py<a class="headerlink" href="#module-errorwindow" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="errorwindow.errorwindow">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">errorwindow.</span></span><span class="sig-name descname"><span class="pre">errorwindow</span></span><a class="headerlink" href="#errorwindow.errorwindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<p>Erzeugt ein ErrorFenster das den Fehler anzeigt. Kann mit Okay bestätigt werden.
+Fehler IDs:</p>
+<p>ID /    Art    / Beschreibung
+1  /    Error  / RFID Code nicht angelegt - nicht genug Guthaben
+2  /    Error  / RFID noch einmal Scannen
+3  /   Warnung / Füllstand x. Süßigkeit zu niedrig
+4  /    Error  / Plexiglas-Abdeckung nicht montiert
+5  /    Error  / Wartungsschalter Rückseite ausgeschalten
+6  /    Error  / RFID Code ist kein Admin Code</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="errorwindow.errorwindow.butOK">
+<span class="sig-name descname"><span class="pre">butOK</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#errorwindow.errorwindow.butOK" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quittiert den Fehler und ändert die Zustände der LEDs des Automaten.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="errorwindow.errorwindow.setupUI">
+<span class="sig-name descname"><span class="pre">setupUI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ErrID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SweetID</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#errorwindow.errorwindow.setupUI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Erstellt und zeigt das Error Window mit dementsprechenden Fehlern an.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ErrID</strong> -- (int) : ID des Fehlers, welche im Programm hinterlegt sind.</p></li>
+<li><p><strong>SweetID</strong> -- (int) : ID der gewählten Süßigkeit, wird benötigt um anzuzeigen</p></li>
 </ul>
-</div>
+</dd>
+</dl>
+<p>welche Süßigkeit genau einen zu niedrigen Füllstand hat.
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -191,8 +222,8 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="PoseModule.html" class="btn btn-neutral float-right" title="PoseModule module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Suessigkeitenautomat’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gpiocontrol.html" class="btn btn-neutral float-right" title="gpiocontrol module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="adminwindow.html" class="btn btn-neutral float-left" title="adminwindow module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

@@ -1,0 +1,7 @@
+errorwindow module
+==================
+
+.. automodule:: errorwindow
+   :members:
+   :undoc-members:
+   :show-inheritance:
