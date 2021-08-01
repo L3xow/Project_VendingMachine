@@ -10,8 +10,8 @@ from PyQt5.QtGui import QMovie
 from PyQt5.QtWidgets import QLabel, QPushButton, QWidget
 
 import PoseModule as pm
-from src.errorwindow import errorwindow
-from src.motor import start
+from errorwindow import errorwindow
+from motor import start
 
 
 class QTCore:

@@ -3,8 +3,6 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QDialog, QPushButton, QLabel
 from PyQt5.QtCore import Qt
 
-from src import gpiocontrol
-
 
 class errorwindow(QDialog):
     """

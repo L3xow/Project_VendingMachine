@@ -3,7 +3,7 @@ from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QDialog, QLineEdit, QLabel, QPushButton
 import configparser as cp
 
-from src.mainwindow import client
+from mainwindow import client
 
 
 class adminwindow(QDialog):

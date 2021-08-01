@@ -1,6 +1,5 @@
 import errno
 import socket
-import sys
 from time import sleep
 
 

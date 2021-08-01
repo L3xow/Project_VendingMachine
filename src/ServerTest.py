@@ -5,7 +5,7 @@ Wird nirgends im Mainprogramm aufgerufen oder verwendet.
 
 import socket
 from time import *
-import mfrc522 as SimpleMFRC522
+#import mfrc522 as SimpleMFRC522
 
 
 class server():
@@ -17,7 +17,7 @@ class server():
     :return:
     """
     def __init__(self):
-        self.reader = SimpleMFRC522()
+#        self.reader = SimpleMFRC522()
         print("thread started..")
         self.ls = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         port = 9999

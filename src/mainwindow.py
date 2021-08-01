@@ -38,9 +38,8 @@ from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
 from adminwindow import *
-from src import gpiocontrol
-from src.errorwindow import errorwindow
-from src.unitselectwindow import UnitSelectWindow
+from errorwindow import errorwindow
+from unitselectwindow import UnitSelectWindow
 
 
 class MainWindow(QMainWindow):
@@ -323,7 +322,7 @@ class client():
         Sendet die übergebenen Daten an den Server.
 
         :param data: (str) : Sendet String und encodet in davor in "utf-8".
-        :return: 
+        :return:
         """
         self.s.send(data.encode())
         print("data sent")
