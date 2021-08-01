@@ -1,15 +1,22 @@
 
+import os
+
+from PyQt5 import QtCore, Qt, QtGui
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QMovie
 from PyQt5.QtWidgets import QWidget, QLabel
-from PyQt5 import QtCore, Qt, QtGui
-from PyQt5.QtCore import Qt, QObject
-import os
 
 from userdialog import Ui_Dialog
 
 
 class UnitSelectWindow(QWidget):
+    """
+    Dient zum anzeigen der Übungsauswahl-Maske. In dieser hat der Benutzer die Möglichkeit eine von vier Übungen
+    auszuwählen. Diese werden als GIF (Graphics Interchange Format) Animation vorgestellt. Es wird auch der gleiche
+    Text des MainWindows angezeigt, also die Erklärung, wie der Benutzer vorzugehen hat.
+    Nach auswahl der Süßigkeit, wird weitergeschalten in das UserDialog Fenster.
 
+    """
     def __init__(self, id_sweets, rfid, parent=None):
         """
         Konstruktor für UnitSelectWindow.
@@ -43,14 +50,15 @@ class UnitSelectWindow(QWidget):
         self.setWindowFlag(Qt.FramelessWindowHint)
 # ToDo: Planks GIF einfügen
         self.labelGIF("src/misc/Hampelmann.gif", 180, 210)
-        self.labelGIF("src/misc/squats.gif", 620, 210)
-        self.labelGIF("src/misc/pushup.gif", 1060, 210)
+        self.labelGIF("src/misc/pushup.gif", 620, 210)
+        self.labelGIF("src/misc/squats.gif", 1060, 210)
         self.labelGIF("src/misc/ausfallschritt.gif", 1500, 210)
         self.labelTXT("Hampelmann", 180, 180)
-        self.labelTXT("Kniebeugen", 620, 180)
-        self.labelTXT("Liegestütz", 1060, 180)
+        self.labelTXT("Liegestütz", 620, 180)
+        self.labelTXT("Kniebeugen", 1060, 180)
         self.labelTXT("Ausfallschritt", 1500, 180)
         self.labelTXT(self.fileexpl, 180, 580)
+        # Objekt w wird bereits erstellt, damit die Ladezeiten nach Auswahl der Übung gesenkt werden.
         self.w = Ui_Dialog()
 
         # Text Label für Erklärung
@@ -127,10 +135,9 @@ class UnitSelectWindow(QWidget):
 
         :return:
         """
-        # self.w = Ui_Dialog("src/misc/Dialogwindowdescr.txt", "src/misc/squats.gif", 2, self.id_sweets, 120, self.rfid)
-        # self.w.setupUI(1600, 900)
-        # self.w.show()
-        # self.close()
+        self.w.setupUI(1600, 900, "src/misc/Dialogwindowdescr.txt", "src/misc/pushup.gif", 2, self.id_sweets, 60,self.rfid)
+        self.w.show()
+        self.close()
 
     def Unit_Three(self):
         """
@@ -138,10 +145,9 @@ class UnitSelectWindow(QWidget):
 
         :return:
         """
-        # self.w = Ui_Dialog("src/misc/Dialogwindowdescr.txt", "src/misc/pushup.gif", 3, self.id_sweets, 60,self.rfid)
-        # self.w.setupUI(1600, 900)
-        # self.w.show()
-        # self.close()
+        self.w.setupUI(1600, 900, "src/misc/Dialogwindowdescr.txt", "src/misc/squats.gif", 3, self.id_sweets, 120, self.rfid)
+        self.w.show()
+        self.close()
 
     def Unit_Four(self):
         """
@@ -149,22 +155,6 @@ class UnitSelectWindow(QWidget):
 
         :return:
         """
-        # self.w = Ui_Dialog("src/misc/Dialogwindowdescr.txt", "src/misc/pushup.gif", 4, self.id_sweets, 60, self.rfid)
-        # self.w.setupUI(1600, 900)
-        # self.w.show()
-        # self.close()
-
-
-# class startuserdialog(QObject):
-#     error_signal = QtCore.pyqtSignal(int)
-#
-#     @QtCore.pyqtSlot()
-#     def monitor_errors(self):
-#         while True:
-#             sleep(1)
-#             if gpiocontrol.readInput(23):
-#                 print("errordetected")
-#                 #self.error_signal.emit(4)
-#             elif gpiocontrol.readInput(6):
-#                 print("errordetected")
-#                 #self.error_signal.emit(5)
+        self.w.setupUI(1600, 900, "src/misc/Dialogwindowdescr.txt", "src/misc/ausfallschritt.gif", 4, self.id_sweets, 60, self.rfid)
+        self.w.show()
+        self.close()

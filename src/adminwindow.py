@@ -9,6 +9,7 @@ from src.mainwindow import client
 class adminwindow(QDialog):
     fromAdminGo = 0
     rfid = ""
+
     def __init__(self):
         """
         Konstruktor für adminwindow.
@@ -30,7 +31,7 @@ class adminwindow(QDialog):
 
         :return:
         """
-        #ButtonINIT
+        # ButtonINIT
         buttonSweetsOne = QPushButton("Save", self)
         buttonSweetsTwo = QPushButton("Save", self)
         buttonSweetsThree = QPushButton("Save", self)
@@ -40,8 +41,7 @@ class adminwindow(QDialog):
         buttonSet = QPushButton("Set", self)
         buttonClose = QPushButton("Close", self)
 
-
-        #ConfigINIT
+        # ConfigINIT
         self.config = cp.ConfigParser()
         self.config.read("config.ini")
         self.valOne = self.config['DEFAULT']['SweetCountOne']
@@ -49,14 +49,14 @@ class adminwindow(QDialog):
         self.valThree = self.config['DEFAULT']['SweetCountThree']
         self.valFour = self.config['DEFAULT']['SweetCountFour']
 
-        #LineEditINIT
+        # LineEditINIT
         self.inputSweetsOne = QLineEdit(self)
         self.inputSweetsTwo = QLineEdit(self)
         self.inputSweetsThree = QLineEdit(self)
         self.inputSweetsFour = QLineEdit(self)
         self.inputMoney = QLineEdit(self)
 
-        #TxtLabelINIT
+        # TxtLabelINIT
         self.textlabel("Anzahl erster Süßigkeit", 30, 55)
         self.textlabel("Anzahl zweiter Süßigkeit", 30, 105)
         self.textlabel("Anzahl dritter Süßigkeit", 30, 155)
@@ -64,13 +64,12 @@ class adminwindow(QDialog):
         self.textlabel("Guthaben:", 500, 400)
         self.textlabel("Set Guthaben:", 700, 400)
 
-
         self.moneylabel.resize(50, 40)
         self.moneylabel.move(700, 450)
         self.moneylabel.setAlignment(Qt.AlignmentFlag(Qt.AlignRight))
         self.moneylabel.show()
 
-        #LineEditConfig
+        # LineEditConfig
         self.inputSweetsOne.resize(50, 30)
         self.inputSweetsTwo.resize(50, 30)
         self.inputSweetsThree.resize(50, 30)
@@ -92,19 +91,20 @@ class adminwindow(QDialog):
         self.changeMoneyRFID.setAlignment(Qt.AlignmentFlag(Qt.AlignCenter))
         self.inputMoney.setAlignment(Qt.AlignmentFlag(Qt.AlignCenter))
 
-        #LineEditValidator (MinWert 0, MaxWert 10)
+        # LineEditValidator (MinWert 0, MaxWert 10)
         self.inputSweetsOne.setValidator(QIntValidator(0, 10, self))
         self.inputSweetsTwo.setValidator(QIntValidator(0, 10, self))
         self.inputSweetsThree.setValidator(QIntValidator(0, 10, self))
         self.inputSweetsFour.setValidator(QIntValidator(0, 10, self))
         self.inputMoney.setValidator(QIntValidator(0, 50, self))
-        #LineEditSetText
+
+        # LineEditSetText
         self.inputSweetsOne.setText(str(self.valOne))
         self.inputSweetsTwo.setText(str(self.valTwo))
         self.inputSweetsThree.setText(str(self.valThree))
         self.inputSweetsFour.setText(str(self.valFour))
 
-        #ButtonConfig
+        # ButtonConfig
         buttonSweetsOne.resize(80, 30)
         buttonSweetsOne.move(350, 50)
         buttonSweetsOne.clicked.connect(self.saveone)
@@ -137,13 +137,13 @@ class adminwindow(QDialog):
         buttonClose.move(1400, 800)
         buttonClose.clicked.connect(lambda: self.close())
 
-        self.setStyleSheet("QLineEdit { background-color: rgb(255, 255, 255); font-weight: bold; font-size: 12px; border: 2px solid white;}"
-                           "QDialog { background-color: rgb(200,200,200); }"
-                           "QLabel { font-size: 18px; font-weight: bold; color: black;}"
-                           "QPushButton { border: 2px solid white; font-size: 10px; font-weight: bold; "
-                           "background-color: DimGrey; color: white;} "
-                           "QPushButton::pressed { border: 3px solid grey; }")
-
+        self.setStyleSheet(
+            "QLineEdit { background-color: rgb(255, 255, 255); font-weight: bold; font-size: 12px; border: 2px solid white;}"
+            "QDialog { background-color: rgb(200,200,200); }"
+            "QLabel { font-size: 18px; font-weight: bold; color: black;}"
+            "QPushButton { border: 2px solid white; font-size: 10px; font-weight: bold; "
+            "background-color: DimGrey; color: white;} "
+            "QPushButton::pressed { border: 3px solid grey; }")
 
     def textlabel(self, text, x, y):
         """
@@ -237,10 +237,14 @@ class adminwindow(QDialog):
 
         :return:
         """
+        # Verbindet auf den Server
         self.client = client()
+        # Schickt einen Scan Befehl an den RasPi
         self.client.send_data("scan")
+        # Empfängt den gescannten RFID - Code
         self.data = self.client.get_data()
         self.rfid = self.data
+        # Aktualisiert die Anzeige in der Admin-Maske, damit der RFID-Code und dessen Geldwert angezeigt wird.
         if self.data:
             self.updateEdit()
 
@@ -265,7 +269,6 @@ class adminwindow(QDialog):
             self.config.set("RFID", self.rfid, "0")
             self.config.write(cfgfile)
             cfgfile.close()
-
 
     def set(self):
         """

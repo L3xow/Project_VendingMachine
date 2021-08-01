@@ -4,6 +4,13 @@ import time
 
 
 class poseDetector():
+    """
+    Dient zur Auswertung des KameraInputs. Zuerst wird das Farbspektrum von RGB zu BGR gewandelt.
+    Anschließend wird das gewandelte Bild an den Algorithmus von Mediapipe überreicht, welcher dann die sog. Landmarks
+    einzeichnet und zurückgibt. Dazu erhalten wir ein Array bestehend aus den Landmark IDs und deren x, y und visibility
+    Werten. Diese können nun verwendet werden, um bestimmte Bewegungen zu erkennen.
+
+    """
 
     def __init__(self, mode=False, upBody = False, smooth = True, detectionCon = 0.5, trackCon = 0.5):
         """

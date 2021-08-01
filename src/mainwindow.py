@@ -2,32 +2,44 @@
 
 Das ist unser Code für die Projektarbeit "nachhaltiger Süßigkeitenautomat" an der Rudolf Diesel
 Fachschule in Nürnberg.
-Es wird eine Grafikoberfläche angezeigt, die eine Auswahl einer Süßigkeit von dreien ermöglichen
-soll. Anschließend darf der Benutzer sich eine Übung aussuchen, die er absolvieren möchte.
-Dies wird mittels des Algorithmus von Mediapipe überwacht und ausgewertet.
+Es wird eine Grafikoberfläche angezeigt, auf der man eine von drei Süßigkeiten auswählen muss.
+Anschließend darf der Benutzer sich eine Übung aussuchen, die er absolvieren möchte.
+Die gewählte Übung wird anschließend mittels Kameraüberwachung ausgewertet. Dies geschieht mit dem Algorithmus von
+Mediapipe.
 Im Anschluss wird entweder die gewählte Süßigkeit ausgegeben, oder wenn die Übung nicht erfolgreich war,
 eine Bestrafung in Form eines gesunden Snacks ausgegeben.
 
-Es werden Störungen überwacht und Füllstände ausgewertet.
-Ebenfalls gibt es ein RFID System damit die Süßigkeit auch bezahlt werden kann.
+Weitere Systeme die im Hintergrund aktiv sind:
+RFID-Scanner, durch auswählen einer Süßigkeit wird mittels TCP-IP Verbindung auf einen Raspberry Pi verbunden und
+mitgeteilt dass dieser den RFID Scan vorbereiten soll. Wenn die Lesung eines RFID Codes erfolgreich war, wird dieser
+an das Mainprogramm gesendet und ausgewertet. Es wird überwacht, ob der Code genügend Guthaben vorhanden hat und
+ob dieser im System angelegt ist.
+In der Admin-Maske, die mittels Klick auf das Logo in der unteren Rechten Ecke zu öffnen ist, können RFID Codes angelegt
+und Geldwert hinzugefügt und ausgegeben werden.
+Die Admin-Maske bietet ebenfalls die Möglichkeit die Füllstände der Süßigkeiten einzusehen und zu ändern.
+
+Diverse Sensoren des Automaten ermöglichen einen störfreien Ablauf, dies wird überwacht mittels eines ErrorHandler-
+Prozesses, welcher jede Sekunde die Zustände der GPIO-Inputs des RasPis anfordert. Ist zum Beispiel die Platte zum
+nachfüllen geöffnet, darf keiner der Aktoren anlaufen. Um dem Benutzer diese Art der Fehler mitzuteilen wird ein Fehler
+auf dem Tablet ausgegeben. Ebenfalls werden verschiedene Status mit LEDs kenntlich gemacht. Mit beheben des Fehlers
+und bestätigen per "Okay" wird nochmals überprüft ob der Fehler behoben wurde. Wurde dieser behoben, wird der Automat
+für die Benutzung freigegeben.
 
 '''
 # ToDo: GPIOs einbauen und fertig machen
 # ToDo: Kommentare anpassen/übersetzen, Code Refactoren um Warnungen zu entfernen.
 import errno
-
-from PyQt5 import Qt, QtCore, QtGui
-from PyQt5.QtCore import pyqtSlot, QRunnable, QThreadPool, QObject
-from PyQt5.QtWidgets import QApplication, QMainWindow
-from adminwindow import *
 import os
-
-from src import gpiocontrol
-from src.errorwindow import errorwindow
 import socket
-from threading import Thread
 from time import *
 
+from PyQt5 import Qt, QtCore, QtGui
+from PyQt5.QtCore import QObject
+from PyQt5.QtWidgets import QApplication, QMainWindow
+
+from adminwindow import *
+from src import gpiocontrol
+from src.errorwindow import errorwindow
 from src.unitselectwindow import UnitSelectWindow
 
 
@@ -47,21 +59,23 @@ class MainWindow(QMainWindow):
         self.label_txt = QLabel
         self.label_jpg = QLabel
         self.errorLabel = QLabel(self)
-        self.running = 0  # not listening
-        self.runningerr = 0 # error thread not started
-        self.addr = None
-        self.conn = None
-        self.startScan = 0
-        self.gotData = False
         self.TESTBIT = True
-        self.error = errorwindow()
-        self.error_monitor = ErrorMonitor()
-        self.thread = QtCore.QThread(self)
-        self.error_monitor.error_signal.connect(self.callError)
-        self.error_monitor.moveToThread(self.thread)
-        self.thread.started.connect(self.error_monitor.monitor_errors)
-        self.thread.start()
 
+        self.error = errorwindow()
+        # ErrorMonitor Objekt wird erstellt, dient zur Überwachung der Sensoriken
+        self.error_monitor = ErrorMonitor()
+        # Thread Objekt wird erstellt, dient als extra Prozess zum ausführen einer Dauerschleife ohne das Main-Programm
+        # zu belasten.
+        self.thread = QtCore.QThread(self)
+        # PyQtSignal wird ausgeführt wenn im ErrorMonitor Objekt .emit ausgeführt wird.
+        # CallError ist die Methode zum Anzeigen des ErrorWindows.
+        self.error_monitor.error_signal.connect(self.callError)
+        # Objekt von ErrorMonitor wird dem Thread Objekt "Thread" zugewiesen.
+        self.error_monitor.moveToThread(self.thread)
+        # Wenn der Thread "Thread" gestartet ist, wird die Methode "monitor_errors" im Objekt "error_monitor" ausgeführt.
+        self.thread.started.connect(self.error_monitor.monitor_errors)
+        # Thread wird gestartet
+        self.thread.start()
 
         # path wird als Variable angelegt, um auf den Programmpfad zurückzuverweisen. Diese macht es möglich die
         # Bilder ohne Absoluten Pfad aufzurufen.
@@ -92,13 +106,14 @@ class MainWindow(QMainWindow):
 
     @QtCore.pyqtSlot(int)
     def callError(self, ErrID):
+        # ErrorWindow UI wird vorbereitet und initialisiert
         self.error.setupUI(ErrID, 0)
 
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Space:
-            self.ERRORBIT = True
-        elif event.key() == Qt.Key_Space and self.ERRORBIT:
-            self.ERRORBIT = False
+    # def keyPressEvent(self, event):
+    #     if event.key() == Qt.Key_Space:
+    #         self.ERRORBIT = True
+    #     elif event.key() == Qt.Key_Space and self.ERRORBIT:
+    #         self.ERRORBIT = False
 
     def labelTXT(self, txt, x, y):
         """
@@ -146,70 +161,61 @@ class MainWindow(QMainWindow):
         y = a0.y()
         # Linkes Bild
         if 180 <= x <= 480 and 210 <= y <= 510:
+            # Verbindung zum Server wird aufgebaut.
+            self.client = client()
+            # Befehl an den Server(RasPi) zum vorbereiten des RFID-Scanners
+            self.client.send_data("scan")
+            # Auf der TCPIP Verbindung hören, ob Daten gesendet wurden und ggf. zu empfangen.
+            self.data = self.client.get_data()
+            # Empfangene Daten werden auf "globale" Variable gelegt zur Verwendung in mehreren Klassen.
+            self.admin.rfid = self.data
+            # Wenn Daten vorhanden sind
+            if self.data:
+                # Prüfe, ob gescannter Code schon im System angelegt ist und ob dessen Wert >= -5 ist.
+                if getConfigCodes(self.admin.rfid) and int(getConfigValue(self.admin.rfid)) >= -5:
+                    # Wenn obiges stimmt -> Fahre fort mit Ablauf
+                    self.DialogWindow(1, 1920, 1080)
+                else:
+                    # Wenn obiges nicht stimmt -> Gibt Fehler ID 1 aus, Nicht angelegt bzw nicht genug Guthaben
+                    self.error.setupUI(1)
+        # Mittleres Bild
+        if 810 <= x <= 810 + 300 and 210 <= y <= 510:
             self.client = client()
             self.client.send_data("scan")
             self.data = self.client.get_data()
             self.admin.rfid = self.data
             if self.data:
                 if getConfigCodes(self.admin.rfid) and int(getConfigValue(self.admin.rfid)) >= -5:
-                    self.DialogWindow(1, 1920, 1080)
+                    self.DialogWindow(2, 1920, 1080)
                 else:
                     self.error.setupUI(1)
-            # while self.startScan != 0: # Wenn StartScan != 0 dann Schleife laufen lassen
-            #     if self.gotData:
-            #         if getConfigCodes(self.admin.rfid) and int(getConfigValue(self.admin.rfid)) >= -5:
-            #             print(self.admin.rfid)
-            #             self.DialogWindow(1, 1920, 1080)
-            #             self.startScan = 0
-            #             self.gotData = False
-            #             break
-            #         else:
-            #             print("error")
-            #             self.error.setupUI(1)
-            #             break
-        # Mittleres Bild
-        if 810 <= x <= 810 + 300 and 210 <= y <= 510:
-            self.startScan = 1  # Eigene Variable zum merken des Starts
-            self.admin.fromAdminGo = 1  # Globale Variable zum Scanauftrag schicken
-            while self.startScan != 0:  # Wenn StartScan != 0 dann Schleife laufen lassen
-                if self.gotData:
-                    if getConfigCodes(self.admin.rfid) and int(getConfigValue(self.admin.rfid)) >= -5:
-                        print(self.admin.rfid)
-                        self.DialogWindow(2, 1920, 1080)
-                        self.startScan = 0
-                        self.gotData = False
-                        break
-                    else:
-                        self.error.setupUI(1)
-                        break
         # Rechtes Bild
         if 1440 <= x <= 1440 + 300 and 210 <= y <= 510:
-            self.startScan = 1  # Eigene Variable zum merken des Starts
-            self.admin.fromAdminGo = 1  # Globale Variable zum Scanauftrag schicken
-            while self.startScan != 0:  # Wenn StartScan != 0 dann Schleife laufen lassen
-                if self.gotData:
-                    if getConfigCodes(self.admin.rfid) and int(getConfigValue(self.admin.rfid)) >= -5:
-                        print(self.admin.rfid)
-                        self.DialogWindow(3, 1920, 1080)
-                        self.startScan = 0
-                        self.gotData = False
-                        break
-                    else:
-                        self.error.setupUI(1)
-                        break
+            self.client = client()
+            self.client.send_data("scan")
+            self.data = self.client.get_data()
+            self.admin.rfid = self.data
+            if self.data:
+                if getConfigCodes(self.admin.rfid) and int(getConfigValue(self.admin.rfid)) >= -5:
+                    self.DialogWindow(3, 1920, 1080)
+                else:
+                    self.error.setupUI(1)
+        # Logo unten Rechts, Admin-Maske Aufruf
         if 1729 <= x <= 1900 and 980 <= y <= 1060:
             self.client = client()
             self.client.send_data("scan")
             self.data = self.client.get_data()
             self.admin.rfid = self.data
             if self.data:
+                # Hier werden die Admin RFID´s abgeglichen.
                 if self.admin.rfid == "670621518554" or self.admin.rfid == "admincode2" or self.admin.rfid == "rfidcode":
                     print(type(self.admin.rfid))
+                    # Wenn gescannter Code mit einem oben übereinstimmt, öffne Admin-Maske
                     self.admin.setupUI()
                     self.admin.show()
                 else:
+                    # Wenn gescannter Code mit keinem oben übereinstimmt, gib Fehler ID 6 aus -> RFID kein Admin-Code
                     self.error.setupUI(6)
-
 
     def DialogWindow(self, id, w, h):
         """
@@ -223,97 +229,6 @@ class MainWindow(QMainWindow):
         self.win = UnitSelectWindow(id, self.admin.rfid)
         self.win.setupUI(w, h)
         self.win.show()
-
-    # def client_thread(self):
-    #     """
-    #     Stellt den Server Prozess als Thread dar. Verwaltet sämtliche TCP Angelegenheiten
-    #     mit dem Raspberry Pi, um einen Scanbefehl zu erteilen und um den gescannten RFID
-    #     Code zurückzugeben.
-    #
-    #     :return:
-    #     """
-    #     print("thread started..")
-    #     self.ls = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #     port = 9999
-    #     self.ls.bind(('', port))
-    #     print("Server listening on port %s" % port)
-    #     self.ls.listen(1)
-    #     self.ls.settimeout(15)
-    #     while self.running != 0:
-    #         if self.conn is None:
-    #             try:
-    #                 (self.conn, self.addr) = self.ls.accept()
-    #                 print("client is at", self.addr[0], "on port", self.addr[1])
-    #
-    #             except socket.timeout as e:
-    #                 print("Waiting for Connection...")
-    #
-    #             except Exception as e:
-    #                 print("Connect exception: " + str(e))
-    #
-    #         if self.conn != None and self.admin.fromAdminGo:
-    #             sleep(1)
-    #             self.admin.fromAdminGo = 0
-    #             print("connected to " + str(self.conn) + "," + str(self.addr))
-    #             self.conn.settimeout(15)
-    #             self.rc = ""
-    #             connect_start = time()  # actually, I use this for a timeout timer
-    #             if self.rc != "done":
-    #                 self.rc = ''
-    #                 try:
-    #                     self.conn.send(b"scan")
-    #                     print("sent")
-    #                     self.rc = self.conn.recv(20).decode('utf-8')
-    #                     print("rcvd")
-    #                     self.admin.rfid = self.rc
-    #                     self.admin.updateEdit()
-    #                 except Exception as e:
-    #                     # we can wait on the line if desired
-    #                     print("socket error: " + repr(e))
-    #
-    #                 if len(self.rc):
-    #                     print("got data", self.rc)
-    #                     self.gotData = True
-    #                     connect_start = time()  # reset timeout time
-    #                 elif (self.running == 0) or (time() - connect_start > 30):
-    #                     print("Tired of waiting on connection!")
-    #                     self.rc = "done"
-    #
-    #             # print("closing connection")
-    #             # self.conn.close()
-    #             # self.conn = None
-    #             # print("connection closed.")
-    #
-    #     print("closing listener...")
-    #     # self running became 0
-    #     self.ls.close()
-
-    # def startc(self):
-    #     """
-    #     Startet den Server Thread.
-    #
-    #     :return:
-    #     """
-    #     if self.running == 0:
-    #         print("Starting thread")
-    #         self.running = 1
-    #         self.thread = Thread(target=self.client_thread)
-    #         self.thread.start()
-    #     else:
-    #         print("thread already started.")
-    #
-    # def stopc(self):
-    #     """
-    #     Stoppt den Server Thread.
-    #
-    #     :return:
-    #     """
-    #     if self.running:
-    #         print("stopping thread...")
-    #         self.running = 0
-    #         self.thread.join()
-    #     else:
-    #         print("thread not running")
 
 
 def getConfigCodes(searchstring):
@@ -333,6 +248,7 @@ def getConfigCodes(searchstring):
             del config
             return True
 
+
 def getConfigValue(searchstring):
     """
     Funktion dient zum auslesen des Geldwerts des gescannten RFID Codes. Damit
@@ -349,6 +265,11 @@ def getConfigValue(searchstring):
 
 
 class ErrorMonitor(QObject):
+    """
+    Dient zum sekündlichen Abfragen der Sensoriken mittels Remote GPIO verbindung zum Raspi.
+    Wenn ein Eingang nicht so ist wie er sein soll, wird ein Fehler mit der dazugehörigen ID ausgegeben.
+
+    """
     error_signal = QtCore.pyqtSignal(int)
 
     @QtCore.pyqtSlot()
@@ -357,17 +278,20 @@ class ErrorMonitor(QObject):
             sleep(1)
             if gpiocontrol.readInput(23):
                 print("errordetected")
-                #self.error_signal.emit(4)
+                # self.error_signal.emit(4)
             elif gpiocontrol.readInput(6):
                 print("errordetected")
-                #self.error_signal.emit(5)
+                # self.error_signal.emit(5)
 
 
 class client():
+    """
+    Dient zum Verbinden auf den Server(RasPi) zum anfragen und empfangen eines RFID-Codes.
+    """
 
     def __init__(self):
         print("Trying to connect")
-        TCP_IP = '192.168.2.41' # IP RasPi
+        TCP_IP = '192.168.2.41'  # IP RasPi
         TCP_PORT = 9999
         self.data = 0
         self.BUFF = 10
@@ -376,6 +300,12 @@ class client():
         self.s.connect((TCP_IP, TCP_PORT))
 
     def get_data(self):
+        """
+        Versucht Daten zu empfangen, wenn etwas schief geht, wird ein interner Fehler ausgegeben damit der Programmablauf
+        nicht abbricht.
+
+        :return: (str) : Empfangener RFID Code als string, decoded in utf-8
+        """
         try:
             self.data = self.s.recv(self.BUFF)
             sleep(0.5)
@@ -389,6 +319,12 @@ class client():
         return self.data.decode('utf-8')
 
     def send_data(self, data):
+        """
+        Sendet die übergebenen Daten an den Server.
+
+        :param data: (str) : Sendet String und encodet in davor in "utf-8".
+        :return: 
+        """
         self.s.send(data.encode())
         print("data sent")
 
@@ -398,17 +334,10 @@ def main():
     app = QApplication(sys.argv)
     # Erstellt Objekt win mit UI_MainWindow() und erstellt im Anschluss das User Interface und zeigt es an.
     win = MainWindow()
-#    win.errorstart()
-#    win.startc()
     # Funktion SetupUI wird ausgeführt, und somit das Fenster initialisiert.
     win.setupUi()
     # Funktion show zeigt das vorher initialisierte Fenster an.
     win.show()
-
-
-
-
-
 
     sys.exit(app.exec())
 

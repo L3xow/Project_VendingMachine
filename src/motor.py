@@ -49,16 +49,6 @@ def start(MotorID):
 
 
 
-#    button = Button(20)
-#    button.wait_for_press()
-#    print("The button was pressed!")
-
-#    switch = Button(es, False)
-
-#    if switch.wait_for_press():
-#        sleep(2)
-#        motorgo.off()
-
 def main():
     """
     Testfunktion wenn kein Aufruf von außerhalb.

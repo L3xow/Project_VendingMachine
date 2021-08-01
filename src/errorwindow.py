@@ -7,6 +7,20 @@ from src import gpiocontrol
 
 
 class errorwindow(QDialog):
+    """
+    Erzeugt ein ErrorFenster das den Fehler anzeigt. Kann mit Okay bestätigt werden.
+    Fehler IDs:
+
+    ID /    Art    / Beschreibung
+    1  /    Error  / RFID Code nicht angelegt - nicht genug Guthaben
+    2  /    Error  / RFID noch einmal Scannen
+    3  /   Warnung / Füllstand x. Süßigkeit zu niedrig
+    4  /    Error  / Plexiglas-Abdeckung nicht montiert
+    5  /    Error  / Wartungsschalter Rückseite ausgeschalten
+    6  /    Error  / RFID Code ist kein Admin Code
+
+    """
+
     def __init__(self):
         """
         Konstruktor für errorwindow.
@@ -63,13 +77,11 @@ class errorwindow(QDialog):
             "background-color: DimGrey; color: white;} "
             "QPushButton::pressed { border: 3px solid grey; }")
 
-        # ToDo: LEDs nach farben einfügen
+        # LEDs werden je nach Fehler geschalten
         if ErrID == 1:
-            print("debug")
             # gpiocontrol.writeOutput(self.redLED, 0)
             # gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
-#            self.pixlabel.setPixmap(QtGui.QPixmap("error.png"))
             self.textlabel.setText("Error: RFID Code nicht angelegt oder nicht genügend Guthaben!")
             self.textlabel.show()
         elif ErrID == 2:
@@ -112,7 +124,6 @@ class errorwindow(QDialog):
 
         :return:
         """
-        # ToDo: LED GREEN and RESET other LEDS
         # gpiocontrol.writeOutput(self.greenLED, 0)
         # gpiocontrol.writeOutput(self.yellowLED, 1)
         # gpiocontrol.writeOutput(self.redLED, 1)

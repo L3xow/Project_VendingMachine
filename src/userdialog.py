@@ -1,19 +1,15 @@
+import configparser as cp
 import math
 from threading import Thread
-
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QLabel, QPushButton, QWidget
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QMovie
-import PoseModule as pm
-import configparser as cp
-import cv2
 from time import *
 
+import cv2
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QMovie
+from PyQt5.QtWidgets import QLabel, QPushButton, QWidget
 
-# ToDo: Motor.py muss noch komplett gecodet werden, brauche aber erst einen funktionierenden RasPi
-
-# ToDo: Designfragen klären, Farben, usw.
+import PoseModule as pm
 from src.errorwindow import errorwindow
 from src.motor import start
 
@@ -22,10 +18,18 @@ class QTCore:
     pass
 
 
-
-
-
 class Ui_Dialog(QWidget):
+    """
+    Dient zum anzeigen der Maske zum bestätigen oder Abbrechen der gewählten Optionen und bereitet die Kameraauswertung
+    vor. Sobald der Benutzer bestätigt, wird ein 10s Countdown Timer angezeigt. Dieser wird auf einem extra Thread aus-
+    geführt um Performance zu sparen. Der Timer fängt an zu zählen, wenn der Benutzer sich vor der Kamera aufgestellt
+    hat und diese ihn erkannt hat. Sobald der Countdown null erreicht hat, startet ein variabler Minuten Timer. Von da
+    an werden die Ausführungen der Übungen des Benutzers ausgewertet und überwacht. Er muss nun über den gesamten Zeitraum
+    die Übung ausführen. Am ende des Timers erfährt er, ob er erfolgreich war oder nicht.
+    Nach der Übungsauswertung wird der Geldwert des RFID-Codes angepasst und die vorher gewählte Süßigkeit ausgegeben.
+    Anschließend befindet sich der Automat wieder in Ausgangsstellung.
+
+    """
     fileGIF = ''
 
     def __init__(self, parent=None):
@@ -49,8 +53,7 @@ class Ui_Dialog(QWidget):
         self.timerrunning = 0
         self.cdtime = 10000  # Countdown-Timer in ms           # ToDo: Zeit auf 10000 ändern, nur aufgrund Debugging
 
-
-    def setupUI(self, w, h, file2, fileGIF, ID, id_sweets, unit_time, rfid,):
+    def setupUI(self, w, h, file2, fileGIF, ID, id_sweets, unit_time, rfid, ):
         """
         Funktion zum initialisieren und erstellen des Fensters der Süßigkeitenauswahl. Aufruf und Init aller
         Labels und Elemente die anzuzeigen sind.
@@ -71,7 +74,7 @@ class Ui_Dialog(QWidget):
         self.setObjectName("Dialog")
         self.setWindowTitle("Help Automat")
         self.resize(w, h)
-        self.move(1920/2 - 1600/2, 1080/2 - 900/2)
+        self.move(1920 / 2 - 1600 / 2, 1080 / 2 - 900 / 2)
         self.setStyleSheet("background-color: rgb(49, 49, 51)")  # 49 49 51
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setWindowFlag(Qt.WindowStaysOnTopHint)
@@ -120,7 +123,9 @@ class Ui_Dialog(QWidget):
         """
         self.button_back = QPushButton(self)
         self.button_back.setText("Abbruch")
+        # Wenn der Button betätigt wird, schließt sich das Fenster.
         self.button_back.clicked.connect(lambda: self.close())
+        # Wenn der Button betätigt wird, wird ebenfalls die Methode "back" ausgeführt.
         self.button_back.clicked.connect(self.back)
         self.button_back.setGeometry(800, 600, 150, 75)  # x y
         self.button_back.setStyleSheet(
@@ -153,9 +158,11 @@ class Ui_Dialog(QWidget):
         self.label_Time.setStyleSheet("color: rgba(255, 0, 0, 1); font: bold; font-size: 200px")
         self.label_Time.setText(str("10.00") + " s")  # ToDo: Zeit auf 10s ändern, nur aufgrund Debugging
         self.label_Time.adjustSize()
+        # Die Position des Timer-Labels wird anhand der unten stehenden Formel berechnet, damit
+        # diese immer mittig im Bild zu sehen ist.
         x = self.label_Time.width()
         y = self.label_Time.height()
-        self.label_Time.move(1600/2 - x/2, 900/2 - y/2)
+        self.label_Time.move(1600 / 2 - x / 2, 900 / 2 - y / 2)
         self.label_Time.hide()
 
     def ok(self):
@@ -169,7 +176,6 @@ class Ui_Dialog(QWidget):
         """
         # Sämtliche Anzeigen des Fensters verstecken
         self.label_txt.hide()
-#        self.label_GIF.setVisible(False)
         self.button_ok.hide()
         self.button_back.hide()
 
@@ -177,26 +183,29 @@ class Ui_Dialog(QWidget):
         # Init for Detection
         detector = pm.poseDetector()
         flipflopflag = False
+        # UnitDone überwacht, ob die Übung erfolgreich ausgeführt wurde.
         self.unitDone = False  # New
+        # UnitCounter ist der Ist-Wert der ausgeführten Übungen.
         self.unitCounter = 0  # New
+        # UnitCheck ist der Soll-Wert der auszuführenden Übungen.
         self.unitCheck = 0  # New
         while True:
             success, img = self.cap.read()
             img = detector.findPose(img, draw=True)
             lmList = detector.findPosition(img, draw=True)
-
+            # Überwachung ob der Benutzer sich ordnungsgemäß vor der Kamera aufgestellt hat.
             if len(lmList) != 0:
+                # Es werden die Knöchel überwacht, ob diese zu mind. 80% sichtbar sind.
                 if lmList[27][3] > 80 and lmList[28][3] > 80:
                     if not self.countrunning:
+                        # Prozess des Countdown Timers wird gestartet.
                         self.countstart()
-            # Array lmList enthält die 32 Landmarks der PoseDetection.
-            # Element 0 enthält die ID
-            # Element 1 enthält die X Koordinate des Landmarks
-            # Element 2 enthält die Y Koordinate des Landmarks
-            # Element 3 enthält die Visibility des Landmarks
+
+            # ___________________ Übung 1: Hampelmann ___________________
             if len(lmList) != 0:
-                if self.trainingID == 1:  # Übung 1
-                    self.unitCheck = 10   # Anzahl an ausführungen die gewertet werden
+                # TrainingID = 1 = Hampelmann
+                if self.trainingID == 1:
+                    self.unitCheck = 10
                     if self.unitCounter < self.unitCheck:
                         # Bereiche der Ruheposition
                         if ((lmList[27][1] - lmList[28][1]) <= 100) and (lmList[12][2] < lmList[14][2]) \
@@ -212,11 +221,11 @@ class Ui_Dialog(QWidget):
                     else:
                         self.unitDone = True
 
-                # Hier beginnt dann TrainingsID 2 Liegestützen
-                elif self.trainingID == 2:  # Übung 2
+                # ___________________ Übung 2: Liegestütz ___________________
+                # TrainingID = 2 = Liegestütz
+                elif self.trainingID == 2:
                     self.unitCheck = 10
-                    # Anzahl an ausführungen die gewertet werden
-                    if self.unitCounter < self.unitCheck:  # Anzahl der Wiederholungen in der Übung
+                    if self.unitCounter < self.unitCheck:
                         # Bereiche der Ruheposition
                         if (lmList[31][2] - lmList[11][2] >= 75) and (lmList[32][2] - lmList[12][2] >= 75) \
                                 and not flipflopflag and self.myTime.isActive():
@@ -231,11 +240,11 @@ class Ui_Dialog(QWidget):
                     else:
                         self.unitDone = True
 
-                # Hier beginnt dann TrainingsID 3 Squats
+                # ___________________ Übung 3: Kniebeugen ___________________
+                # TrainingID = 3 = Kniebeugen
                 elif self.trainingID == 3:
                     self.unitCheck = 40
-                    # Anzahl an ausführungen die gewertet werden
-                    if self.unitCounter < self.unitCheck:  # Anzahl der Wiederholungen in der Übung
+                    if self.unitCounter < self.unitCheck:
                         # Bereiche der Ruheposition
                         if (lmList[26][2] - lmList[24][2] >= 40) and (lmList[25][2] - lmList[23][2] >= 40) \
                                 and not flipflopflag and self.myTime.isActive():
@@ -250,11 +259,11 @@ class Ui_Dialog(QWidget):
                     else:
                         self.unitDone = True
 
-                # Hier beginnt dann TrainingsID 4 Ausfallschritte
+                # ___________________ Übung 4: Ausfallschritt ___________________
+                # TrainingID = 4 = Ausfallschritt
                 elif self.trainingID == 4:
                     self.unitCheck = 40
-                    # Anzahl an ausführungen die gewertet werden
-                    if self.unitCounter < self.unitCheck:  # Anzahl der Wiederholungen in der Übung
+                    if self.unitCounter < self.unitCheck:
                         # Bereiche der Ruheposition
                         if (lmList[26][2] - lmList[24][2] >= 40) and (lmList[25][2] - lmList[23][2] >= 40) \
                                 and not flipflopflag and self.myTime.isActive():
@@ -270,8 +279,8 @@ class Ui_Dialog(QWidget):
                     else:
                         self.unitDone = True
 
-#            cv2.putText(img, str(int(self.unitCounter)), (70, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
-#            cv2.imshow("Image", img)  # ToDo: Zeit ändern + Image auskommentieren
+            #            cv2.putText(img, str(int(self.unitCounter)), (70, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
+            #            cv2.imshow("Image", img)  # ToDo: Zeit ändern + Image auskommentieren
             cv2.waitKey(20)
 
     def countdown(self):
@@ -296,7 +305,6 @@ class Ui_Dialog(QWidget):
                     self.timerstart()
                     break
 
-
     def timer(self):
         """
         Wird aufgerufen durch den erstellten Übungstimer MyTime. Hier wird ein Minutentimer erstellt und
@@ -310,20 +318,24 @@ class Ui_Dialog(QWidget):
         while self.timerrunning != 0:
             if self.cdtime == 0 and self.unit_time != 0:
                 sleep(1)
-                self.label_Time.setGeometry(QtCore.QRect(650, 400, 250, 80))  # Label resize da Minuten Timer relativ groß
-                self.unit_time -= 1  # Sekundenweise decrement
-                num = self.unit_time / 60  # 120s in Minuten wandeln
-                separate = math.modf(num)  # Dezimalzahl trennen in Int + Decimal
+                # Label resize da Minuten Timer relativ groß
+                self.label_Time.setGeometry(
+                    QtCore.QRect(650, 400, 250, 80))
+                # Sekundenweise decrement
+                self.unit_time -= 1
+                # Sekunden-Wert in Minuten wandeln
+                num = self.unit_time / 60
+                # Dezimalzahl trennen in Int + Decimal
+                separate = math.modf(num)
+                # Timer String zusammenbauen, zfill um "0" vor der Zahl zu setzen
                 new_string = str(int(separate[1])).zfill(2) + ":" + str(round(separate[0] * 60)).zfill(
-                    2) + " min"  # Timer String zusammenbauen, zfill um "0" vor der Zahl zu setzen
+                    2) + " min"
                 self.label_Time.setText(new_string)
                 self.label_Time.adjustSize()
                 x = self.label_Time.width()
                 y = self.label_Time.height()
                 self.label_Time.move(1600 / 2 - x / 2, 900 / 2 - y / 2)
             else:
-                print("timer stop")
-                print(self.unitDone)
                 if self.unitDone:
                     print("succeded")
                     self.Succeeded(self.id_sweets)
@@ -420,6 +432,7 @@ class Ui_Dialog(QWidget):
             counter = config["DEFAULT"]["SweetCountOne"]
             counter = int(counter)
             counter -= 1
+            # Wenn der Füllstand <= 5 ist, soll eine Warnung ausgegeben werden, dass der Füllstand niedrig sei.
             if counter <= 5:
                 err = errorwindow()
                 err.setupUI(3, 1)
@@ -431,6 +444,7 @@ class Ui_Dialog(QWidget):
             counter = config["DEFAULT"]["SweetCountTwo"]
             counter = int(counter)
             counter -= 1
+            # Wenn der Füllstand <= 5 ist, soll eine Warnung ausgegeben werden, dass der Füllstand niedrig sei.
             if counter <= 5:
                 err = errorwindow()
                 err.setupUI(3, 2)
@@ -442,6 +456,7 @@ class Ui_Dialog(QWidget):
             counter = config["DEFAULT"]["SweetCountThree"]
             counter = int(counter)
             counter -= 1
+            # Wenn der Füllstand <= 5 ist, soll eine Warnung ausgegeben werden, dass der Füllstand niedrig sei.
             if counter <= 5:
                 err = errorwindow()
                 err.setupUI(3, 3)
@@ -462,6 +477,7 @@ class Ui_Dialog(QWidget):
         counter = config["DEFAULT"]["SweetCountFour"]
         counter = int(counter)
         counter -= 1
+        # Wenn der Füllstand <= 5 ist, soll eine Warnung ausgegeben werden, dass der Füllstand niedrig sei.
         if counter <= 5:
             err = errorwindow()
             err.setupUI(3, 4)
@@ -472,24 +488,43 @@ class Ui_Dialog(QWidget):
         del config
 
     def countstart(self):
+        """
+        Dient zum starten des CountdownTimer Threads(Prozesses)
+
+        :return:
+        """
         if self.countrunning == 0:
             self.countrunning = 1
             self.threadcount = Thread(target=self.countdown)
             self.threadcount.start()
 
     def countstop(self):
+        """
+        Dient zum stoppen des CountdownTimer Threads(Prozesses)
+
+        :return:
+        """
         if self.countrunning:
             self.countrunning = 0
             self.threadcount.join()
 
     def timerstart(self):
+        """
+        Dient zum starten des ÜbungsTimer Threads(Prozesses)
+
+        :return:
+        """
         if self.timerrunning == 0:
             self.timerrunning = 1
             self.threadtimer = Thread(target=self.timer)
             self.threadtimer.start()
 
     def timerstop(self):
+        """
+        Dient zum stoppen des ÜbungsTimer Threads(Prozesses)
+
+        :return:
+        """
         if self.timerrunning:
             self.timerrunning = 0
             self.threadtimer.join()
-
