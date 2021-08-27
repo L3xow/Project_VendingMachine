@@ -1,8 +1,3 @@
-"""
-Dient lediglich zum Coden des Servers der auf dem RaspberryPi ausgeführt wird.
-Wird nirgends im Mainprogramm aufgerufen oder verwendet.
-"""
-
 import socket
 from time import *
 #import mfrc522 as SimpleMFRC522
@@ -17,7 +12,9 @@ class server():
     :return:
     """
     def __init__(self):
-#        self.reader = SimpleMFRC522()
+        self.addr = None
+        self.conn = None
+        #self.reader = SimpleMFRC522()
         print("thread started..")
         self.ls = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         port = 9999
@@ -48,8 +45,10 @@ class server():
                     try:
                         self.rc = self.conn.recv(20).decode('utf-8')
                         if self.rc == "scan":
-                            code, name = self.reader.read()
-                            self.conn.send(b"code")
+                            print("got asdf")
+                            #code, name = self.reader.read()
+                            code = b"rfidcode"
+                            self.conn.send(code)
                     except Exception as e:
                         # we can wait on the line if desired
                         print("socket error: " + repr(e))
@@ -58,7 +57,7 @@ class server():
                         print("got data", self.rc)
                         self.gotData = True
                         connect_start = time()  # reset timeout time
-                    elif (self.running == 0) or (time() - connect_start > 30):
+                    elif (time() - connect_start > 30):
                         print("Tired of waiting on connection!")
                         self.rc = "done"
 
@@ -70,3 +69,7 @@ class server():
         # print("closing listener...")
         # # self running became 0
         # self.ls.close()
+        
+if __name__ == "__main__":
+    s = server()
+
