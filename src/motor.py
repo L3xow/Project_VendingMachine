@@ -12,7 +12,7 @@ ES = Motor2 - 10 = PIN 12
 
 '''
 
-def start(MotorID):
+def start(MotorID, time = 5.8):
     """
     Funktion zum ansteuern der Motoren. Es wird eine ID übergeben, (1-4) mit der die GPIO bereits vorkonfiguriert sind.
     Es wird zunächst eine IP Verbindung zum RPi aufgebaut, um dann die Status der GPIO abzufragen, bzw diese anzusteuern.
@@ -22,8 +22,8 @@ def start(MotorID):
     :param MotorID: (int) : Wert zwischen 1-4, Motor nummerierung von Links nach Rechts.
     :return:
     """
-#    pi = pigpio.pi("192.168.137.61", 8888)
-    pi = pigpio.pi("192.168.2.41", 8888)
+    pi = pigpio.pi("192.168.137.61", 8888)
+#    pi = pigpio.pi("192.168.2.41", 8888)
     while pi.connected:
         if MotorID == 1:
             motor = 21
@@ -35,17 +35,17 @@ def start(MotorID):
             motor = 16
             es = 17
         elif MotorID == 4:
-            motor = 11
+            motor = 12
             es = 24
 
         pi.set_mode(motor, pigpio.OUTPUT)
         pi.set_mode(es, pigpio.INPUT)
 
         pi.write(motor, 0)
-        sleep(5.5)
+        sleep(time)
         pi.write(motor, 1)
         return True
-        break
+
 
 
 

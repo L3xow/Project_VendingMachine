@@ -69,7 +69,7 @@ class Ui_Dialog(QWidget):
         self.id_sweets = id_sweets
         self.unit_time = unit_time  # Zeit in s für Übung
         self.rfid = rfid
-        self.cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+        self.cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
 
         self.setObjectName("Dialog")
         self.setWindowTitle("Help Automat")
@@ -205,7 +205,7 @@ class Ui_Dialog(QWidget):
             if len(lmList) != 0:
                 # TrainingID = 1 = Hampelmann
                 if self.trainingID == 1:
-                    self.unitCheck = 10
+                    self.unitCheck = 30
                     if self.unitCounter < self.unitCheck:
                         # Bereiche der Ruheposition
                         if ((lmList[27][1] - lmList[28][1]) <= 100) and (lmList[12][2] < lmList[14][2]) \
@@ -224,17 +224,17 @@ class Ui_Dialog(QWidget):
                 # ___________________ Übung 2: Liegestütz ___________________
                 # TrainingID = 2 = Liegestütz
                 elif self.trainingID == 2:
-                    self.unitCheck = 10
+                    self.unitCheck = 30
                     if self.unitCounter < self.unitCheck:
                         # Bereiche der Ruheposition
                         if (lmList[31][2] - lmList[11][2] >= 75) and (lmList[32][2] - lmList[12][2] >= 75) \
-                                and not flipflopflag and self.myTime.isActive():
+                                and not flipflopflag:
                             flipflopflag = True
                             self.unitCounter += 1
 
                         # Bereiche der Arbeitsposition
                         if (lmList[31][2] - lmList[11][2] <= 75) and (lmList[32][2] - lmList[12][2] <= 75) \
-                                and flipflopflag and self.myTime.isActive():  # Abstand zwischen den Beinen, flipflopflag = Verriegelung damit nicht ständig hochgezählt wird
+                                and flipflopflag:  # Abstand zwischen den Beinen, flipflopflag = Verriegelung damit nicht ständig hochgezählt wird
                             flipflopflag = False
                             self.unitCounter += 1
                     else:
@@ -243,17 +243,17 @@ class Ui_Dialog(QWidget):
                 # ___________________ Übung 3: Kniebeugen ___________________
                 # TrainingID = 3 = Kniebeugen
                 elif self.trainingID == 3:
-                    self.unitCheck = 40
+                    self.unitCheck = 50
                     if self.unitCounter < self.unitCheck:
                         # Bereiche der Ruheposition
                         if (lmList[26][2] - lmList[24][2] >= 40) and (lmList[25][2] - lmList[23][2] >= 40) \
-                                and not flipflopflag and self.myTime.isActive():
+                                and not flipflopflag:
                             flipflopflag = True
                             self.unitCounter += 1
 
                         # Bereiche der Arbeitsposition
                         if (lmList[26][2] - lmList[24][2] <= 40) and (lmList[25][2] - lmList[23][2] <= 40) \
-                                and flipflopflag and self.myTime.isActive():
+                                and flipflopflag:
                             flipflopflag = False
                             self.unitCounter += 1
                     else:
@@ -262,18 +262,18 @@ class Ui_Dialog(QWidget):
                 # ___________________ Übung 4: Ausfallschritt ___________________
                 # TrainingID = 4 = Ausfallschritt
                 elif self.trainingID == 4:
-                    self.unitCheck = 40
+                    self.unitCheck = 30
                     if self.unitCounter < self.unitCheck:
                         # Bereiche der Ruheposition
                         if (lmList[26][2] - lmList[24][2] >= 40) and (lmList[25][2] - lmList[23][2] >= 40) \
-                                and not flipflopflag and self.myTime.isActive():
+                                and not flipflopflag:
                             flipflopflag = True
                             self.unitCounter += 1
 
                         # Bereiche der Arbeitsposition
                         if (lmList[26][1] >= lmList[12][1]) and (lmList[25][1] >= lmList[11][1]) \
                                 and (lmList[14][2] >= lmList[12][2]) and (lmList[13][2] >= lmList[11][2]) \
-                                and flipflopflag and self.myTime.isActive():
+                                and flipflopflag:
                             flipflopflag = False
                             self.unitCounter += 1
                     else:
@@ -293,8 +293,8 @@ class Ui_Dialog(QWidget):
         print("Countdown started")
         while self.countrunning != 0:
             if self.cdtime != 0:
-                self.cdtime -= 200
-                sleep(0.2)
+                self.cdtime -= 100
+                sleep(0.1)
                 print(self.cdtime)
                 self.label_Time.setText(str(self.cdtime / 1000) + " s")
                 self.label_Time.adjustSize()
@@ -369,7 +369,7 @@ class Ui_Dialog(QWidget):
         self.label_Time.adjustSize()
         self.label_Time.move(300, 400)
         self.label_Time.show()
-        self.cap.release()
+#        self.cap.release()
         start(4)  # Motor 4 für Gesunde Mahlzeit
         self.close()
 
@@ -392,7 +392,6 @@ class Ui_Dialog(QWidget):
         self.label_Time.move(407, 400)
         self.label_Time.show()
         start(id_sweets)  # id_sweets
-        self.cap.release()
         self.close()
 
     def decrementMoney(self):

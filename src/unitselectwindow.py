@@ -125,7 +125,7 @@ class UnitSelectWindow(QWidget):
 
         :return:
         """
-        self.w.setupUI(1600, 900, "src/misc/Dialogwindowdescr.txt", "src/misc/Hampelmann.gif", 1, self.id_sweets, 30, self.rfid)
+        self.w.setupUI(1600, 900, "src/misc/Dialogwindowdescr.txt", "src/misc/Hampelmann.gif", 1, self.id_sweets, 60, self.rfid)
         self.close()
         self.w.show()
 
@@ -145,7 +145,7 @@ class UnitSelectWindow(QWidget):
 
         :return:
         """
-        self.w.setupUI(1600, 900, "src/misc/Dialogwindowdescr.txt", "src/misc/squats.gif", 3, self.id_sweets, 120, self.rfid)
+        self.w.setupUI(1600, 900, "src/misc/Dialogwindowdescr.txt", "src/misc/squats.gif", 3, self.id_sweets, 60, self.rfid)
         self.w.show()
         self.close()
 

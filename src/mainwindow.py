@@ -39,7 +39,9 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 
 from adminwindow import *
 from errorwindow import errorwindow
+from src.motor import start
 from unitselectwindow import UnitSelectWindow
+from src import gpiocontrol
 
 
 class MainWindow(QMainWindow):
@@ -58,7 +60,7 @@ class MainWindow(QMainWindow):
         self.label_txt = QLabel
         self.label_jpg = QLabel
         self.errorLabel = QLabel(self)
-        self.TESTBIT = True
+        self.TESTBIT = False
 
         self.error = errorwindow()
         # ErrorMonitor Objekt wird erstellt, dient zur Überwachung der Sensoriken
@@ -205,6 +207,7 @@ class MainWindow(QMainWindow):
             self.client.send_data("scan")
             self.data = self.client.get_data()
             self.admin.rfid = self.data
+            print(self.admin.rfid)
             if self.data:
                 # Hier werden die Admin RFID´s abgeglichen.
                 if self.admin.rfid == "670621518554" or self.admin.rfid == "admincode2" or self.admin.rfid == "rfidcode":
@@ -277,10 +280,10 @@ class ErrorMonitor(QObject):
             sleep(1)
             if gpiocontrol.readInput(23):
                 print("errordetected")
-                # self.error_signal.emit(4)
+                self.error_signal.emit(4)
             elif gpiocontrol.readInput(6):
                 print("errordetected")
-                # self.error_signal.emit(5)
+                self.error_signal.emit(5)
 
 
 class client():
@@ -290,10 +293,10 @@ class client():
 
     def __init__(self):
         print("Trying to connect")
-        TCP_IP = '192.168.2.41'  # IP RasPi
+        TCP_IP = '192.168.137.61'  # IP RasPi
         TCP_PORT = 9999
         self.data = 0
-        self.BUFF = 10
+        self.BUFF = 20
 
         self.s = socket.socket()
         self.s.connect((TCP_IP, TCP_PORT))
