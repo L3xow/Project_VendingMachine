@@ -1,8 +1,8 @@
 
 import pigpio
+import settings
 
-pi = pigpio.pi("192.168.137.61", 8888)
-#pi = pigpio.pi("192.168.2.41", 8888)
+pi = pigpio.pi(settings.RPiIP, 8888)
 def readInput(input):
     """
     Funktion zum abfragen von RPi GPIO Status. Hier muss die IP des RPis geändert werden.

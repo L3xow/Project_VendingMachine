@@ -1,14 +1,10 @@
-Herzlich Willkommen
 
-Ihre Aufgabe:
-Wählen Sie eine Süßigkeit aus.
 
-Im Anschluss müssen Sie eine Übung auswählen, die Sie ausführen wollen. Aber Achtung: Leichte Übung heißt nicht gleich leichte Ausführung!
+Schritt 1:
+Süßigkeit wählen und RFID Chip scannen.
 
-Wenn Sie sich für eine Übung entschieden haben, müssen Sie dies nochmals mit "Ok" bestätigen.
+Schritt 2:
+Wunschübung auswählen!
 
-Zuletzt müssen Sie sich auf die gekennzeichnete Position stellen und sobald der Countdown abgelaufen ist, die Übung durchführen.
-
-Hinweis: Schummeln wird erkannt :)
-
-Viel Spaß und Viel Erfolg!
+Schritt 3:
+Anweisungen des Automaten folgen!

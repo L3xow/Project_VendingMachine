@@ -1,12 +1,12 @@
-from PyQt5 import Qt
+from PyQt5 import Qt, QtCore
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QDialog, QPushButton, QLabel
+from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QDialog
 from PyQt5.QtCore import Qt
 
 from src import gpiocontrol
 
 
-class errorwindow(QDialog):
+class errorwindow(QWidget):
     """
     Erzeugt ein ErrorFenster das den Fehler anzeigt. Kann mit Okay bestätigt werden.
     Fehler IDs:
@@ -21,13 +21,13 @@ class errorwindow(QDialog):
 
     """
 
-    def __init__(self):
+    def __init__(self, parent=None):
         """
         Konstruktor für errorwindow.
         Initialisiert und erstellt alle dafür vorgesehenen Attribute und Eigenschaften.
 
         """
-        super().__init__()
+        super().__init__(parent)
         self.setWindowTitle("ErrorMsg")
         self.setObjectName("ErrorMsg")
         self.resize(400, 300)
@@ -45,6 +45,8 @@ class errorwindow(QDialog):
         self.smaller_pixmap_error = self.pixmap_error.scaled(64, 64, Qt.KeepAspectRatio, Qt.FastTransformation)
         self.pixmap_warning = QPixmap("src/misc/warning.png")
         self.smaller_pixmap_warning = self.pixmap_warning.scaled(64, 64, Qt.KeepAspectRatio, Qt.FastTransformation)
+        self.pixmap_info = QPixmap("src/misc/info.png")
+        self.smaller_pixmap_info = self.pixmap_info.scaled(64, 64, Qt.KeepAspectRatio, Qt.FastTransformation)
 
     def setupUI(self, ErrID, SweetID=0):
         """
@@ -65,6 +67,7 @@ class errorwindow(QDialog):
         self.textlabel.setStyleSheet("color: black; font-weight: bold; font-size: 16px")
         self.textlabel.setWordWrap(True)
         self.textlabel.resize(300, 200)
+        self.textlabel.show()
 
         self.pixlabel.setPixmap(self.smaller_pixmap_error)
         self.pixlabel.move(10, 10)
@@ -83,37 +86,39 @@ class errorwindow(QDialog):
             gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
             self.textlabel.setText("Error: RFID Code nicht angelegt oder nicht genügend Guthaben!")
-            self.textlabel.show()
         elif ErrID == 2:
             gpiocontrol.writeOutput(self.redLED, 0)
             gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
             self.textlabel.setText("Error: RFID noch einmal scannen!")
-            self.textlabel.show()
         elif ErrID == 3:
             gpiocontrol.writeOutput(self.yellowLED, 0)
             gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_warning)
-            self.textlabel.setText("Warnung: Füllstand " + str(self.sweets) + ". Süßigkeit zu niedrig")
-            self.show()
+            self.textlabel.setText("Warnung: Füllstand " + str(self.sweets) + ". Süßigkeit kleiner gleich 5. Bitte auffüllen.")
         elif ErrID == 4:
             gpiocontrol.writeOutput(self.redLED, 0)
             gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
             self.textlabel.setText("Error: Plexiglas Platte nicht ordnungsgemäß befestigt!")
-            self.show()
         elif ErrID == 5:
             gpiocontrol.writeOutput(self.redLED, 0)
             gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
             self.textlabel.setText("Error: Wartungsschalter an der Rückseite ist ausgeschalten!")
-            self.show()
         elif ErrID == 6:
             gpiocontrol.writeOutput(self.redLED, 0)
             gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
             self.textlabel.setText("Error: RFID ist kein AdminRFID! Zugriff Verweigert!")
-            self.show()
+        elif ErrID == 7:
+            self.pixlabel.setPixmap(self.smaller_pixmap_info)
+            self.textlabel.setText("RFID Chip an den Scanner legen.")
+        elif ErrID == 8:
+            gpiocontrol.writeOutput(self.redLED, 0)
+            gpiocontrol.writeOutput(self.greenLED, 1)
+            self.pixlabel.setPixmap(self.smaller_pixmap_error)
+            self.textlabel.setText("Error: Füllstand " + str(self.sweets) + ". Süßigkeit gleich 0.")
 
         self.show()
 

@@ -6,8 +6,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QMovie
 from PyQt5.QtWidgets import QWidget, QLabel
 
-from userdialog import Ui_Dialog
-
+import userdialog
+import settings
 
 class UnitSelectWindow(QWidget):
     """
@@ -30,6 +30,7 @@ class UnitSelectWindow(QWidget):
         self.width = 300
         self.height = 300
         self.rfid = rfid
+
 
         path = os.path.dirname(os.path.abspath(__file__))
         fileWin1 = os.path.join(path, "misc/MainwindowDescr.txt")
@@ -59,7 +60,7 @@ class UnitSelectWindow(QWidget):
         self.labelTXT("Ausfallschritt", 1500, 180)
         self.labelTXT(self.fileexpl, 180, 580)
         # Objekt w wird bereits erstellt, damit die Ladezeiten nach Auswahl der Übung gesenkt werden.
-        self.w = Ui_Dialog()
+        self.w = userdialog.Ui_Dialog()
 
         # Text Label für Erklärung
     def labelTXT(self, txt, x, y):
@@ -125,7 +126,7 @@ class UnitSelectWindow(QWidget):
 
         :return:
         """
-        self.w.setupUI(1600, 900, "src/misc/Dialogwindowdescr.txt", "src/misc/Hampelmann.gif", 1, self.id_sweets, 60, self.rfid)
+        self.w.setupUI(1600, 900, "src/misc/Dialogwindowdescr.txt", "src/misc/Hampelmann.gif", 1, self.id_sweets, settings.JJTime, self.rfid)
         self.close()
         self.w.show()
 
@@ -135,7 +136,7 @@ class UnitSelectWindow(QWidget):
 
         :return:
         """
-        self.w.setupUI(1600, 900, "src/misc/Dialogwindowdescr.txt", "src/misc/pushup.gif", 2, self.id_sweets, 60,self.rfid)
+        self.w.setupUI(1600, 900, "src/misc/Dialogwindowdescr.txt", "src/misc/pushup.gif", 2, self.id_sweets, settings.PUTime, self.rfid)
         self.w.show()
         self.close()
 
@@ -145,7 +146,7 @@ class UnitSelectWindow(QWidget):
 
         :return:
         """
-        self.w.setupUI(1600, 900, "src/misc/Dialogwindowdescr.txt", "src/misc/squats.gif", 3, self.id_sweets, 60, self.rfid)
+        self.w.setupUI(1600, 900, "src/misc/Dialogwindowdescr.txt", "src/misc/squats.gif", 3, self.id_sweets, settings.SQTime, self.rfid)
         self.w.show()
         self.close()
 
@@ -155,6 +156,6 @@ class UnitSelectWindow(QWidget):
 
         :return:
         """
-        self.w.setupUI(1600, 900, "src/misc/Dialogwindowdescr.txt", "src/misc/ausfallschritt.gif", 4, self.id_sweets, 60, self.rfid)
+        self.w.setupUI(1600, 900, "src/misc/Dialogwindowdescr.txt", "src/misc/ausfallschritt.gif", 4, self.id_sweets, settings.LGTime, self.rfid)
         self.w.show()
         self.close()

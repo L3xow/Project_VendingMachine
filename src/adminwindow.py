@@ -1,9 +1,12 @@
+import PyQt5.QtCore
+from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIntValidator
+from PyQt5.QtGui import QIntValidator, QDoubleValidator
 from PyQt5.QtWidgets import QDialog, QLineEdit, QLabel, QPushButton
 import configparser as cp
+import settings
 
-from mainwindow import client
+import mainwindow
 
 
 class adminwindow(QDialog):
@@ -96,7 +99,7 @@ class adminwindow(QDialog):
         self.inputSweetsTwo.setValidator(QIntValidator(0, 10, self))
         self.inputSweetsThree.setValidator(QIntValidator(0, 10, self))
         self.inputSweetsFour.setValidator(QIntValidator(0, 10, self))
-        self.inputMoney.setValidator(QIntValidator(0, 50, self))
+        self.inputMoney.setValidator(QDoubleValidator(0.0, 50.0, 2))
 
         # LineEditSetText
         self.inputSweetsOne.setText(str(self.valOne))
@@ -171,6 +174,7 @@ class adminwindow(QDialog):
         cfgfile = open("config.ini", "w")
         self.config.write(cfgfile)
         cfgfile.close()
+        mainwindow.getCounterValues()
 
     def savetwo(self):
         """
@@ -182,6 +186,7 @@ class adminwindow(QDialog):
         cfgfile = open("config.ini", "w")
         self.config.write(cfgfile)
         cfgfile.close()
+        mainwindow.getCounterValues()
 
     def savethree(self):
         """
@@ -193,6 +198,7 @@ class adminwindow(QDialog):
         self.config["DEFAULT"]["SweetCountThree"] = self.inputSweetsThree.text()
         self.config.write(cfgfile)
         cfgfile.close()
+        mainwindow.getCounterValues()
 
     def savefour(self):
         """
@@ -204,6 +210,7 @@ class adminwindow(QDialog):
         self.config["DEFAULT"]["SweetCountFour"] = self.inputSweetsFour.text()
         self.config.write(cfgfile)
         cfgfile.close()
+        mainwindow.getCounterValues()
 
     def reset(self):
         """
@@ -212,10 +219,10 @@ class adminwindow(QDialog):
 
         :return:
         """
-        self.config.set("DEFAULT", "SweetCountOne", "20")
-        self.config.set("DEFAULT", "SweetCountTwo", "20")
-        self.config.set("DEFAULT", "SweetCountThree", "20")
-        self.config.set("DEFAULT", "SweetCountThree", "20")
+        self.config.set("DEFAULT", "SweetCountOne", str(settings.CounterReset))
+        self.config.set("DEFAULT", "SweetCountTwo", str(settings.CounterReset))
+        self.config.set("DEFAULT", "SweetCountThree", str(settings.CounterReset))
+        self.config.set("DEFAULT", "SweetCountFour", str(settings.CounterReset))
 
         self.valOne = self.config['DEFAULT']['SweetCountOne']
         self.valTwo = self.config['DEFAULT']['SweetCountTwo']
@@ -230,6 +237,7 @@ class adminwindow(QDialog):
         cfgfile = open("config.ini", "w")
         self.config.write(cfgfile)
         cfgfile.close()
+        mainwindow.getCounterValues()
 
     def scanrfid(self):
         """
@@ -238,7 +246,7 @@ class adminwindow(QDialog):
         :return:
         """
         # Verbindet auf den Server
-        self.client = client()
+        self.client = mainwindow.client()
         # Schickt einen Scan Befehl an den RasPi
         self.client.send_data("scan")
         # Empfängt den gescannten RFID - Code
@@ -277,8 +285,15 @@ class adminwindow(QDialog):
 
         :return:
         """
-        self.config["RFID"][self.rfid] = self.inputMoney.text()
+        if ',' in self.inputMoney.text():
+            s = self.inputMoney.text()
+            s = s.replace(',', '.', 1)
+            self.config["RFID"][self.rfid] = s
+            self.moneylabel.setText(s)
+        else:
+            self.config["RFID"][self.rfid] = self.inputMoney.text()
+            self.moneylabel.setText(self.inputMoney.text())
         with open("config.ini", "w") as configfile:
             self.config.write(configfile)
-            self.moneylabel.setText(self.inputMoney.text())
+
             self.moneylabel.show()

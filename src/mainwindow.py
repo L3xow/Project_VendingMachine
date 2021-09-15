@@ -31,17 +31,21 @@ für die Benutzung freigegeben.
 import errno
 import os
 import socket
+import configparser as cp
 from time import *
 
 from PyQt5 import Qt, QtCore, QtGui
 from PyQt5.QtCore import QObject
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 
-from adminwindow import *
-from errorwindow import errorwindow
+import errorwindow
+import adminwindow
+import unitselectwindow
+import settings
+
 from src.motor import start
-from unitselectwindow import UnitSelectWindow
 from src import gpiocontrol
+
 
 
 class MainWindow(QMainWindow):
@@ -56,13 +60,14 @@ class MainWindow(QMainWindow):
         :param parent: N/A
         """
         super().__init__(parent)
-        self.admin = adminwindow()
+        self.admin = adminwindow.adminwindow()
         self.label_txt = QLabel
         self.label_jpg = QLabel
         self.errorLabel = QLabel(self)
         self.TESTBIT = False
+        self.error = errorwindow.errorwindow()
+        getCounterValues()
 
-        self.error = errorwindow()
         # ErrorMonitor Objekt wird erstellt, dient zur Überwachung der Sensoriken
         self.error_monitor = ErrorMonitor()
         # Thread Objekt wird erstellt, dient als extra Prozess zum ausführen einer Dauerschleife ohne das Main-Programm
@@ -77,6 +82,8 @@ class MainWindow(QMainWindow):
         self.thread.started.connect(self.error_monitor.monitor_errors)
         # Thread wird gestartet
         self.thread.start()
+
+
 
         # path wird als Variable angelegt, um auf den Programmpfad zurückzuverweisen. Diese macht es möglich die
         # Bilder ohne Absoluten Pfad aufzurufen.
@@ -94,21 +101,21 @@ class MainWindow(QMainWindow):
         self.setObjectName("MainWindow")
         self.resize(MainWindow.width, MainWindow.height)
         self.setStyleSheet("background-color: rgb(255,255,255)")
-        self.setWindowFlag(Qt.FramelessWindowHint)
-        self.labelTXT("Platzhalter_Übung_1", 180, 180)
-        self.labelJPG("misc/PlaceHolder.jpg", 180, 210)
-        self.labelTXT("Platzhalter_Übung_2", 810, 180)
-        self.labelJPG("misc/PlaceHolder.jpg", 810, 210)
-        self.labelTXT("Platzhalter_Übung_3", 1440, 180)
-        self.labelJPG("misc/PlaceHolder.jpg", 1440, 210)
+        self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
+        self.labelTXT("hanuta RIEGEL", 180, 180)
+        self.labelJPG("misc/Hanuta_new.jpg", 180, 210)
+        self.labelTXT("Knoppers NussRiegel", 810, 180)
+        self.labelJPG("misc/Knoppers_new.jpg", 810, 210)
+        self.labelTXT("PickUp Choco+Milk", 1440, 180)
+        self.labelJPG("misc/PickUp_new.jpg", 1440, 210)
         self.labelJPG("misc/Logo3.png", 1729, 980)
         self.label_jpg.adjustSize()
-        self.labelTXT(self.fileexpl, 180, 580)
+        self.labelTXT(self.fileexpl, 180, 560)
 
     @QtCore.pyqtSlot(int)
-    def callError(self, ErrID):
+    def callError(self, ErrID, SweetID=0):
         # ErrorWindow UI wird vorbereitet und initialisiert
-        self.error.setupUI(ErrID, 0)
+        self.error.setupUI(ErrID, SweetID)
 
     # def keyPressEvent(self, event):
     #     if event.key() == Qt.Key_Space:
@@ -143,6 +150,7 @@ class MainWindow(QMainWindow):
         """
         path = os.path.dirname(os.path.abspath(__file__))
         self.label_jpg = QLabel(self)
+        self.label_jpg.setStyleSheet("border: 2px solid black")
         self.label_jpg.setGeometry(QtCore.QRect(x, y, 300, 300))  # x y width height
         self.label_jpg.setPixmap(QtGui.QPixmap(os.path.join(path, jpg)))
         self.label_jpg.setObjectName("label_jpg")
@@ -160,8 +168,16 @@ class MainWindow(QMainWindow):
         """
         x = a0.x()
         y = a0.y()
+
         # Linkes Bild
         if 180 <= x <= 480 and 210 <= y <= 510:
+            if settings.actValueOne == 0:
+                self.error.setupUI(8, 1)
+                return
+            elif settings.actValueOne <= 5 and not settings.isClicked:
+                self.error.setupUI(3, 1)
+                settings.isClicked = True
+                return
             # Verbindung zum Server wird aufgebaut.
             self.client = client()
             # Befehl an den Server(RasPi) zum vorbereiten des RFID-Scanners
@@ -173,34 +189,51 @@ class MainWindow(QMainWindow):
             # Wenn Daten vorhanden sind
             if self.data:
                 # Prüfe, ob gescannter Code schon im System angelegt ist und ob dessen Wert >= -5 ist.
-                if getConfigCodes(self.admin.rfid) and int(getConfigValue(self.admin.rfid)) >= -5:
+                if getConfigCodes(self.admin.rfid) and float(getConfigValue(self.admin.rfid)) >= -5.0:
                     # Wenn obiges stimmt -> Fahre fort mit Ablauf
                     self.DialogWindow(1, 1920, 1080)
                 else:
                     # Wenn obiges nicht stimmt -> Gibt Fehler ID 1 aus, Nicht angelegt bzw nicht genug Guthaben
                     self.error.setupUI(1)
+                    return
         # Mittleres Bild
         if 810 <= x <= 810 + 300 and 210 <= y <= 510:
+            if settings.actValueTwo == 0:
+                self.error.setupUI(8, 2)
+                return
+            elif settings.actValueTwo <= 5 and not settings.isClicked:
+                self.error.setupUI(3, 2)
+                settings.isClicked = True
+                return
             self.client = client()
             self.client.send_data("scan")
             self.data = self.client.get_data()
             self.admin.rfid = self.data
             if self.data:
-                if getConfigCodes(self.admin.rfid) and int(getConfigValue(self.admin.rfid)) >= -5:
+                if getConfigCodes(self.admin.rfid) and float(getConfigValue(self.admin.rfid)) >= -5.0:
                     self.DialogWindow(2, 1920, 1080)
                 else:
                     self.error.setupUI(1)
+                    return
         # Rechtes Bild
         if 1440 <= x <= 1440 + 300 and 210 <= y <= 510:
+            if settings.actValueThree == 0:
+                self.error.setupUI(8, 3)
+                return
+            elif settings.actValueThree <= 5 and not settings.isClicked:
+                self.error.setupUI(3, 3)
+                settings.isClicked = True
+                return
             self.client = client()
             self.client.send_data("scan")
             self.data = self.client.get_data()
             self.admin.rfid = self.data
             if self.data:
-                if getConfigCodes(self.admin.rfid) and int(getConfigValue(self.admin.rfid)) >= -5:
+                if getConfigCodes(self.admin.rfid) and float(getConfigValue(self.admin.rfid)) >= -5.0:
                     self.DialogWindow(3, 1920, 1080)
                 else:
                     self.error.setupUI(1)
+                    return
         # Logo unten Rechts, Admin-Maske Aufruf
         if 1729 <= x <= 1900 and 980 <= y <= 1060:
             self.client = client()
@@ -218,6 +251,7 @@ class MainWindow(QMainWindow):
                 else:
                     # Wenn gescannter Code mit keinem oben übereinstimmt, gib Fehler ID 6 aus -> RFID kein Admin-Code
                     self.error.setupUI(6)
+                    return
 
     def DialogWindow(self, id, w, h):
         """
@@ -228,7 +262,7 @@ class MainWindow(QMainWindow):
         :param h: (int) Höhe des Fensters
         :return: unitselectwindow Fenster wird ausgeführt
         """
-        self.win = UnitSelectWindow(id, self.admin.rfid)
+        self.win = unitselectwindow.UnitSelectWindow(id, self.admin.rfid)
         self.win.setupUI(w, h)
         self.win.show()
 
@@ -245,7 +279,6 @@ def getConfigCodes(searchstring):
     config = cp.ConfigParser()
     config.read("config.ini")
     for option in config.options("RFID"):
-        print(option)
         if option == searchstring:
             del config
             return True
@@ -265,6 +298,15 @@ def getConfigValue(searchstring):
     del config
     return ret
 
+def getCounterValues():
+
+    config = cp.ConfigParser()
+    config.read("config.ini")
+    settings.actValueOne = int(config["DEFAULT"]["SweetCountOne"])
+    settings.actValueTwo = int(config["DEFAULT"]["SweetCountTwo"])
+    settings.actValueThree = int(config["DEFAULT"]["SweetCountThree"])
+    settings.actValueFour = int(config["DEFAULT"]["SweetCountFour"])
+    del config
 
 class ErrorMonitor(QObject):
     """
@@ -278,12 +320,14 @@ class ErrorMonitor(QObject):
     def monitor_errors(self):
         while True:
             sleep(1)
-            if gpiocontrol.readInput(23):
-                print("errordetected")
-                self.error_signal.emit(4)
-            elif gpiocontrol.readInput(6):
-                print("errordetected")
-                self.error_signal.emit(5)
+            # if gpiocontrol.readInput(23):
+            #     print("errordetected")
+            #     self.error_signal.emit(4)
+            # elif gpiocontrol.readInput(6):
+            #     print("errordetected")
+            #     self.error_signal.emit(5)
+
+
 
 
 class client():
@@ -293,7 +337,7 @@ class client():
 
     def __init__(self):
         print("Trying to connect")
-        TCP_IP = '192.168.137.61'  # IP RasPi
+        TCP_IP = settings.RPiIP
         TCP_PORT = 9999
         self.data = 0
         self.BUFF = 20
