@@ -48,26 +48,9 @@ class Ui_Dialog(QWidget):
         self.unitCheck = 0
         self.countrunning = 0
         self.timerrunning = 0
-        self.cdtime = 10000  # Countdown-Timer in ms           # ToDo: Zeit auf 10000 ändern, nur aufgrund Debugging
+        self.cdtime = 5000  # Countdown-Timer in ms           # ToDo: Zeit auf 10000 ändern, nur aufgrund Debugging
         self.txt = "Wie auf dem Bild gezeigt vor der Kamera aufstellen!"
-
-
-    # def testfunc(self):
-    #     config = cp.ConfigParser()
-    #     config.read("config.ini")
-    #     cfgfile = open("config.ini", "w")
-    #     if True:
-    #         counter = config["DEFAULT"]["SweetCountOne"]
-    #         counter = int(counter)
-    #         counter -= 1
-    #         if counter:
-    #             self.err = errorwindow()
-    #             self.err.setupUI(3, 2)
-    #             self.err.show()
-    #         config["DEFAULT"]["SweetCountOne"] = str(counter)
-    #         config.write(cfgfile)
-    #         cfgfile.close()
-    #         del config
+        self.notSucceededbit = False
 
     def setupUI(self, w, h, file2, fileGIF, ID, id_sweets, unit_time, rfid, ):
         """
@@ -182,7 +165,7 @@ class Ui_Dialog(QWidget):
         #        self.label_Time.setGeometry(QtCore.QRect(650, 400, 300, 120))
         self.label_Time.setObjectName("label_Time")
         self.label_Time.setStyleSheet("color: rgba(255, 0, 0, 1); font: bold; font-size: 200px")
-        self.label_Time.setText(str("10.00") + " s")  # ToDo: Zeit auf 10s ändern, nur aufgrund Debugging
+        self.label_Time.setText(str("05.00") + " s")  # ToDo: Zeit auf 10s ändern, nur aufgrund Debugging
         self.label_Time.adjustSize()
         # Die Position des Timer-Labels wird anhand der unten stehenden Formel berechnet, damit
         # diese immer mittig im Bild zu sehen ist.
@@ -215,23 +198,24 @@ class Ui_Dialog(QWidget):
         self.unitDone = False  # New
         # UnitCounter ist der Ist-Wert der ausgeführten Übungen.
         self.unitCounter = 0  # New
-        while True:
+        while not self.notSucceededbit:
             success, img = self.cap.read()
             img = detector.findPose(img, draw=True)
             lmList = detector.findPosition(img, draw=True)
             # Überwachung ob der Benutzer sich ordnungsgemäß vor der Kamera aufgestellt hat.
             if len(lmList) != 0:
                 # Es werden die Knöchel überwacht, ob diese zu mind. 80% sichtbar sind.
-                if lmList[27][3] > 80 and lmList[28][3] > 80:
+                if lmList[27][3] > 90 or lmList[28][3] > 90:
                     if not self.countrunning:
                         # Prozess des Countdown Timers wird gestartet.
                         self.countstart()
 
             # ___________________ Übung 1: Hampelmann ___________________
-            if len(lmList) != 0:
+            if len(lmList) != 0 and self.timerrunning:
                 # TrainingID = 1 = Hampelmann
                 if self.trainingID == 1:
-                    if self.unitCounter < settings.JJReps * 2:
+                    self.unitCheck = round(settings.JJReps * 2)
+                    if self.unitCounter < round(settings.JJReps * 2):
                         # Bereiche der Ruheposition
                         if ((lmList[27][1] - lmList[28][1]) <= 100) and (lmList[12][2] < lmList[14][2]) \
                                 and (lmList[11][2] < lmList[13][2]) and not flipflopflag:
@@ -251,6 +235,7 @@ class Ui_Dialog(QWidget):
                 # ___________________ Übung 2: Liegestütz ___________________
                 # TrainingID = 2 = Liegestütz
                 elif self.trainingID == 2:
+                    self.unitCheck = round(settings.PUReps * 2)
                     if self.unitCounter < settings.PUReps*2:
                         # Bereiche der Ruheposition
                         if (lmList[31][2] - lmList[11][2] >= 75) and (lmList[32][2] - lmList[12][2] >= 75) \
@@ -260,7 +245,7 @@ class Ui_Dialog(QWidget):
 
                         # Bereiche der Arbeitsposition
                         if (lmList[31][2] - lmList[11][2] <= 75) and (lmList[32][2] - lmList[12][2] <= 75) \
-                                and flipflopflag:  # Abstand zwischen den Beinen, flipflopflag = Verriegelung damit nicht ständig hochgezählt wird
+                                and flipflopflag:
                             flipflopflag = False
                             self.unitCounter += 1
                     else:
@@ -271,6 +256,7 @@ class Ui_Dialog(QWidget):
                 # ___________________ Übung 3: Kniebeugen ___________________
                 # TrainingID = 3 = Kniebeugen
                 elif self.trainingID == 3:
+                    self.unitCheck = round(settings.SQReps * 2)
                     if self.unitCounter < settings.SQReps * 2:
                         # Bereiche der Ruheposition
                         if (lmList[26][2] - lmList[24][2] >= 40) and (lmList[25][2] - lmList[23][2] >= 40) \
@@ -291,12 +277,14 @@ class Ui_Dialog(QWidget):
                 # ___________________ Übung 4: Ausfallschritt ___________________
                 # TrainingID = 4 = Ausfallschritt
                 elif self.trainingID == 4:
+                    self.unitCheck = round(settings.LGReps * 2)
                     if self.unitCounter < settings.LGReps * 2:
                         # Bereiche der Ruheposition
                         if (lmList[26][2] - lmList[24][2] >= 40) and (lmList[25][2] - lmList[23][2] >= 40) \
                                 and not flipflopflag:
                             flipflopflag = True
                             self.unitCounter += 1
+                            print("counted")
 
                         # Bereiche der Arbeitsposition
                         if (lmList[26][1] >= lmList[12][1]) and (lmList[25][1] >= lmList[11][1]) \
@@ -370,6 +358,7 @@ class Ui_Dialog(QWidget):
                     self.Succeeded(self.id_sweets)
                     break
                 else:
+                    self.notSucceededbit = True
                     self.notSucceeded()
                     break
 
@@ -388,7 +377,7 @@ class Ui_Dialog(QWidget):
         :return:
         """
         self.decrementMoney()
-        self.decrementCounterPunishment
+        self.decrementCounterPunishment()
         print("noSuccess")
         self.label_Time.setStyleSheet("color: red; font-size: 54px; font: bold")
         self.label_Time.setText("Es scheint als wäre das Ziel nicht erreicht!\n"
@@ -398,7 +387,9 @@ class Ui_Dialog(QWidget):
         self.label_Time.adjustSize()
         self.label_Time.move(300, 400)
         self.label_Time.show()
-        motor.start(4)  # Motor 4 für Gesunde Mahlzeit
+        motor.start(4, 1)  # Motor 4 für Gesunde Mahlzeit
+        settings.errorFour = False
+        settings.warningFour = False
         self.cap.release()
         self.deleteLater()
         return
@@ -422,6 +413,8 @@ class Ui_Dialog(QWidget):
         self.label_Time.move(407, 400)
         self.label_Time.show()
         motor.start(id_sweets, 1)  # id_sweets
+        settings.errorFour = False
+        settings.warningFour = False
         self.cap.release()
         self.deleteLater()
         return
@@ -501,6 +494,10 @@ class Ui_Dialog(QWidget):
         counter = int(counter)
         counter -= 1
         settings.actValueFour -= 1
+        if settings.actValueFour <= 5:
+            settings.warningFour = True
+        elif settings.actValueFour == 0:
+            settings.errorFour = True
         cfgfile = open("config.ini", "w")
         config["DEFAULT"]["SweetCountFour"] = str(counter)
         config.write(cfgfile)
@@ -514,7 +511,7 @@ class Ui_Dialog(QWidget):
         :return:
         """
         if self.countrunning == 0:
-            self.countrunning = 1
+            self.countrunning = True
             self.threadcount = Thread(target=self.countdown)
             self.threadcount.daemon = True
             self.threadcount.start()
@@ -536,7 +533,7 @@ class Ui_Dialog(QWidget):
         :return:
         """
         if self.timerrunning == 0:
-            self.timerrunning = 1
+            self.timerrunning = True
             self.threadtimer = Thread(target=self.timer)
             self.threadtimer.daemon = True
             self.threadtimer.start()

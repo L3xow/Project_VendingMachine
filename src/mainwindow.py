@@ -113,15 +113,22 @@ class MainWindow(QMainWindow):
         self.labelTXT(self.fileexpl, 180, 560)
 
     @QtCore.pyqtSlot(int)
-    def callError(self, ErrID, SweetID=0):
+    def callError(self, ErrID):
+        if ErrID == 1:
+            self.error.setupUI(4)
+            self.error.show()
+        elif ErrID == 2:
+            self.error.setupUI(5)
+            self.error.show()
+        elif ErrID == 3:
+            self.error.setupUI(3, 4)
+            self.error.show()
+        elif ErrID == 4:
+            self.error.setupUI(8, 4)
+            self.error.show()
         # ErrorWindow UI wird vorbereitet und initialisiert
-        self.error.setupUI(ErrID, SweetID)
-
-    # def keyPressEvent(self, event):
-    #     if event.key() == Qt.Key_Space:
-    #         self.ERRORBIT = True
-    #     elif event.key() == Qt.Key_Space and self.ERRORBIT:
-    #         self.ERRORBIT = False
+        self.error.setupUI(ErrID)
+        self.error.show()
 
     def labelTXT(self, txt, x, y):
         """
@@ -189,7 +196,7 @@ class MainWindow(QMainWindow):
             # Wenn Daten vorhanden sind
             if self.data:
                 # Prüfe, ob gescannter Code schon im System angelegt ist und ob dessen Wert >= -5 ist.
-                if getConfigCodes(self.admin.rfid) and float(getConfigValue(self.admin.rfid)) >= -5.0:
+                if getConfigCodes(self.admin.rfid) and float(getConfigValue(self.admin.rfid)) > -5.0:
                     # Wenn obiges stimmt -> Fahre fort mit Ablauf
                     self.DialogWindow(1, 1920, 1080)
                 else:
@@ -210,7 +217,7 @@ class MainWindow(QMainWindow):
             self.data = self.client.get_data()
             self.admin.rfid = self.data
             if self.data:
-                if getConfigCodes(self.admin.rfid) and float(getConfigValue(self.admin.rfid)) >= -5.0:
+                if getConfigCodes(self.admin.rfid) and float(getConfigValue(self.admin.rfid)) > -5.0:
                     self.DialogWindow(2, 1920, 1080)
                 else:
                     self.error.setupUI(1)
@@ -229,7 +236,7 @@ class MainWindow(QMainWindow):
             self.data = self.client.get_data()
             self.admin.rfid = self.data
             if self.data:
-                if getConfigCodes(self.admin.rfid) and float(getConfigValue(self.admin.rfid)) >= -5.0:
+                if getConfigCodes(self.admin.rfid) and float(getConfigValue(self.admin.rfid)) > -5.0:
                     self.DialogWindow(3, 1920, 1080)
                 else:
                     self.error.setupUI(1)
@@ -315,17 +322,40 @@ class ErrorMonitor(QObject):
 
     """
     error_signal = QtCore.pyqtSignal(int)
-
     @QtCore.pyqtSlot()
     def monitor_errors(self):
+        """
+        Sorgt als Error Handler Thread. Wird sekündlich aufgerufen und wird gecheckt ob Sensorik i. O. ist
+        und ob der Füllstand der Bestrafung i.O. ist, da dieser anderweitig nicht ausgewertet werden kann.
+        :return:
+        """
+        once = False
+        twice = False
+        counter = 0
         while True:
             sleep(1)
+            if 5 >= settings.actValueFour > 1 and not once:
+                settings.warningFour = True  # Global Warningbit
+                once = True  # Speicherbit für einmaligen Aufruf
+                self.error_signal.emit(3)  # Aufruf Error 3
+            elif once and not settings.warningFour:
+                once = False
+
+            if settings.actValueFour == 0 and not twice:
+                settings.errorFour = True
+                self.error_signal.emit(4)
+                if settings.counter > 2:
+                    twice = True
+            elif twice and not settings.errorFour:
+                settings.counter = 0
+                twice = False
+
             # if gpiocontrol.readInput(23):
             #     print("errordetected")
-            #     self.error_signal.emit(4)
+            #     self.error_signal.emit(1)
             # elif gpiocontrol.readInput(6):
             #     print("errordetected")
-            #     self.error_signal.emit(5)
+            #     self.error_signal.emit(2)
 
 
 

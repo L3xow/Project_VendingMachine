@@ -1,6 +1,7 @@
 import cv2
 import mediapipe as mp
 import time
+import math
 
 
 class poseDetector():
@@ -74,6 +75,36 @@ class poseDetector():
         return lmList
 
 
+def cosine_law(a, b, c):
+    return math.degrees(math.acos((c**2 - b**2 - a**2)/(-2.0 * a * b)))
+
+def precalcs(lm1, lm2, lm3, lmList):
+    foot_x, foot_y = lmList[lm1][1], lmList[lm1][2]
+    knee_x, knee_y = lmList[lm2][1], lmList[lm2][2]
+    waist_x, waist_y = lmList[lm3][1], lmList[lm3][2]
+
+    a_shin = foot_x - knee_x
+    b_shin = foot_y - knee_y
+    a_shin = abs(a_shin)
+    b_shin = abs(b_shin)
+
+    shinlen = math.hypot(a_shin, b_shin)
+
+    a_thigh = knee_x - waist_x
+    b_thigh = knee_y - waist_y
+    a_thigh = abs(a_thigh)
+    b_thigh = abs(b_thigh)
+
+    thighlen = math.hypot(a_thigh, b_thigh)
+
+    a_leg = foot_x - waist_x
+    b_leg = foot_y - waist_y
+    a_leg = abs(a_leg)
+    b_leg = abs(b_leg)
+
+    leglen = math.hypot(a_leg, b_leg)
+
+    return cosine_law(shinlen, thighlen, leglen)
 
 
 def main():
@@ -95,20 +126,28 @@ def main():
         img = detector.findPose(img)
         lmList = detector.findPosition(img)
         if len(lmList) != 0:
-            print(lmList[27][0])
-            if lmList[27][3] > 95 and lmList[28][3] > 95 and lmList[23][1] < 380 and lmList[24][1] > 270:
-                print(lmList[23][0])
-                print(lmList[24][0])
+
+            leftangle = precalcs(28, 26, 24, lmList)
+            rightangle = precalcs(27, 25, 23, lmList)
+            # print("left: ", leftangle)
+            # print("right: ", rightangle)
+
+
+
+
+            if True:
+                # print(lmList[23][0])
+                # print(lmList[24][0])
                 if count < 50:
-                    if lmList[15][1] < 420 and lmList[15][2] > 240 and lmList[16][1] > 250 and lmList[16][2] > 240 and not check:  # [Teil][x] < X_WERT         [Teil][Y] < Y_WERT #ruhe
+                    if leftangle > 130 and rightangle > 130 and not check:  # [Teil][x] < X_WERT         [Teil][Y] < Y_WERT #ruhe
                         check = True
                         count += 1
-                        print(check)
+                        # print(check)
                         print(count)
-                    if lmList[15][1] > 500 and lmList[15][2] < 150 and lmList[16][1] < 150 and lmList[16][2] < 150 and check:          #work
+                    if leftangle < 60 and rightangle < 60 and check:          #work
                         check = False
                         count += 1
-                        print(check)
+                        # print(check)
                         print(count)
 
 

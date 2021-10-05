@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QDialog
 from PyQt5.QtCore import Qt
 
 from src import gpiocontrol
+import settings
 
 
 class errorwindow(QWidget):
@@ -18,6 +19,8 @@ class errorwindow(QWidget):
     4  /    Error  / Plexiglas-Abdeckung nicht montiert
     5  /    Error  / Wartungsschalter Rückseite ausgeschalten
     6  /    Error  / RFID Code ist kein Admin Code
+    7  /   Warnung / RFID Chip an Scanner legen.
+    8  /    Error  / Füllstand gleich 0.
 
     """
 
@@ -129,6 +132,8 @@ class errorwindow(QWidget):
 
         :return:
         """
+        if settings.errorFour:
+            settings.counter += 1
         gpiocontrol.writeOutput(self.greenLED, 0)
         gpiocontrol.writeOutput(self.yellowLED, 1)
         gpiocontrol.writeOutput(self.redLED, 1)
