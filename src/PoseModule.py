@@ -76,9 +76,26 @@ class poseDetector():
 
 
 def cosine_law(a, b, c):
+    """
+    Dient zu Berechnung des Winkels über den Kosinussatz.
+
+    :param a: (int) Seite a
+    :param b: (int) Seite b
+    :param c: (int) Seite c
+    :return: (int) Winkel in DEGREE
+    """
     return math.degrees(math.acos((c**2 - b**2 - a**2)/(-2.0 * a * b)))
 
 def precalcs(lm1, lm2, lm3, lmList):
+    """
+    Dient zur Berechnung der Längen aller Seiten eines Dreiecks anhand der Landmarks der Beine.
+
+    :param lm1: (int) ID des Knöchels
+    :param lm2: (int) ID des Knies
+    :param lm3: (int) ID des Beckenknochens
+    :param lmList: (list) Liste aller Landmarks
+    :return: (int) Winkel in DEGREE
+    """
     foot_x, foot_y = lmList[lm1][1], lmList[lm1][2]
     knee_x, knee_y = lmList[lm2][1], lmList[lm2][2]
     waist_x, waist_y = lmList[lm3][1], lmList[lm3][2]
