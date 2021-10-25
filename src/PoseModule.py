@@ -84,7 +84,12 @@ def cosine_law(a, b, c):
     :param c: (int) Seite c
     :return: (int) Winkel in DEGREE
     """
-    return math.degrees(math.acos((c**2 - b**2 - a**2)/(-2.0 * a * b)))
+    try:
+        result = math.degrees(math.acos((c**2 - b**2 - a**2)/(-2.0 * a * b)))
+    except:
+        print("Error in Calculation")
+        return
+    return result
 
 def precalcs(lm1, lm2, lm3, lmList):
     """
@@ -156,12 +161,12 @@ def main():
                 # print(lmList[23][0])
                 # print(lmList[24][0])
                 if count < 50:
-                    if leftangle > 130 and rightangle > 130 and not check:  # [Teil][x] < X_WERT         [Teil][Y] < Y_WERT #ruhe
+                    if leftangle >= 130 and rightangle >= 130 and not check:  # [Teil][x] < X_WERT         [Teil][Y] < Y_WERT #ruhe
                         check = True
                         count += 1
                         # print(check)
                         print(count)
-                    if leftangle < 60 and rightangle < 60 and check:          #work
+                    if leftangle <= 80 and rightangle <= 80 and check:          #work
                         check = False
                         count += 1
                         # print(check)
@@ -172,7 +177,7 @@ def main():
         fps = 1/(cTime-pTime)
         pTime = cTime
 
-        cv2.putText(img, str(int(fps)), (70, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
+        cv2.putText(img, str(int(count)), (70, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
 
         cv2.imshow("Image", img)
         cv2.waitKey(10)
