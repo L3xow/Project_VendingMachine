@@ -236,15 +236,15 @@ class Ui_Dialog(QWidget):
                 # TrainingID = 2 = Liegestütz
                 elif self.trainingID == 2:
                     self.unitCheck = round(settings.PUReps * 2)
-                    if self.unitCounter < settings.PUReps*2:
+                    if self.unitCounter < round(settings.PUReps*2):
                         # Bereiche der Ruheposition
-                        if (lmList[31][2] - lmList[11][2] >= 75) and (lmList[32][2] - lmList[12][2] >= 75) \
+                        if (lmList[31][2] - lmList[11][2] >= 100) and (lmList[32][2] - lmList[12][2] >= 100) \
                                 and not flipflopflag:
                             flipflopflag = True
                             self.unitCounter += 1
 
                         # Bereiche der Arbeitsposition
-                        if (lmList[31][2] - lmList[11][2] <= 75) and (lmList[32][2] - lmList[12][2] <= 75) \
+                        if (lmList[31][2] - lmList[11][2] <= 100) and (lmList[32][2] - lmList[12][2] <= 100) \
                                 and flipflopflag:
                             flipflopflag = False
                             self.unitCounter += 1
@@ -257,7 +257,7 @@ class Ui_Dialog(QWidget):
                 # TrainingID = 3 = Kniebeugen
                 elif self.trainingID == 3:
                     self.unitCheck = round(settings.SQReps * 2)
-                    if self.unitCounter < settings.SQReps * 2:
+                    if self.unitCounter < round(settings.SQReps * 2):
                         # Bereiche der Ruheposition
                         if (lmList[26][2] - lmList[24][2] >= 40) and (lmList[25][2] - lmList[23][2] >= 40) \
                                 and not flipflopflag:
@@ -280,7 +280,7 @@ class Ui_Dialog(QWidget):
                     leftAngle = precalcs(28, 26, 24, lmList)
                     rightAngle = precalcs(27, 25, 23, lmList)
                     self.unitCheck = round(settings.LGReps * 2)
-                    if self.unitCounter < settings.LGReps * 2:
+                    if self.unitCounter < round(settings.LGReps * 2):
                         # Bereiche der Ruheposition
                         if leftAngle >= 130 and rightAngle >= 130 \
                                 and not flipflopflag:

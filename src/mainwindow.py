@@ -344,7 +344,7 @@ class ErrorMonitor(QObject):
 
             if settings.actValueFour == 0 and not twice:
                 settings.errorFour = True
-                self.error_signal.emit(4)
+                self.error_signal.emit(8)
                 if settings.counter > 2:
                     twice = True
             elif twice and not settings.errorFour:

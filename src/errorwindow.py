@@ -127,7 +127,7 @@ class errorwindow(QWidget):
             gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
             # self.textlabel.setText("Error: Füllstand " + str(self.sweets) + ". Süßigkeit gleich 0.")
-            self.textlabel.setText("Error: Füllstand leer.")
+            self.textlabel.setText("Error: Füllstand " + str(self.sweets) + " leer.")
 
         self.show()
 

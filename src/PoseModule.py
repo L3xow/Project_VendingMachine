@@ -158,15 +158,16 @@ def main():
 
 
             if True:
-                # print(lmList[23][0])
-                # print(lmList[24][0])
+                print(lmList[11][2])
+                print(lmList[13][2])
                 if count < 50:
-                    if leftangle >= 130 and rightangle >= 130 and not check:  # [Teil][x] < X_WERT         [Teil][Y] < Y_WERT #ruhe
+
+                    if (lmList[31][2] - lmList[11][2] >= 100) and (lmList[32][2] - lmList[12][2] >= 100) and not check:  # [Teil][x] < X_WERT         [Teil][Y] < Y_WERT #ruhe
                         check = True
                         count += 1
                         # print(check)
                         print(count)
-                    if leftangle <= 80 and rightangle <= 80 and check:          #work
+                    if (lmList[31][2] - lmList[11][2] <= 100) and (lmList[32][2] - lmList[12][2] <= 100) and check:          #work
                         check = False
                         count += 1
                         # print(check)
@@ -180,7 +181,7 @@ def main():
         cv2.putText(img, str(int(count)), (70, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
 
         cv2.imshow("Image", img)
-        cv2.waitKey(10)
+        cv2.waitKey(5)
 
 
 if __name__ == "__main__":
