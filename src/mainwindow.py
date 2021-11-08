@@ -42,6 +42,7 @@ import errorwindow
 import adminwindow
 import unitselectwindow
 import settings
+from motor import start
 
 from src.motor import start
 from src import gpiocontrol
@@ -350,12 +351,12 @@ class ErrorMonitor(QObject):
                 settings.counter = 0
                 twice = False
 
-            # if gpiocontrol.readInput(23):
-            #     print("errordetected")
-            #     self.error_signal.emit(1)
-            # elif gpiocontrol.readInput(6):
-            #     print("errordetected")
-            #     self.error_signal.emit(2)
+            if gpiocontrol.readInput(23):
+                print("errordetected")
+                self.error_signal.emit(4)
+            elif gpiocontrol.readInput(6):
+                print("errordetected")
+                self.error_signal.emit(5)
 
 
 

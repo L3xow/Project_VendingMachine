@@ -282,15 +282,17 @@ class Ui_Dialog(QWidget):
                     self.unitCheck = round(settings.LGReps * 2)
                     if self.unitCounter < settings.LGReps * 2:
                         # Bereiche der Ruheposition
-                        if (lmList[26][2] - lmList[24][2] >= 40) and (lmList[25][2] - lmList[23][2] >= 40) \
+                        if leftAngle >= 130 and rightAngle >= 130 \
                                 and not flipflopflag:
                             flipflopflag = True
                             self.unitCounter += 1
                             print("counted")
+# lmList[26][2] - lmList[24][2] >= 40) and (lmList[25][2] - lmList[23][2] >= 40
 
+#lmList[26][1] >= lmList[12][1]) and (lmList[25][1] >= lmList[11][1]) \
+                                # and (lmList[14][2] >= lmList[12][2]) and (lmList[13][2] >= lmList[11][2]
                         # Bereiche der Arbeitsposition
-                        if (lmList[26][1] >= lmList[12][1]) and (lmList[25][1] >= lmList[11][1]) \
-                                and (lmList[14][2] >= lmList[12][2]) and (lmList[13][2] >= lmList[11][2]) \
+                        if leftAngle <= 80 and rightAngle <= 80 \
                                 and flipflopflag:
                             flipflopflag = False
                             self.unitCounter += 1
@@ -300,7 +302,7 @@ class Ui_Dialog(QWidget):
 
 
             #            cv2.putText(img, str(int(self.unitCounter)), (70, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
-            cv2.imshow("Image", img)  # ToDo: Zeit ändern + Image auskommentieren
+            #cv2.imshow("Image", img)  # ToDo: Zeit ändern + Image auskommentieren
             cv2.waitKey(10)
 
     def countdown(self):
@@ -389,7 +391,7 @@ class Ui_Dialog(QWidget):
         self.label_Time.adjustSize()
         self.label_Time.move(300, 400)
         self.label_Time.show()
-        motor.start(4, 1)  # Motor 4 für Gesunde Mahlzeit
+        motor.start(4)  # Motor 4 für Gesunde Mahlzeit
         settings.errorFour = False
         settings.warningFour = False
         self.cap.release()
@@ -410,11 +412,11 @@ class Ui_Dialog(QWidget):
         self.decrementCounterSweets()
         print("Success")
         self.label_Time.setStyleSheet("color: green; font-size: 88px; font: bold")
-        self.label_Time.setText("Perfect you did it!")
+        self.label_Time.setText("Das Ziel wurde erreicht!")
         self.label_Time.adjustSize()
-        self.label_Time.move(407, 400)
+        self.label_Time.move(300, 400)
         self.label_Time.show()
-        motor.start(id_sweets, 1)  # id_sweets
+        motor.start(id_sweets)  # id_sweets
         settings.errorFour = False
         settings.warningFour = False
         self.cap.release()

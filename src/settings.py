@@ -23,23 +23,23 @@ counter = 0
 # Settings to change the units
 Tolerance = 0.8  # 80%
 
-PUTime = 20             # seconds 60
-PUReps = 4 * Tolerance  # 20
+PUTime = 60             # seconds 60
+PUReps = 20 * Tolerance  # 20
 
-JJTime = 10  # 60
-JJReps = 2 * Tolerance  # 30
+JJTime = 60  # 60
+JJReps = 30 * Tolerance  # 30
 
-SQTime = 10  # 60
-SQReps = 2 * Tolerance  # 30
+SQTime = 60  # 60
+SQReps = 30 * Tolerance  # 30
 
-LGTime = 20  # 30
-LGReps = 4 * Tolerance  # 20
+LGTime = 30  # 30
+LGReps = 20 * Tolerance  # 20
 
 CounterReset = 15
 
 CamID = 1
 
 #RPiIP = "192.168.2.41" # Tobi HomePi
-#RPiIP = "192.168.137.61 # Tobi LaptopPi
-RPiIP = "192.168.1.103" # Tobi NurembergPi
+RPiIP = "192.168.137.61" # Tobi LaptopPi
+#RPiIP = "192.168.1.103" # Tobi NurembergPi
 
