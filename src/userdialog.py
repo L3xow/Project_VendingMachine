@@ -286,7 +286,7 @@ class Ui_Dialog(QWidget):
                                 and not flipflopflag:
                             flipflopflag = True
                             self.unitCounter += 1
-                            print("counted")
+
 # lmList[26][2] - lmList[24][2] >= 40) and (lmList[25][2] - lmList[23][2] >= 40
 
 #lmList[26][1] >= lmList[12][1]) and (lmList[25][1] >= lmList[11][1]) \

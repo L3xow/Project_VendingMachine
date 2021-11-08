@@ -1,5 +1,5 @@
 from PyQt5 import Qt, QtCore
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QFont
 from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QDialog
 from PyQt5.QtCore import Qt
 
@@ -33,7 +33,7 @@ class errorwindow(QWidget):
         super().__init__(parent)
         self.setWindowTitle("ErrorMsg")
         self.setObjectName("ErrorMsg")
-        self.resize(400, 300)
+        self.resize(600, 400)
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setWindowFlag(Qt.WindowStaysOnTopHint)
         self.buttonOk = QPushButton("Ok", self)
@@ -44,12 +44,13 @@ class errorwindow(QWidget):
         self.yellowLED = 19
         self.sweets = 0
 
+
         self.pixmap_error = QPixmap("src/misc/error.png")
-        self.smaller_pixmap_error = self.pixmap_error.scaled(64, 64, Qt.KeepAspectRatio, Qt.FastTransformation)
+        self.smaller_pixmap_error = self.pixmap_error.scaled(128, 128, Qt.KeepAspectRatio, Qt.FastTransformation)
         self.pixmap_warning = QPixmap("src/misc/warning.png")
-        self.smaller_pixmap_warning = self.pixmap_warning.scaled(64, 64, Qt.KeepAspectRatio, Qt.FastTransformation)
+        self.smaller_pixmap_warning = self.pixmap_warning.scaled(128, 128, Qt.KeepAspectRatio, Qt.FastTransformation)
         self.pixmap_info = QPixmap("src/misc/info.png")
-        self.smaller_pixmap_info = self.pixmap_info.scaled(64, 64, Qt.KeepAspectRatio, Qt.FastTransformation)
+        self.smaller_pixmap_info = self.pixmap_info.scaled(128, 128, Qt.KeepAspectRatio, Qt.FastTransformation)
 
     def setupUI(self, ErrID, SweetID=0):
         """
@@ -60,16 +61,20 @@ class errorwindow(QWidget):
         welche Süßigkeit genau einen zu niedrigen Füllstand hat.
         :return:
         """
+        self.buttonOk.setStyleSheet('QPushButton {font-size: 32px;}')
         self.sweets = SweetID
-        self.buttonOk.resize(120, 50)
-        self.buttonOk.move((400-120)/2, 300-50)
+        self.buttonOk.resize(300, 120)
+        self.buttonOk.move((600-300)/2, 400-120)
         self.buttonOk.clicked.connect(self.butOK)
 
+
+
         self.textlabel.setAlignment(Qt.AlignmentFlag(Qt.AlignCenter))
-        self.textlabel.move(40, 20)
-        self.textlabel.setStyleSheet("color: black; font-weight: bold; font-size: 16px")
+        # self.textlabel.move(600 / 2, 400 / 2)
+        self.textlabel.move(300-200, 20)
+        self.textlabel.setStyleSheet("color: black; font-weight: bold; font-size: 20px")
         self.textlabel.setWordWrap(True)
-        self.textlabel.resize(300, 200)
+        self.textlabel.resize(400, 300)
         self.textlabel.show()
 
         self.pixlabel.setPixmap(self.smaller_pixmap_error)
@@ -121,7 +126,8 @@ class errorwindow(QWidget):
             gpiocontrol.writeOutput(self.redLED, 0)
             gpiocontrol.writeOutput(self.greenLED, 1)
             self.pixlabel.setPixmap(self.smaller_pixmap_error)
-            self.textlabel.setText("Error: Füllstand " + str(self.sweets) + ". Süßigkeit gleich 0.")
+            # self.textlabel.setText("Error: Füllstand " + str(self.sweets) + ". Süßigkeit gleich 0.")
+            self.textlabel.setText("Error: Füllstand leer.")
 
         self.show()
 

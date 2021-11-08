@@ -182,10 +182,10 @@ class MainWindow(QMainWindow):
             if settings.actValueOne == 0:
                 self.error.setupUI(8, 1)
                 return
-            elif settings.actValueOne <= 5 and not settings.isClicked:
-                self.error.setupUI(3, 1)
-                settings.isClicked = True
-                return
+            # elif settings.actValueOne <= 5 and not settings.isClicked:
+            #     self.error.setupUI(3, 1)
+            #     settings.isClicked = True
+            #     return
             # Verbindung zum Server wird aufgebaut.
             self.client = client()
             # Befehl an den Server(RasPi) zum vorbereiten des RFID-Scanners
@@ -209,10 +209,10 @@ class MainWindow(QMainWindow):
             if settings.actValueTwo == 0:
                 self.error.setupUI(8, 2)
                 return
-            elif settings.actValueTwo <= 5 and not settings.isClicked:
-                self.error.setupUI(3, 2)
-                settings.isClicked = True
-                return
+            # elif settings.actValueTwo <= 5 and not settings.isClicked:
+            #     self.error.setupUI(3, 2)
+            #     settings.isClicked = True
+            #     return
             self.client = client()
             self.client.send_data("scan")
             self.data = self.client.get_data()
@@ -228,10 +228,10 @@ class MainWindow(QMainWindow):
             if settings.actValueThree == 0:
                 self.error.setupUI(8, 3)
                 return
-            elif settings.actValueThree <= 5 and not settings.isClicked:
-                self.error.setupUI(3, 3)
-                settings.isClicked = True
-                return
+            # elif settings.actValueThree <= 5 and not settings.isClicked:
+            #     self.error.setupUI(3, 3)
+            #     settings.isClicked = True
+            #     return
             self.client = client()
             self.client.send_data("scan")
             self.data = self.client.get_data()
@@ -335,12 +335,12 @@ class ErrorMonitor(QObject):
         counter = 0
         while True:
             sleep(1)
-            if 5 >= settings.actValueFour > 1 and not once:
-                settings.warningFour = True  # Global Warningbit
-                once = True  # Speicherbit für einmaligen Aufruf
-                self.error_signal.emit(3)  # Aufruf Error 3
-            elif once and not settings.warningFour:
-                once = False
+            # if 5 >= settings.actValueFour > 1 and not once:
+            #     settings.warningFour = True  # Global Warningbit
+            #     once = True  # Speicherbit für einmaligen Aufruf
+            #     self.error_signal.emit(3)  # Aufruf Error 3
+            # elif once and not settings.warningFour:
+            #     once = False
 
             if settings.actValueFour == 0 and not twice:
                 settings.errorFour = True
@@ -353,10 +353,10 @@ class ErrorMonitor(QObject):
 
             if gpiocontrol.readInput(23):
                 print("errordetected")
-                self.error_signal.emit(4)
+                # self.error_signal.emit(4)
             elif gpiocontrol.readInput(6):
                 print("errordetected")
-                self.error_signal.emit(5)
+                # self.error_signal.emit(5)
 
 
 
