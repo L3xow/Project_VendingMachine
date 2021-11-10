@@ -12,7 +12,8 @@ from PyQt5.QtWidgets import QLabel, QPushButton, QWidget
 import PoseModule as pm
 import motor
 import settings
-import mainwindow
+import adminwindow
+
 
 
 class Ui_Dialog(QWidget):
@@ -119,10 +120,14 @@ class Ui_Dialog(QWidget):
         self.button_ok = QPushButton(self)
         self.button_ok.setText("Bestätigen")
         self.button_ok.clicked.connect(self.ok)
-        self.button_ok.setGeometry(600, 800, 150, 75)  # x y
-        self.button_ok.setStyleSheet(
-            "color: rgba(255,255,255,1);  font: bold;  border-style: solid;  border-width: 1px;  "
-            "border-color: grey; background-color: rgb(54, 73, 78); font-size: 20px; ")
+        self.button_ok.setGeometry((1600/2) - 250, 780, 200, 100)  # x y
+        self.button_ok.setStyleSheet("color: rgba(255,255,255,1);"
+                                     "font: bold;"
+                                     "border-style: solid;"
+                                     "border-width: 1px;"
+                                     "border-color: grey;"
+                                     "background-color: rgb(54, 73, 78);"
+                                     "font-size: 20px;")
 
     def buttonBack(self):
         """
@@ -136,10 +141,14 @@ class Ui_Dialog(QWidget):
         self.button_back.clicked.connect(lambda: self.close())
         # Wenn der Button betätigt wird, wird ebenfalls die Methode "back" ausgeführt.
         self.button_back.clicked.connect(self.back)
-        self.button_back.setGeometry(850, 800, 150, 75)  # x y
-        self.button_back.setStyleSheet(
-            "color: rgba(255,255,255,1);  font: bold;  border-style: solid;  border-width: 1px;  "
-            "border-color: grey; background-color: rgb(54, 73, 78); font-size: 20px; ")
+        self.button_back.setGeometry((1600/2) + 50, 780, 200, 100)  # x y
+        self.button_back.setStyleSheet("color: rgba(255,255,255,1);"
+                                       "font: bold;"
+                                       "border-style: solid;"
+                                       "border-width: 1px;"
+                                       "border-color: grey;"
+                                       "background-color: rgb(54, 73, 78);"
+                                       "font-size: 20px;")
 
     def labelTXT(self, fileText1):
         """
@@ -317,7 +326,7 @@ class Ui_Dialog(QWidget):
             if self.cdtime != 0:
                 self.cdtime -= 200
                 sleep(0.2)
-                self.label_Time.setText(str(self.cdtime / 1000) + " s")
+                self.label_Time.setText(str(0)+str(self.cdtime / 1000) + " s")
                 self.label_Time.adjustSize()
                 x = self.label_Time.width()
                 y = self.label_Time.height()

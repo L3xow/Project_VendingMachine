@@ -75,7 +75,7 @@ class UnitSelectWindow(QWidget):
         self.label_txt.move(x, y)
         self.label_txt.setText(str(txt))
         self.label_txt.setObjectName("label_txt")
-        self.label_txt.setStyleSheet("color: black; font: bold; font-size: 22px")
+        self.label_txt.setStyleSheet("color: black; font: bold; font-size: 32px")
         self.label_txt.adjustSize()
 
         # Label configuration

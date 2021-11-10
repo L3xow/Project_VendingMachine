@@ -36,17 +36,17 @@ from time import *
 
 from PyQt5 import Qt, QtCore, QtGui
 from PyQt5.QtCore import QObject
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QMessageBox
 
 import errorwindow
 import adminwindow
+import src.mainwindow
 import unitselectwindow
 import settings
 from motor import start
 
 from src.motor import start
 from src import gpiocontrol
-
 
 
 class MainWindow(QMainWindow):
@@ -67,6 +67,7 @@ class MainWindow(QMainWindow):
         self.errorLabel = QLabel(self)
         self.TESTBIT = False
         self.error = errorwindow.errorwindow()
+        self.savedRFID = 0
         getCounterValues()
 
         # ErrorMonitor Objekt wird erstellt, dient zur Überwachung der Sensoriken
@@ -103,11 +104,11 @@ class MainWindow(QMainWindow):
         self.resize(MainWindow.width, MainWindow.height)
         self.setStyleSheet("background-color: rgb(255,255,255)")
         self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
-        self.labelTXT("hanuta RIEGEL", 180, 180)
+        self.labelTXT("hanuta RIEGEL", 180, 170)
         self.labelJPG("misc/Hanuta_new.jpg", 180, 210)
-        self.labelTXT("Knoppers NussRiegel", 810, 180)
+        self.labelTXT("Knoppers NussRiegel", 810, 170)
         self.labelJPG("misc/Knoppers_new.jpg", 810, 210)
-        self.labelTXT("PickUp Choco+Milk", 1440, 180)
+        self.labelTXT("PickUp Choco+Milk", 1440, 170)
         self.labelJPG("misc/PickUp_new.jpg", 1440, 210)
         self.labelJPG("misc/Logo3.png", 1729, 980)
         self.label_jpg.adjustSize()
@@ -115,16 +116,16 @@ class MainWindow(QMainWindow):
 
     @QtCore.pyqtSlot(int)
     def callError(self, ErrID):
-        if ErrID == 1:
-            self.error.setupUI(4)
-            self.error.show()
-        elif ErrID == 2:
-            self.error.setupUI(5)
-            self.error.show()
-        elif ErrID == 3:
-            self.error.setupUI(3, 4)
-            self.error.show()
-        elif ErrID == 4:
+        # if ErrID == 1:
+        #     self.error.setupUI(4)
+        #     self.error.show()
+        # elif ErrID == 2:
+        #     self.error.setupUI(5)
+        #     self.error.show()
+        # if ErrID == 3:
+        #     self.error.setupUI(3, 4)
+        #     self.error.show()
+        if ErrID == 8:
             self.error.setupUI(8, 4)
             self.error.show()
         # ErrorWindow UI wird vorbereitet und initialisiert
@@ -144,7 +145,7 @@ class MainWindow(QMainWindow):
         self.label_txt.move(x, y)
         self.label_txt.setText(str(txt))
         self.label_txt.setObjectName("label_txt")
-        self.label_txt.setStyleSheet("color: black; font: bold; font-size: 22px")
+        self.label_txt.setStyleSheet("color: black; font: bold; font-size: 32px")
         self.label_txt.adjustSize()
 
     def labelJPG(self, jpg, x, y):
@@ -186,6 +187,7 @@ class MainWindow(QMainWindow):
             #     self.error.setupUI(3, 1)
             #     settings.isClicked = True
             #     return
+
             # Verbindung zum Server wird aufgebaut.
             self.client = client()
             # Befehl an den Server(RasPi) zum vorbereiten des RFID-Scanners
@@ -316,6 +318,7 @@ def getCounterValues():
     settings.actValueFour = int(config["DEFAULT"]["SweetCountFour"])
     del config
 
+
 class ErrorMonitor(QObject):
     """
     Dient zum sekündlichen Abfragen der Sensoriken mittels Remote GPIO verbindung zum Raspi.
@@ -350,29 +353,24 @@ class ErrorMonitor(QObject):
             elif twice and not settings.errorFour:
                 settings.counter = 0
                 twice = False
-
             if gpiocontrol.readInput(23):
-                print("errordetected")
-                # self.error_signal.emit(4)
+                pass
+                #self.error_signal.emit(4)
             elif gpiocontrol.readInput(6):
-                print("errordetected")
-                # self.error_signal.emit(5)
-
-
+                pass
+                #self.error_signal.emit(5)
 
 
 class client():
     """
     Dient zum Verbinden auf den Server(RasPi) zum anfragen und empfangen eines RFID-Codes.
     """
-
     def __init__(self):
         print("Trying to connect")
         TCP_IP = settings.RPiIP
         TCP_PORT = 9999
         self.data = 0
         self.BUFF = 20
-
         self.s = socket.socket()
         self.s.connect((TCP_IP, TCP_PORT))
 
@@ -383,9 +381,9 @@ class client():
 
         :return: (str) : Empfangener RFID Code als string, decoded in utf-8
         """
+
         try:
             self.data = self.s.recv(self.BUFF)
-            sleep(0.5)
         except socket.error as e:
             err = e.args[0]
             if err == errno.EAGAIN or err == errno.EWOULDBLOCK:

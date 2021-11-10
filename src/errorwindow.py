@@ -43,6 +43,7 @@ class errorwindow(QWidget):
         self.redLED = 13
         self.yellowLED = 19
         self.sweets = 0
+        self.setStyleSheet("background-color: rgb(192, 192, 192);")
 
 
         self.pixmap_error = QPixmap("src/misc/error.png")
@@ -61,32 +62,34 @@ class errorwindow(QWidget):
         welche Süßigkeit genau einen zu niedrigen Füllstand hat.
         :return:
         """
-        self.buttonOk.setStyleSheet('QPushButton {font-size: 32px;}')
+        #self.buttonOk.setStyleSheet('QPushButton {font-size: 32px;}')
         self.sweets = SweetID
         self.buttonOk.resize(300, 120)
         self.buttonOk.move((600-300)/2, 400-120)
         self.buttonOk.clicked.connect(self.butOK)
+        self.buttonOk.setStyleSheet("QPushButton { border: 2px solid white;"
+                                    "font-size: 10px;"
+                                    "font-weight: bold;"
+                                    "background-color: DimGrey;"
+                                    "color: white;"
+                                    "font-size: 32px; }"
+                                    "QPushButton::pressed { border: 3px solid grey;"
+                                    "font-size: 34px; }")
 
 
 
         self.textlabel.setAlignment(Qt.AlignmentFlag(Qt.AlignCenter))
         # self.textlabel.move(600 / 2, 400 / 2)
-        self.textlabel.move(300-200, 20)
+        self.textlabel.move(300-200, 80)
         self.textlabel.setStyleSheet("color: black; font-weight: bold; font-size: 20px")
         self.textlabel.setWordWrap(True)
-        self.textlabel.resize(400, 300)
+        self.textlabel.resize(400, 200)
         self.textlabel.show()
 
         self.pixlabel.setPixmap(self.smaller_pixmap_error)
         self.pixlabel.move(10, 10)
         self.pixlabel.show()
 
-
-        self.setStyleSheet(
-            "QDialog { background-color: rgb(200,200,200); }"
-            "QPushButton { border: 2px solid white; font-size: 10px; font-weight: bold; "
-            "background-color: DimGrey; color: white;} "
-            "QPushButton::pressed { border: 3px solid grey; }")
 
         # LEDs werden je nach Fehler geschalten
         if ErrID == 1:
