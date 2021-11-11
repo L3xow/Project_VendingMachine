@@ -326,7 +326,7 @@ class Ui_Dialog(QWidget):
             if self.cdtime != 0:
                 self.cdtime -= 200
                 sleep(0.2)
-                self.label_Time.setText(str(0)+str(self.cdtime / 1000) + " s")
+                self.label_Time.setText(str(0)+str(self.cdtime / 1000) + "0 s")
                 self.label_Time.adjustSize()
                 x = self.label_Time.width()
                 y = self.label_Time.height()

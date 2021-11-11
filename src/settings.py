@@ -40,6 +40,6 @@ CounterReset = 15
 CamID = 1
 
 #RPiIP = "192.168.2.41" # Tobi HomePi
-#RPiIP = "192.168.137.61" # Tobi LaptopPi
-RPiIP = "192.168.1.103" # Tobi NurembergPi
+RPiIP = "192.168.137.61" # Tobi LaptopPi
+#RPiIP = "192.168.1.103" # Tobi NurembergPi
 

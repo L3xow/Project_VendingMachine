@@ -162,17 +162,16 @@ def main():
                 print(lmList[13][2])
                 if count < 50:
 
-                    if (lmList[31][2] - lmList[11][2] >= 100) and (lmList[32][2] - lmList[12][2] >= 100) and not check:  # [Teil][x] < X_WERT         [Teil][Y] < Y_WERT #ruhe
+                    if (lmList[26][2] - lmList[24][2] >= 40) and (lmList[25][2] - lmList[23][2] >= 40) \
+                            and not check:
                         check = True
                         count += 1
-                        # print(check)
-                        print(count)
-                    if (lmList[31][2] - lmList[11][2] <= 100) and (lmList[32][2] - lmList[12][2] <= 100) and check:          #work
+
+                    # Bereiche der Arbeitsposition
+                    if (lmList[26][2] - lmList[24][2] <= 40) and (lmList[25][2] - lmList[23][2] <= 40) \
+                            and check:
                         check = False
                         count += 1
-                        # print(check)
-                        print(count)
-
 
         cTime = time.time()
         fps = 1/(cTime-pTime)
