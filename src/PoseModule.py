@@ -136,7 +136,7 @@ def main():
 
     :return:
     """
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
     pTime = 0
     count = 0
     check = False
@@ -162,13 +162,15 @@ def main():
                 print(lmList[13][2])
                 if count < 50:
 
-                    if (lmList[26][2] - lmList[24][2] >= 40) and (lmList[25][2] - lmList[23][2] >= 40) \
+                    if ((lmList[27][1] - lmList[28][1]) <= 100) and (lmList[12][2] < lmList[14][2]) \
+                        and (lmList[11][2] < lmList[13][2]) \
                             and not check:
                         check = True
                         count += 1
 
                     # Bereiche der Arbeitsposition
-                    if (lmList[26][2] - lmList[24][2] <= 40) and (lmList[25][2] - lmList[23][2] <= 40) \
+                    if ((lmList[27][1] - lmList[28][1]) >= 100) and (lmList[12][2] > lmList[14][2]) \
+                                and (lmList[11][2] > lmList[13][2]) \
                             and check:
                         check = False
                         count += 1
@@ -177,9 +179,9 @@ def main():
         fps = 1/(cTime-pTime)
         pTime = cTime
 
-        cv2.putText(img, str(int(count)), (70, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
-
-        cv2.imshow("Image", img)
+        cv2.putText(img, str(int(fps)), (70, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
+        imgR = cv2.resize(img, (1920, 1080))
+        cv2.imshow("Image", imgR)
         cv2.waitKey(5)
 
 

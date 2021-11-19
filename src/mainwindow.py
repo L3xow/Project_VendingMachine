@@ -354,8 +354,10 @@ class ErrorMonitor(QObject):
                 settings.counter = 0
                 twice = False
             if gpiocontrol.readInput(23):
+                pass
                 self.error_signal.emit(4)
             elif gpiocontrol.readInput(6):
+                pass
                 self.error_signal.emit(5)
 
 

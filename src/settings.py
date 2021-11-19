@@ -32,8 +32,8 @@ JJReps = 30 * Tolerance  # 30
 SQTime = 60  # 60
 SQReps = 30 * Tolerance  # 30
 
-LGTime = 10  # 30
-LGReps = 5 * Tolerance  # 20
+LGTime = 30  # 30
+LGReps = 20 * Tolerance  # 20
 
 CounterReset = 15
 
